@@ -3,6 +3,7 @@ class_name TerminalText
 
 signal text_event(evt_name: String)
 signal text_done()
+signal text_paused()
 
 @export var autoplay: bool = true
 @export var autoclear: bool = false
@@ -31,6 +32,7 @@ var _playing = false
 var _char_speed: float = 0.0
 var _next_char: float = 0.0
 var _full_text: String
+var _moring: bool = false
 
 func _ready() -> void:
     set_defaults()
@@ -46,6 +48,9 @@ func clear_text() -> void:
     _full_text = ""
     text = ""
     data = ""
+
+func continue_text() -> void:
+    _moring = false
 
 func set_defaults() -> void:
     _char_speed = default_speed
@@ -100,6 +105,12 @@ func _process_command() -> bool:
         else:
             push_error("Char speed must have float")
 
+    elif command.begins_with("MORE"):
+        _moring = true
+        _next_char = _char_speed
+        text_paused.emit()
+        return false
+
     else:
         push_error("Unknown command", command)
     return true
@@ -125,6 +136,7 @@ var _cursor_char: String:
 
 func _change_cursor(mode: int = - 1, delta: float = 0.0, force: bool = true) -> bool:
     _next_cur -= delta
+
     if (mode == -1 || mode == _cursor_mode) && _next_cur > 0.0:
         if force:
             text = _full_text + _has_cur
@@ -143,11 +155,11 @@ func _change_cursor(mode: int = - 1, delta: float = 0.0, force: bool = true) -> 
     return true
 
 func _process(delta: float) -> void:
-    _next_char -= delta
-    if !_playing || _next_char > 0.0:
+    if !_moring:
+        _next_char -= delta
+    if _moring || !_playing || _next_char > 0.0:
         _change_cursor(-1, delta)
         return
-
 
     while _process_next():
         pass

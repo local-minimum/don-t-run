@@ -15,7 +15,7 @@ var _interactions: Array[GameInteraction]
 
 var extended_description: String:
     get():
-        var ret: String = description
+        var ret: String = "==%s==\n%s" % [location, description]
         for s: String in state:
             ret += state_descriptors.get(s, "")
         return ret

@@ -13,13 +13,20 @@ class_name TerminalGame
 
 var carried: Array[GameInteraction]
 var current: GamePlace
+var _active: GameBit:
+    set(value):
+        if _active && _active.first_time:
+            _active.first_time = false
+        _active = value
 var _action: String
 var _target: String
 var _actions: Array[String]
 var _targets: Array[String]
+var state: Array[String]
 
 func _ready() -> void:
     options.abort_option.connect(_show_actions)
+    main.text_paused.connect(_handle_more)
 
     if autoplay:
         play()
@@ -53,6 +60,7 @@ func _update_input() -> void:
         input.data = input_prefix
 
 func start_current() -> void:
+    _active = current
     current.sync(self)
     main.text_done.connect(_handle_description_done, CONNECT_ONE_SHOT)
     main.data = current.extended_description
@@ -115,7 +123,7 @@ func _handle_target_selected(target: String) -> void:
                     break
         main.clear_text()
         main.text_done.connect(_do_selected_option.bind(opt), CONNECT_ONE_SHOT)
-        main.data = "\n\n[i]> %s %s[/i]\n\n" % [_action, _target]
+        main.data = "[i]> %s %s[/i]\n\n" % [_action, _target]
 
 func _do_selected_option(option: GameBit) -> void:
     var previous: GamePlace = current
@@ -131,14 +139,20 @@ func _do_selected_option(option: GameBit) -> void:
         if option.autohide:
             option.hidden = true
         if option.add_targets:
-            current.added_targets.append_array(option.add_targets)
+            for t: String in option.add_targets:
+                if !current.added_targets.has(t):
+                    current.added_targets.append(t)
+        if option.autoblock:
+            option.blocked = true
         if option.pickup:
             carried.append_array(option.pickup)
 
     main.text_done.connect(start_current, CONNECT_ONE_SHOT)
+    _active = option
     if option == null:
         main.data = "You cannot do that.\n\n"
     else:
+
         main.data = "%s\n\n" % option.description
         if option.auto_increment_description:
             option.active_description += 1
@@ -149,10 +163,28 @@ func _do_selected_option(option: GameBit) -> void:
         for s: String in option.remove_state:
             if previous.state.has(s):
                 previous.state.erase(s)
+        for s: String in option.add_global_state:
+            if !state.has(s):
+                state.append(s)
 
     _action = ""
     _target = ""
     _update_input()
 
-func _handle_text_event(_evt: String) -> void:
-    pass
+func _handle_more() -> void:
+    options.options = ["MORE"]
+    if options.abort_option.is_connected(_show_actions):
+        options.abort_option.disconnect(_show_actions)
+    options.select_option.connect(_continue_more, CONNECT_ONE_SHOT)
+    options.active = true
+    input.data = input_prefix
+
+func _continue_more(_opt: String) -> void:
+    main.continue_text()
+    options.abort_option.connect(_show_actions)
+    options.options = []
+    options.active = false
+    input.data = "%sMORE " %  [input_prefix]
+
+func _handle_text_event(evt: String) -> void:
+    push_warning("Event not handled: '%s' during %s" % [evt, _active])

@@ -1,19 +1,24 @@
 extends GamePlace
 
 @export var inv_check: GameInteraction
+@export var state_check: String
 
-@export var has_inv: GameBit
-@export var has_inv_description: int
-@export var lacks_inv: GameBit
-@export var lacks_inv_description: int
+@export var passes: GameBit
+@export var passes_description: int
+@export var fails: GameBit
+@export var fails_description: int
 
 
 func sync(game: TerminalGame) -> void:
-    if game.carried.has(inv_check):
-        has_inv.blocked = false
-        lacks_inv.blocked = true
-        active_description = has_inv_description
+    if (inv_check == null || game.carried.has(inv_check)) && (state_check.is_empty() || game.state.has(state_check)):
+        if passes:
+            passes.blocked = false
+        if fails:
+            fails.blocked = true
+        active_description = passes_description
     else:
-        has_inv.blocked = true
-        lacks_inv.blocked = false
-        active_description = lacks_inv_description
+        if passes:
+            passes.blocked = true
+        if fails:
+            fails.blocked = false
+        active_description = fails_description

@@ -5,6 +5,7 @@ class_name GameInteraction
 @export var add_targets: Array[String]
 @export var pickup: Array[GameInteraction]
 @export var autohide: bool
+@export var autoblock: bool
 
 func is_target(target: String) -> bool:
     for t: String in triggers:
