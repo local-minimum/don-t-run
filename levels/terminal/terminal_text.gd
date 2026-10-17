@@ -33,8 +33,7 @@ var _next_char: float = 0.0
 var _full_text: String
 
 func _ready() -> void:
-    _char_speed = default_speed
-    _cursor_speed = default_cursor_speed
+    set_defaults()
     if !autoplay:
         set_process(false)
 
@@ -42,6 +41,15 @@ func play() -> void:
     _playing = true
     _next_char = default_speed
     set_process(true)
+
+func clear_text() -> void:
+    _full_text = ""
+    text = ""
+    data = ""
+
+func set_defaults() -> void:
+    _char_speed = default_speed
+    _cursor_speed = default_cursor_speed
 
 func _process_command() -> bool:
     var closing: int = data.find("}", _current_data_idx)
@@ -140,7 +148,7 @@ func _process(delta: float) -> void:
         _change_cursor(-1, delta)
         return
 
-    _next_char += _char_speed
+
     while _process_next():
         pass
 
@@ -178,5 +186,6 @@ func _process_next() -> bool:
         return true
 
     _full_text += data[_current_data_idx]
+    _next_char += _char_speed
     _current_data_idx += 1
-    return _char_speed <= 0.0
+    return _next_char <= 0.0

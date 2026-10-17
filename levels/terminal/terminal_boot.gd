@@ -9,6 +9,12 @@ extends Node
 
 var _booted: bool
 
+@export var powered_on: bool:
+    set(value):
+        powered_on = value
+        _booted = false
+        _power_on()
+
 @export var diskett_inserted: bool:
     set(value):
         diskett_inserted = value
@@ -16,6 +22,10 @@ var _booted: bool
             _load_game()
 
 func _ready() -> void:
+    if powered_on:
+        _power_on()
+
+func _power_on() -> void:
     input.autoplay = true
     input.autoclear = true
     input.data = ""
