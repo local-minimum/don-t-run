@@ -15,6 +15,7 @@ signal text_done()
         _char_speed = default_speed
         _cursor_speed = default_cursor_speed
         data = value
+        _current_data_idx = 0
         if autoplay:
             play()
 
@@ -29,6 +30,7 @@ var _current_data_idx: int = 0
 var _playing = false
 var _char_speed: float = 0.0
 var _next_char: float = 0.0
+var _full_text: String
 
 func _ready() -> void:
     _char_speed = default_speed
@@ -79,7 +81,7 @@ func _process_command() -> bool:
             _change_cursor(mode)
 
     elif command.begins_with("CLEAR"):
-        text = ""
+        _full_text = ""
 
     elif command.begins_with("SPEED"):
         var parts: PackedStringArray = command.split(" ")
@@ -98,6 +100,7 @@ var _cursor_speed: float = 0.1
 var _cursor_mode: int = 0
 var _cursor_idx: int = 0
 var _next_cur: float = 0.0
+var _has_cur: String = ""
 
 var _cursor_char: String:
     get():
@@ -112,27 +115,24 @@ var _cursor_char: String:
             return cur
         return ""
 
-func _strip_cursor() -> void:
-    if _cursor_mode != 0:
-        var cur: String = _cursor_char
-        if text.ends_with(cur):
-            text = text.trim_suffix(cur)
-
-func _change_cursor(mode: int = - 1, delta: float = 0.0, strip: bool = true) -> void:
+func _change_cursor(mode: int = - 1, delta: float = 0.0, force: bool = true) -> bool:
     _next_cur -= delta
     if (mode == -1 || mode == _cursor_mode) && _next_cur > 0.0:
-        return
-
-    if strip:
-        _strip_cursor()
+        if force:
+            text = _full_text + _has_cur
+            return true
+        return false
 
     if mode >=0 && mode != _cursor_mode:
         _cursor_mode = mode
-        _cursor_idx = -1
+        _cursor_idx = 0
 
+    var cur: String = _cursor_char
     _next_cur += _cursor_speed
     _cursor_idx += 1
-    text += _cursor_char
+    text = _full_text + cur
+    _has_cur = cur
+    return true
 
 func _process(delta: float) -> void:
     _next_char -= delta
@@ -140,13 +140,12 @@ func _process(delta: float) -> void:
         _change_cursor(-1, delta)
         return
 
-    _strip_cursor()
-
     _next_char += _char_speed
     while _process_next():
         pass
 
-    _change_cursor(-1, delta, false)
+    _change_cursor(-1, delta, true)
+
 
 func _process_next() -> bool:
     if _current_data_idx >= data.length():
@@ -161,7 +160,7 @@ func _process_next() -> bool:
             var closing: int = data.find("]", _current_data_idx)
             if closing > 0:
                 var length = closing - _current_data_idx
-                text += data.substr(_current_data_idx, length)
+                _full_text += data.substr(_current_data_idx, length)
                 _current_data_idx += length
                 return true
         "{":
@@ -178,6 +177,6 @@ func _process_next() -> bool:
     if "{[".contains(data[_current_data_idx]):
         return true
 
-    text += data[_current_data_idx]
+    _full_text += data[_current_data_idx]
     _current_data_idx += 1
     return _char_speed <= 0.0

@@ -65,4 +65,14 @@ LOADING GAME-OS{WAIT 2}
 WELCOME TO GAME-OS
 YOUR COMPLETE GAME EXPERIENCE (TM)
 
->{CURSOR 2 0.4}"
+C:> {CURSOR 2 0.4}"
+load_game_squence = "{SPEED 0.4}A:
+
+{SPEED 0}A:> {WAIT 1}{SPEED 0.4}DIR
+{CURSOR 0}{SPEED 0}do_not_run.exe    60k{WAIT 0.1}
+do_not_run.dat    1.2M{WAIT 0.1}
+
+A:> {CURSOR 2 0.4}{WAIT 1}{SPEED 0.15}do_not_run.exe{WAIT 5}{CURSOR 0}
+{SPEED 0}Loading{SPEED 0.6}...
+{CLEAR}"
+diskett_inserted = true
