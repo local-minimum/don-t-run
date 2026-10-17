@@ -18,8 +18,8 @@ signal text_done()
         if autoplay:
             play()
 
-@export var default_speed: float = 0.04
-@export var default_cursor_speed: float = 0.07
+@export var default_speed: float = 0.1
+@export var default_cursor_speed: float = 0.4
 
 const CURSOR_1: Array[String] = ["\\", "-", "/"]
 const CURSOR_2: Array[String] = ["_", " "]
@@ -58,7 +58,7 @@ func _process_command() -> bool:
             time = float(parts[1])
         if time == 0.0:
             time = default_speed
-        _next_char += time
+        _next_char = time
         return false
 
     elif command.begins_with("SIGNAL"):
@@ -106,7 +106,7 @@ var _cursor_char: String:
         if _cursor_mode == 2:
             return CURSOR_2[posmod(_cursor_idx, CURSOR_2.size())]
         if _cursor_mode == 3:
-            var cur: String =  CURSOR_3[posmod(_cursor_mode, CURSOR_3.size())]
+            var cur: String = CURSOR_3[posmod(_cursor_mode, CURSOR_3.size())]
             if cur.contains("%s"):
                 return cur % select_color
             return cur
@@ -128,7 +128,7 @@ func _change_cursor(mode: int = - 1, delta: float = 0.0, strip: bool = true) -> 
 
     if mode >=0 && mode != _cursor_mode:
         _cursor_mode = mode
-        _cursor_idx = 0
+        _cursor_idx = -1
 
     _next_cur += _cursor_speed
     _cursor_idx += 1

@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://c6vn3fa0xw4ki" path="res://levels/terminal/terminal_theme.tres" id="1_dbc1e"]
 [ext_resource type="Script" uid="uid://ciurabiofrno7" path="res://levels/terminal/terminal_text.gd" id="2_ho67j"]
+[ext_resource type="Script" uid="uid://co4n5geqmi6cg" path="res://levels/terminal/terminal_boot.gd" id="3_6a7pf"]
 
 [node name="Terminal" type="Control" unique_id=1766387531]
 layout_mode = 3
@@ -37,18 +38,31 @@ size_flags_vertical = 3
 bbcode_enabled = true
 fit_content = true
 script = ExtResource("2_ho67j")
-data = "[i]test [/i]Me Please!{CURSOR 1 0.2}{WAIT 2}{SPEED 0}HELP!{CURSOR 2 0.25}"
-default_speed = 0.1
 
 [node name="Input Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=53324976]
 layout_mode = 2
 size_flags_vertical = 8
 bbcode_enabled = true
-text = "> LOOK AROUND"
 fit_content = true
+script = ExtResource("2_ho67j")
 
 [node name="Options Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=130939947]
 layout_mode = 2
 size_flags_vertical = 8
 bbcode_enabled = true
 fit_content = true
+
+[node name="Terminal Boot" type="Node" parent="." unique_id=1515797097 node_paths=PackedStringArray("main", "input", "options")]
+script = ExtResource("3_6a7pf")
+main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
+input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
+options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
+boot_sequence = "{CURSOR 0}{SPEED 0.3}...{CURSOR 1 0.1}{CLEAR}{SPEED 0}
+LOADING BIOS{WAIT 2}
+CHECKING MEMORY{WAIT 1}
+LOADING GAME-OS{WAIT 2}
+{CLEAR}
+WELCOME TO GAME-OS
+YOUR COMPLETE GAME EXPERIENCE (TM)
+
+>{CURSOR 2 0.4}"
