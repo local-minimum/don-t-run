@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://chl0hcn67ui8i"
-path="res://.godot/imported/PCap Terminal Bold Italic.otf-fdc32eeb922d85d9e93b5205153371b6.fontdata"
+uid="uid://tp575n34ikbf"
+path="res://.godot/imported/MonospaceTypewriter.ttf-7dbb0afbede21e0cdd6e1b11186d2e24.fontdata"
 
 [deps]
 
-source_file="res://fonts/pcap-terminal/PCap Terminal Bold Italic.otf"
-dest_files=["res://.godot/imported/PCap Terminal Bold Italic.otf-fdc32eeb922d85d9e93b5205153371b6.fontdata"]
+source_file="res://fonts/monospace-typewriter/MonospaceTypewriter.ttf"
+dest_files=["res://.godot/imported/MonospaceTypewriter.ttf-7dbb0afbede21e0cdd6e1b11186d2e24.fontdata"]
 
 [params]
 
