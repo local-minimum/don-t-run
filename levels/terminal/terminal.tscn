@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://q1jsjkhxr0ky"]
+
+[ext_resource type="Theme" uid="uid://c6vn3fa0xw4ki" path="res://levels/terminal/terminal_theme.tres" id="1_dbc1e"]
+[ext_resource type="Script" uid="uid://ciurabiofrno7" path="res://levels/terminal/terminal_text.gd" id="2_ho67j"]
+
+[node name="Terminal" type="Control" unique_id=1766387531]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_dbc1e")
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="." unique_id=252420213]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="AspectRatioContainer" unique_id=992070423]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/MarginContainer" unique_id=1297983227]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Main Text" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=404913515]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+script = ExtResource("2_ho67j")
+data = "[i]test [/i]Me Please!{CURSOR 1 0.2}{WAIT 2}{SPEED 0}HELP!{CURSOR 2 0.25}"
+default_speed = 0.1
+
+[node name="Input Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=53324976]
+layout_mode = 2
+size_flags_vertical = 8
+bbcode_enabled = true
+text = "> LOOK AROUND"
+fit_content = true
+
+[node name="Options Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=130939947]
+layout_mode = 2
+size_flags_vertical = 8
+bbcode_enabled = true
+fit_content = true

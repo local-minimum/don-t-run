@@ -1,0 +1,19 @@
+[gd_resource type="Theme" format=3 uid="uid://c6vn3fa0xw4ki"]
+
+[ext_resource type="FontFile" uid="uid://cmbbfjnu088pl" path="res://fonts/pcap-terminal/PCap Terminal Bold.otf" id="1_548wv"]
+[ext_resource type="FontFile" uid="uid://chl0hcn67ui8i" path="res://fonts/pcap-terminal/PCap Terminal Bold Italic.otf" id="2_rxu73"]
+[ext_resource type="FontFile" uid="uid://cygh4xnxbcy74" path="res://fonts/pcap-terminal/PCap Terminal Italic.otf" id="3_fd2je"]
+[ext_resource type="FontFile" uid="uid://cyxki4kpoa0ho" path="res://fonts/albertsthal-typewriter/Albertsthal Typewriter.ttf" id="4_pr4ii"]
+[ext_resource type="FontFile" uid="uid://cvbtvlwwk5ors" path="res://fonts/pcap-terminal/PCap Terminal.otf" id="5_kvehd"]
+
+[resource]
+RichTextLabel/font_sizes/bold_font_size = 20
+RichTextLabel/font_sizes/bold_italics_font_size = 20
+RichTextLabel/font_sizes/italics_font_size = 20
+RichTextLabel/font_sizes/mono_font_size = 20
+RichTextLabel/font_sizes/normal_font_size = 20
+RichTextLabel/fonts/bold_font = ExtResource("1_548wv")
+RichTextLabel/fonts/bold_italics_font = ExtResource("2_rxu73")
+RichTextLabel/fonts/italics_font = ExtResource("3_fd2je")
+RichTextLabel/fonts/mono_font = ExtResource("4_pr4ii")
+RichTextLabel/fonts/normal_font = ExtResource("5_kvehd")
