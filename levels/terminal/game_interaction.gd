@@ -3,7 +3,7 @@ class_name GameInteraction
 
 @export var triggers: Array[String]
 @export var add_targets: Array[String]
-@export var add_global_action_target: String
+@export var pickup: Array[GameBit]
 @export var autohide: bool
 
 func append_trigger_actions(ret: Array[String]) -> void:

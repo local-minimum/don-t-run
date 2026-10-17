@@ -31,9 +31,12 @@ var actions: Array[String]:
 
         return ret
 
+var added_targets: Array[String]
+
 var targets: Array[String]:
     get():
         var ret: Array[String] = []
+
         for i: GameInteraction in _interactions:
             if i.hidden:
                 continue
@@ -43,6 +46,10 @@ var targets: Array[String]:
         for t: GameTransition in _transitions:
             if !t.hidden:
                 ret.append(t.target)
+
+        for t: String in added_targets:
+            if !ret.has(t):
+                ret.append(t)
 
         return ret
 

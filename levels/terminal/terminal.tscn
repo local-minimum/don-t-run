@@ -2,6 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://c6vn3fa0xw4ki" path="res://levels/terminal/terminal_theme.tres" id="1_dbc1e"]
 [ext_resource type="Script" uid="uid://ciurabiofrno7" path="res://levels/terminal/terminal_text.gd" id="2_ho67j"]
+[ext_resource type="Script" uid="uid://bnyriamesgxvh" path="res://levels/terminal/options_presenter.gd" id="3_5iqdh"]
 [ext_resource type="Script" uid="uid://co4n5geqmi6cg" path="res://levels/terminal/terminal_boot.gd" id="3_6a7pf"]
 [ext_resource type="Script" uid="uid://gsfx6wsb66de" path="res://levels/terminal/game_place.gd" id="4_3equl"]
 [ext_resource type="Script" uid="uid://bwfemkwllniac" path="res://levels/terminal/terminal_game.gd" id="4_7ttak"]
@@ -52,10 +53,12 @@ fit_content = true
 script = ExtResource("2_ho67j")
 
 [node name="Options Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=130939947]
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 size_flags_vertical = 8
 bbcode_enabled = true
 fit_content = true
+script = ExtResource("3_5iqdh")
 
 [node name="Terminal Boot" type="Node" parent="." unique_id=1515797097 node_paths=PackedStringArray("main", "input", "options")]
 script = ExtResource("3_6a7pf")
@@ -94,10 +97,12 @@ script = ExtResource("4_3equl")
 _descriptions = Array[String](["It is a non-descript six stories tall brick building in the middle of a block on a busy street.
 
 Fortunately, you had found a parking place right outside the address that the rather stern letter had directed you to.", "You are stting in your car outside the building indicated in the letter you received in the mail two days ago."])
+auto_increment_description = true
 
 [node name="Around" type="Node" parent="TerminalGame/Car" unique_id=190138477]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK AROUND"])
+add_targets = Array[String](["LETTER"])
 _descriptions = Array[String](["The car is turned off, there's a letter laying on the passanger seat and outside you see the brick building with the entrance marked 60."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
@@ -120,10 +125,10 @@ South Utopia Corner Key Street 60
 
 You had never heard of the company, any meeting or in fact the street before you you got this letter."])
 
-[node name="Pickup Letter" type="Node" parent="TerminalGame/Car" unique_id=505422492]
+[node name="Pickup Letter" type="Node" parent="TerminalGame/Car" unique_id=505422492 node_paths=PackedStringArray("pickup")]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["TAKE LETTER"])
-add_global_action_target = "LETTER"
+pickup = [NodePath("../Letter")]
 autohide = true
 hidden = true
 _descriptions = Array[String](["You pick up the letter from the passanger seat and cram it into your back pocket."])

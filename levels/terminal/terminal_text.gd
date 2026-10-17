@@ -159,8 +159,8 @@ func _process_next() -> bool:
     if _current_data_idx >= data.length():
         if _cursor_mode == 0:
             set_process(false)
-        text_done.emit()
         _playing = false
+        text_done.emit()
         return false
 
     match data.substr(_current_data_idx, 1):
@@ -178,8 +178,8 @@ func _process_next() -> bool:
     if _current_data_idx >= data.length():
         if _cursor_mode == 0:
             set_process(false)
-        text_done.emit()
         _playing = false
+        text_done.emit()
         return false
 
     if "{[".contains(data[_current_data_idx]):
