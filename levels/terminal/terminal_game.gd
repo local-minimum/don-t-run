@@ -1,4 +1,5 @@
 extends Node
+class_name TerminalGame
 
 @export var autoplay: bool
 
@@ -10,7 +11,7 @@ extends Node
 @export var input_prefix: String = "{CLEAR}{SPEED 0}{CURSOR 1 0.2}> "
 @export var default_actions: Array[String] = [GamePlace.ACTION_LOOK, GamePlace.ACTION_GO, GamePlace.ACTION_USE, GamePlace.ACTION_TAKE]
 
-var carried: Array[GameBit]
+var carried: Array[GameInteraction]
 var current: GamePlace
 var _action: String
 var _target: String
@@ -52,8 +53,9 @@ func _update_input() -> void:
         input.data = input_prefix
 
 func start_current() -> void:
+    current.sync(self)
     main.text_done.connect(_handle_description_done, CONNECT_ONE_SHOT)
-    main.data = current.description
+    main.data = current.extended_description
 
 func _handle_description_done() -> void:
     input.data = input_prefix
@@ -106,16 +108,25 @@ func _handle_target_selected(target: String) -> void:
         _update_input()
 
         var opt: GameBit = current.get_bit(_action, _target)
+        if opt == null:
+            for c in carried:
+                if c.triggers.has("%s %s" % [_action, _target]):
+                    opt = c
+                    break
         main.clear_text()
         main.text_done.connect(_do_selected_option.bind(opt), CONNECT_ONE_SHOT)
         main.data = "\n\n[i]> %s %s[/i]\n\n" % [_action, _target]
 
 func _do_selected_option(option: GameBit) -> void:
+    var previous: GamePlace = current
     if current.auto_increment_description:
         current.active_description += 1
 
     if option is GameTransition:
-        current = option.place
+        if option.place:
+            current = option.place
+        else:
+            push_error("%s leads to nowhere" % option)
     elif option is GameInteraction:
         if option.autohide:
             option.hidden = true
@@ -131,6 +142,13 @@ func _do_selected_option(option: GameBit) -> void:
         main.data = "%s\n\n" % option.description
         if option.auto_increment_description:
             option.active_description += 1
+
+        for s: String in option.add_state:
+            if !previous.state.has(s):
+                previous.state.append(s)
+        for s: String in option.remove_state:
+            if previous.state.has(s):
+                previous.state.erase(s)
 
     _action = ""
     _target = ""

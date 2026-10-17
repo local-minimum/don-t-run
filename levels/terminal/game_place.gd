@@ -8,15 +8,23 @@ const ACTION_TALK = "TALK"
 const ACTION_TAKE = "TAKE"
 
 @export var location: String
-
+@export var state: Array[String]
+@export var state_descriptors: Dictionary[String, String] = {}
 var _transitions: Array[GameTransition]
 var _interactions: Array[GameInteraction]
+
+var extended_description: String:
+    get():
+        var ret: String = description
+        for s: String in state:
+            ret += state_descriptors.get(s, "")
+        return ret
 
 var actions: Array[String]:
     get():
         var ret: Array[String] = []
         for t: GameTransition in _transitions:
-            if t.hidden:
+            if t.hidden || t.blocked:
                 continue
 
             for a: String in t.actions:
@@ -24,7 +32,7 @@ var actions: Array[String]:
                     ret.append(a)
 
         for i: GameInteraction in _interactions:
-            if i.hidden:
+            if i.hidden || i.blocked:
                 continue
 
             i.append_trigger_actions(ret)
@@ -38,13 +46,13 @@ var targets: Array[String]:
         var ret: Array[String] = []
 
         for i: GameInteraction in _interactions:
-            if i.hidden:
+            if i.hidden || i.blocked:
                 continue
 
             i.append_trigger_targets(ret)
 
         for t: GameTransition in _transitions:
-            if !t.hidden:
+            if !t.hidden && !t.blocked:
                 ret.append(t.target)
 
         for t: String in added_targets:
@@ -53,14 +61,17 @@ var targets: Array[String]:
 
         return ret
 
+func sync(_game: TerminalGame) -> void:
+    pass
+
 func get_bit(action: String, target: String) -> GameBit:
     var trigger = "%s %s" % [action, target]
     for t: GameTransition in _transitions:
-        if t.actions.has(action) && t.target == target:
+        if !t.blocked && t.actions.has(action) && t.target == target && (!t.hidden || t.target == target && targets.has(target)):
             return t
 
     for i: GameInteraction in _interactions:
-        if i.triggers.has(trigger):
+        if !i.blocked && i.triggers.has(trigger) && (!i.hidden || i.is_target(target) && targets.has(target)):
             return i
 
     return null

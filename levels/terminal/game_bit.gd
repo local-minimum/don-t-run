@@ -3,8 +3,11 @@ class_name GameBit
 
 var active_description: int = 0
 @export var hidden: bool = false
+@export var blocked: bool = false
 @export_multiline() var _descriptions: Array[String]
 @export var auto_increment_description: bool
+@export var add_state: Array[String]
+@export var remove_state: Array[String]
 
 var description: String:
     get():

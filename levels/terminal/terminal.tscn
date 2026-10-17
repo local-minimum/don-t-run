@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://bwfemkwllniac" path="res://levels/terminal/terminal_game.gd" id="4_7ttak"]
 [ext_resource type="Script" uid="uid://br3ay75u35q2m" path="res://levels/terminal/game_interaction.gd" id="6_g45n6"]
 [ext_resource type="Script" uid="uid://b3qt00giuv02a" path="res://levels/terminal/game_transition.gd" id="7_iaufv"]
+[ext_resource type="Script" uid="uid://bjeignrgr6k7h" path="res://levels/terminal/game_inv_check.gd" id="9_4ov15"]
 
 [node name="Terminal" type="Control" unique_id=1766387531]
 layout_mode = 3
@@ -202,9 +203,10 @@ place = NodePath("../../Lobby Toilet")
 _descriptions = Array[String](["The toilet doors are both unlocked, you pick the left one. \"On random,\" you think to yourself."])
 metadata/_custom_type_script = "uid://b3qt00giuv02a"
 
-[node name="Elevator" type="Node" parent="TerminalGame/Lobby" unique_id=1437831941]
+[node name="Elevator" type="Node" parent="TerminalGame/Lobby" unique_id=1437831941 node_paths=PackedStringArray("place")]
 script = ExtResource("7_iaufv")
 target = "ELEVATOR"
+place = NodePath("../../Elevator")
 _descriptions = Array[String](["You cross to the far side of the rather spacious and desolate lobby where the elevator is located. "])
 metadata/_custom_type_script = "uid://b3qt00giuv02a"
 
@@ -221,11 +223,41 @@ The second one depicts what looks like a worker's lounge with a water cooler to 
 The last poster has the word \"TOGETHER\" repeated over and over in different colors."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
-[node name="Brochure" type="Node" parent="TerminalGame/Lobby" unique_id=154872230]
+[node name="Stand" type="Node" parent="TerminalGame/Lobby" unique_id=154872230]
 script = ExtResource("6_g45n6")
-triggers = Array[String](["LOOK BROCHURE"])
+triggers = Array[String](["LOOK STAND"])
+add_targets = Array[String](["LETTER"])
 hidden = true
+_descriptions = Array[String](["The brochures seems to be a mix of advertisements about renting office space in the building, fire escape routes, and other material that doesn't seem to apply to you.
+
+However, as you browse through the brochures on the stand you notice that someone has shoved a letter, just like yours at the back of the fire escape plans."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Pickup Hidden Letter" type="Node" parent="TerminalGame/Lobby" unique_id=1762434516]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["TAKE LETTER"])
+hidden = true
+_descriptions = Array[String](["You consider it for a moment and then decide that it's best to leave this letter here and bring your own, even though it seems identical down to the last letter. "])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Hidden Letter" type="Node" parent="TerminalGame/Lobby" unique_id=817801818]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK LETTER"])
+hidden = true
+_descriptions = Array[String](["The letter reads:
+
+Dear Sir or Madam
+
+It has come to our attention that you failed to attend the the scheduled meeting on the 24th of October, 2026.
+
+You have seven days to present yourself at the downtown offices or your case will be handed over to the authorities.
+
+Best Regards,
+Dir. S Man
+THE M Engine
+South Utopia Corner Key Street 60
+
+Exactly like your letter. What can this mean?"])
 
 [node name="Lobby Toilet" type="Node" parent="TerminalGame" unique_id=1091732625]
 script = ExtResource("4_3equl")
@@ -254,3 +286,40 @@ target = "DOOR"
 place = NodePath("../../Lobby")
 _descriptions = Array[String](["You leave the filthy toilet behind, regretting that you went in there."])
 metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Elevator" type="Node" parent="TerminalGame" unique_id=201960388 node_paths=PackedStringArray("inv_check", "has_inv", "lacks_inv")]
+script = ExtResource("9_4ov15")
+inv_check = NodePath("../Car/Letter")
+has_inv = NodePath("Button letter")
+lacks_inv = NodePath("Button no letter")
+location = "ELEVATOR"
+state = Array[String](["NOT HERE"])
+state_descriptors = Dictionary[String, String]({
+"NOT HERE": " The elevator is also not here.",
+"OPEN": " A well lit empty elevator is waiting for you."
+})
+_descriptions = Array[String](["The elevator door is cool partially reflective metal. There's a button to call the elevator."])
+metadata/_custom_type_script = "uid://gsfx6wsb66de"
+
+[node name="Lobby" type="Node" parent="TerminalGame/Elevator" unique_id=228275078 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+place = NodePath("../../Lobby")
+_descriptions = Array[String](["You leave the elevator area."])
+add_state = Array[String](["NOT HERE"])
+remove_state = Array[String](["OPEN"])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Button letter" type="Node" parent="TerminalGame/Elevator" unique_id=334543364]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["USE BUTTON"])
+_descriptions = Array[String](["Pressing the button, everything remains silent for a moment until a faint hissing sound can be heard as the elevator approaches and opens its doors."])
+add_state = Array[String](["OPEN"])
+remove_state = Array[String](["NOT HERE"])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Button no letter" type="Node" parent="TerminalGame/Elevator" unique_id=601925967]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["USE BUTTON"])
+blocked = true
+_descriptions = Array[String](["You better collect the letter from your car first, in case it is needed."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
