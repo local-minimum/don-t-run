@@ -92,6 +92,7 @@ func _show_actions() -> void:
     options.active = true
     options.options = _actions
     options.selected = _action
+    _action = ""
     _update_input()
     if options.select_option.is_connected(_handle_target_selected):
         options.select_option.disconnect(_handle_target_selected)

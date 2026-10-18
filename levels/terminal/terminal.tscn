@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://q1jsjkhxr0ky"]
 
 [ext_resource type="Theme" uid="uid://c6vn3fa0xw4ki" path="res://levels/terminal/terminal_theme.tres" id="1_dbc1e"]
+[ext_resource type="Script" uid="uid://bv30ls5dr6uu3" path="res://levels/terminal/terminal.gd" id="2_aan13"]
 [ext_resource type="Script" uid="uid://ciurabiofrno7" path="res://levels/terminal/terminal_text.gd" id="2_ho67j"]
 [ext_resource type="Script" uid="uid://bnyriamesgxvh" path="res://levels/terminal/options_presenter.gd" id="3_5iqdh"]
 [ext_resource type="Script" uid="uid://co4n5geqmi6cg" path="res://levels/terminal/terminal_boot.gd" id="3_6a7pf"]
@@ -10,7 +11,7 @@
 [ext_resource type="Script" uid="uid://b3qt00giuv02a" path="res://levels/terminal/game_transition.gd" id="7_iaufv"]
 [ext_resource type="Script" uid="uid://bjeignrgr6k7h" path="res://levels/terminal/game_inv_check.gd" id="9_4ov15"]
 
-[node name="Terminal" type="Control" unique_id=1766387531]
+[node name="Terminal" type="Control" unique_id=1766387531 node_paths=PackedStringArray("os", "game")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,6 +19,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_dbc1e")
+script = ExtResource("2_aan13")
+os = NodePath("Terminal Boot")
+game = NodePath("TerminalGame")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="." unique_id=252420213]
 layout_mode = 1
@@ -91,7 +95,7 @@ autoplay = true
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
-start = NodePath("6th Floor/Workers Lounge")
+start = NodePath("6th Floor/Antechamber")
 
 [node name="Ground Floor" type="Node" parent="TerminalGame" unique_id=1983827917]
 
@@ -584,7 +588,7 @@ metadata/_custom_type_script = "uid://gsfx6wsb66de"
 [node name="Around" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Lounge" unique_id=561888297]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK AROUND"])
-_descriptions = Array[String](["From the looks of it the hall forms a U-shape. At least the part you can see from here. Yet you have not found any door leaing into the inner area. Only out from the U."])
+_descriptions = Array[String](["From the looks of it the hall forms a U-shape. At least the part you can see from here. Yet you have not found any door leading into the inner area. Only out from the U."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Door Reception" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Lounge" unique_id=197977664 node_paths=PackedStringArray("place")]
@@ -619,11 +623,26 @@ triggers = Array[String](["LOOK DOOR"])
 _descriptions = Array[String](["There are a few stains around the handle area, but otherwise it looks just like all other doors around here. "])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
+[node name="Other Corner" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Lounge" unique_id=1840215606 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+target = "CORNER"
+place = NodePath("../../Hall Corner by Office")
+_descriptions = Array[String](["You walk over towards the the mirrored corner. Though it looks otherwise the same, you do notice that the temperature drops even further. An uneasy feeling comes over you as you start to shiver."])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
 [node name="Workers Lounge" type="Node" parent="TerminalGame/6th Floor" unique_id=1713603343]
 script = ExtResource("4_3equl")
 location = "WORKER'S LOUNGE"
 _descriptions = Array[String](["There room is quite large with three circular tables, no chairs, and a kitchen area with several microwaves, a dish washer and off to the side one of those institutional coffee machines."])
 metadata/_custom_type_script = "uid://gsfx6wsb66de"
+
+[node name="Around" type="Node" parent="TerminalGame/6th Floor/Workers Lounge" unique_id=1870418580]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK AROUND"])
+_descriptions = Array[String](["You didn't notice it first, because of the lack of chairs got you distracted, but there also aren't any windows. In fact you haven't seen a single window since going up the elevator.
+
+You wouldn't want to spend your lunch breaks here."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Door" type="Node" parent="TerminalGame/6th Floor/Workers Lounge" unique_id=1079187788 node_paths=PackedStringArray("place")]
 script = ExtResource("7_iaufv")
@@ -671,9 +690,119 @@ _descriptions = Array[String](["The machine gurgles, buzzes, stutters and then s
 
 It smells delicious!{WAIT 1}
 
-The hot thick liquid fills your stomach with a sweet warmth.{WAIT 2} And then radiates out into your body, almost as if your blood was getting replaced by a thick chocolately liquid...{MORE}{CURSOR 0}{CLEAR}
+The hot thick liquid fills your stomach with a sweet warmth.{WAIT 2} And then radiates out into your body, almost as if your blood was getting replaced by a thick chocolatey liquid...{MORE}{CURSOR 0}{CLEAR}
 
 You did need that.", "Chocolate is quite filling, and you cannot see yourself drinking another."])
 auto_increment_description = true
 add_global_state = Array[String](["WARMTH"])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Hall Corner by Office" type="Node" parent="TerminalGame/6th Floor" unique_id=603018479]
+script = ExtResource("4_3equl")
+location = "HALL CORNER"
+_descriptions = Array[String](["You stand next to a door where the hall makes a corner. It is ridiculously cold.
+
+One way leads towards a corner that looks identical to this one, but mirrored. The other has a single door in the far end."])
+metadata/_custom_type_script = "uid://gsfx6wsb66de"
+
+[node name="Around" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Office" unique_id=1880874878]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK AROUND"])
+_descriptions = Array[String](["From the looks of it the hall forms a U-shape. At least the part you can see from here. Yet you have not found any door leading into the inner area. Only out from the U."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Door Antechamber" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Office" unique_id=1062854190 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR"
+place = NodePath("../../Antechamber")
+_descriptions = Array[String](["As you reach for the handle you pull back, its is that cold, freezing.{WAIT 1}
+
+Still you need to see this through, so wrapping your hand in the bottom of your t-shirt, you reach and quickly jerk the door up.", "You open the door to the antechamber, still as cold as the first time."])
+auto_increment_description = true
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Look Door Antechamber" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Office" unique_id=1199145354]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK DOOR"])
+_descriptions = Array[String](["As you look closer you notice that there are small ice crystals on the door handle. It seems this must be where the cold is coming from."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Other Corner" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Office" unique_id=1462367302 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+target = "CORNER"
+place = NodePath("../../Hall Corner by Lounge")
+_descriptions = Array[String](["You walk over towards the the mirrored corner. Though it looks otherwise the same, you notice that the temperature rises slightly."])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Door Reception" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Office" unique_id=838894941 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR AT END OF HALL"
+place = NodePath("../../6th Floor Reception")
+_descriptions = Array[String](["As you walk the hall, the temperature rises slightly.
+
+You stop for just a moment{WAIT 1}, then open the door.{WAIT 1}"])
+add_global_state = Array[String](["RECEPTION LOUNGE"])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Look Door Reception" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Office" unique_id=337501731]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK DOOR AT END OF HALL"])
+_descriptions = Array[String](["The hall stretches far and there are no doors except for a single, lonely door in the far end."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Antechamber" type="Node" parent="TerminalGame/6th Floor" unique_id=1869697965]
+script = ExtResource("9_4ov15")
+state_check = "WARMTH"
+passes_description = -1
+fails_description = -1
+location = "ANTECHAMBER"
+state_descriptors = Dictionary[String, String]({
+"WARMTH": "[br][p]The hot beverage you got from the machine does helps a little with the cold.[/p]"
+})
+_descriptions = Array[String](["There's a cold mist that wisps up from the floor as you open the door.
+
+On the far side of the room there's a frosted glass door with the letters \"S. Man\" written across it. Right next to it, three empty chairs. Presumably for those waiting their turn. You'd freeze to death waiting there.
+
+{CURSOR 2}{MORE}{CURSOR 0}{CLEAR}
+There's a robust oak desk, behind it a leather office chair.{WAIT 1}
+
+But on the desk,{WAIT 0.5} it takes you a moment to realize what it is,{WAIT 0.5} stands a glistening red, ancient looking typewriter.{WAIT 2}
+
+To its side is an empty tray, presumably for processed documents.", "The room is ice cold. There's a frosted glass door leading to S. Man's office, some waiting chairs, a sturdy desk with a bright red, but ancient typewriter on it. To its side a tray."])
+auto_increment_description = true
+metadata/_custom_type_script = "uid://gsfx6wsb66de"
+
+[node name="Door" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=461461338 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR"
+place = NodePath("../../Hall Corner by Office")
+_descriptions = Array[String](["You RUN out of the icy room, not that the hall outside is that much better."])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Chairs" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1708380278]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["USE WAITING CHAIR"])
+_descriptions = Array[String](["If you sit down there your bum will not only freeze solid, you will also get frozen stuck to the chair."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Look Chairs" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=3824631]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK WAITING CHAIRS"])
+_descriptions = Array[String](["For an so sparse, finding three chairs next to each other here feels like quite a lot. It also doesn't bode well for the amount of time this will take. At least though, there's no one ahead of you already waiting here."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Glass Door" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1453774215]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["USE GLASS DOOR", "GO GLASS DOOR", "LOOK GLASS DOOR"])
+_descriptions = Array[String](["It impossible to see anything on the far side of the frosted glass door. There is no light on in the inner room. 
+
+The cold mist on the floor seems to emanate from under the door.
+
+Trying to turn its brass knob you realize it is locked. You also very much regret having touched the knob - your fingers now frozen to the bone.  ", "It still is impossible to see anything through the door and the cold mist continues to pour through under the door.
+
+You are not checking if it is locked again."])
+auto_increment_description = true
 metadata/_custom_type_script = "uid://br3ay75u35q2m"

@@ -1,4 +1,5 @@
 extends Node
+class_name TerminalOS
 
 @export var main: TerminalText
 @export var input: TerminalText
