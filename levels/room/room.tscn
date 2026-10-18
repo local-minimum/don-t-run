@@ -48,25 +48,25 @@ shadow_enabled = true
 
 [node name="office" parent="." unique_id=2051788375 instance=ExtResource("1_vl2mj")]
 
-[node name="Computer" parent="office" index="0" unique_id=1887865532]
+[node name="Computer" parent="office" index="0" unique_id=1773275010]
 transform = Transform3D(0.991357, 0, 0.13119161, 0, 1, 0, -0.13119161, 0, 0.991357, -0.034168378, 0, -0.103820324)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Computer Screen" parent="office/Computer" index="0" unique_id=495477705]
+[node name="Computer Screen" parent="office/Computer" index="0" unique_id=1402779639]
 transform = Transform3D(1, 0, 0, 0, 0.9832431, 0.18229939, 0, -0.18229939, 0.9832431, 0, 0.8059594, -0.09473042)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 1251476968) index="0" unique_id=5116129]
+[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 1684316108) index="0" unique_id=5116129]
 transform = Transform3D(0.9999999, 0, -2.9802322e-08, 0, 0.9999998, 0, -2.9802322e-08, -1.4901161e-08, 0.9999998, 0, 0, 0)
 mesh = SubResource("QuadMesh_kjfgv")
 
-[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=1223973283]
+[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=395558144]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Keys" parent="office/Computer" index="2" unique_id=1468106064]
+[node name="Keys" parent="office/Computer" index="2" unique_id=472504634]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Power Button" parent="office/Computer" index="3" unique_id=530934599]
+[node name="Power Button" parent="office/Computer" index="3" unique_id=609454535]
 surface_material_override/0 = ExtResource("2_cvwik")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=619072814]
