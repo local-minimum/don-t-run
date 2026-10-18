@@ -14,6 +14,7 @@ sky_material = SubResource("ProceduralSkyMaterial_cvwik")
 
 [sub_resource type="Environment" id="Environment_y43wp"]
 background_mode = 2
+background_energy_multiplier = 0.0
 sky = SubResource("Sky_vxucq")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_0ltmj"]
@@ -42,12 +43,13 @@ environment = SubResource("Environment_y43wp")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1955088839]
 transform = Transform3D(-0.8660254, -0.4893442, -0.102675706, 0, -0.20535138, 0.97868836, -0.50000006, 0.84756887, 0.17783946, 0, 0, 0)
+light_energy = 0.5
 shadow_enabled = true
 
 [node name="office" parent="." unique_id=2051788375 instance=ExtResource("1_vl2mj")]
 
 [node name="Computer" parent="office" index="0" unique_id=1887865532]
-transform = Transform3D(0.92024046, 0, 0.39135343, 0, 1, 0, -0.39135343, 0, 0.92024046, -0.2279279, 0, -0.074254155)
+transform = Transform3D(0.991357, 0, 0.13119161, 0, 1, 0, -0.13119161, 0, 0.991357, -0.034168378, 0, -0.103820324)
 surface_material_override/0 = ExtResource("2_cvwik")
 
 [node name="Computer Screen" parent="office/Computer" index="0" unique_id=495477705]
@@ -68,7 +70,7 @@ surface_material_override/0 = ExtResource("2_cvwik")
 surface_material_override/0 = ExtResource("2_cvwik")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=619072814]
-transform = Transform3D(0.96266466, -0.07324473, 0.26059923, 0, 0.9626979, 0.2705785, -0.2706968, -0.26047635, 0.92675525, 0.010645666, 1.0922902, 0.31630272)
+transform = Transform3D(0.99972916, 0.007715501, -0.021957425, -0.0010392137, 0.9573082, 0.28906736, 0.02325033, -0.28896624, 0.95705694, 0.010645666, 1.0922902, 0.31630272)
 fov = 72.0
 
 [node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("viewport")]

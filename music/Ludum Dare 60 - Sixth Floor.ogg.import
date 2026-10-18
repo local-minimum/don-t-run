@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dsavi83ltgdhm"
+path="res://.godot/imported/Ludum Dare 60 - Sixth Floor.ogg-e22824031e777bbd20272788e6b69f4c.oggvorbisstr"
+
+[deps]
+
+source_file="res://music/Ludum Dare 60 - Sixth Floor.ogg"
+dest_files=["res://.godot/imported/Ludum Dare 60 - Sixth Floor.ogg-e22824031e777bbd20272788e6b69f4c.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

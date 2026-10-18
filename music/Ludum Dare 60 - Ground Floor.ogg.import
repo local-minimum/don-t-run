@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://d0nosl78qtxsg"
+path="res://.godot/imported/Ludum Dare 60 - Ground Floor.ogg-b70a9fed6fa40d38ee467e6df2fea3ee.oggvorbisstr"
+
+[deps]
+
+source_file="res://music/Ludum Dare 60 - Ground Floor.ogg"
+dest_files=["res://.godot/imported/Ludum Dare 60 - Ground Floor.ogg-b70a9fed6fa40d38ee467e6df2fea3ee.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
