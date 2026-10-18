@@ -1,6 +1,8 @@
 extends Control
 class_name Terminal
 
+signal mist(on: bool)
+
 @export var os: TerminalOS
 @export var game: TerminalGame
 

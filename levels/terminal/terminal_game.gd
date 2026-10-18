@@ -220,8 +220,9 @@ func _handle_text_event(evt: String) -> void:
     elif evt == "cold":
         dialog_player.stream = cold
         dialog_player.play()
+        term.mist.emit(true)
     elif evt == "uncold":
-        pass
+        term.mist.emit(false)
     elif evt == "shrug":
         dialog_player.stream = shrug
         dialog_player.play()
