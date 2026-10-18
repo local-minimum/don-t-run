@@ -42,7 +42,7 @@ theme_override_constants/separation = 0
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-fit_content = true
+scroll_following = true
 script = ExtResource("2_ho67j")
 default_speed = 0.01
 
@@ -126,7 +126,7 @@ Best Regards,
 Dir. S Man
 THE M Engine
 South Utopia Corner Key Street 60
-
+{CURSOR 2}{MORE}{CURSOR 0}{CLEAR}
 You had never heard of the company, any meeting or in fact the street before you you got this letter."])
 
 [node name="Pickup Letter" type="Node" parent="TerminalGame/Ground Floor/Car" unique_id=505422492 node_paths=PackedStringArray("pickup")]
@@ -259,7 +259,7 @@ Best Regards,
 Dir. S Man
 THE M Engine
 South Utopia Corner Key Street 60
-
+{CURSOR 2}{MORE}{CURSOR 0}{CLEAR}
 Exactly like your letter. What can this mean?"])
 
 [node name="TV" type="Node" parent="TerminalGame/Ground Floor/Lobby" unique_id=1319756500]
