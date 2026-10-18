@@ -4,6 +4,7 @@
 [ext_resource type="Material" uid="uid://7a5d0mwyl8er" path="res://levels/room/computer_mat.tres" id="2_cvwik"]
 [ext_resource type="PackedScene" uid="uid://q1jsjkhxr0ky" path="res://levels/terminal/terminal.tscn" id="3_cvwik"]
 [ext_resource type="Script" uid="uid://cobj5qubg1tff" path="res://levels/room/input_manager.gd" id="3_vxucq"]
+[ext_resource type="Texture2D" uid="uid://cmxamqqhrc82k" path="res://models/Floppy.png" id="4_y43wp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cvwik"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -32,6 +33,9 @@ material = SubResource("StandardMaterial3D_kjfgv")
 size = Vector2(0.47, 0.325)
 center_offset = Vector3(0, 0, 0.003)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxucq"]
+albedo_texture = ExtResource("4_y43wp")
+
 [node name="Room" type="Node3D" unique_id=2066819157]
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=938471173]
@@ -48,26 +52,30 @@ shadow_enabled = true
 
 [node name="office" parent="." unique_id=2051788375 instance=ExtResource("1_vl2mj")]
 
-[node name="Computer" parent="office" index="0" unique_id=1773275010]
+[node name="Computer" parent="office" index="0" unique_id=909722265]
 transform = Transform3D(0.991357, 0, 0.13119161, 0, 1, 0, -0.13119161, 0, 0.991357, -0.034168378, 0, -0.103820324)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Computer Screen" parent="office/Computer" index="0" unique_id=1402779639]
+[node name="Computer Screen" parent="office/Computer" index="0" unique_id=1043010678]
 transform = Transform3D(1, 0, 0, 0, 0.9832431, 0.18229939, 0, -0.18229939, 0.9832431, 0, 0.8059594, -0.09473042)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 1684316108) index="0" unique_id=5116129]
+[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 304907302) index="0" unique_id=5116129]
 transform = Transform3D(0.9999999, 0, -2.9802322e-08, 0, 0.9999998, 0, -2.9802322e-08, -1.4901161e-08, 0.9999998, 0, 0, 0)
 mesh = SubResource("QuadMesh_kjfgv")
 
-[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=395558144]
+[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=1780083823]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Keys" parent="office/Computer" index="2" unique_id=472504634]
+[node name="Keys" parent="office/Computer" index="2" unique_id=1164845327]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Power Button" parent="office/Computer" index="3" unique_id=609454535]
+[node name="Power Button" parent="office/Computer" index="3" unique_id=1437982564]
 surface_material_override/0 = ExtResource("2_cvwik")
+
+[node name="Floppy" parent="office" index="1" unique_id=1247612523]
+transform = Transform3D(-0.87145424, 0, 0.49047682, 0, 1, 0, -0.49047682, 0, -0.87145424, 0.39774168, 0.7576627, -0.050624996)
+surface_material_override/0 = SubResource("StandardMaterial3D_vxucq")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=619072814]
 transform = Transform3D(0.99972916, 0.007715501, -0.021957425, -0.0010392137, 0.9573082, 0.28906736, 0.02325033, -0.28896624, 0.95705694, 0.010645666, 1.0922902, 0.31630272)
