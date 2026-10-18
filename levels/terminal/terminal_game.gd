@@ -20,6 +20,9 @@ class_name TerminalGame
 
 @export var dialog_player: AudioStreamPlayer
 @export var breath: AudioStream
+@export var eww: AudioStream
+@export var shrug: AudioStream
+@export var cold: AudioStream
 
 var carried: Array[GameInteraction]
 var current: GamePlace
@@ -211,5 +214,18 @@ func _handle_text_event(evt: String) -> void:
         term.play_music(office_music)
     elif evt == "typewriter":
         term.play_music(final_music)
+    elif evt == "disgusting":
+        dialog_player.stream = eww
+        dialog_player.play()
+    elif evt == "cold":
+        dialog_player.stream = cold
+        dialog_player.play()
+    elif evt == "uncold":
+        pass
+    elif evt == "shrug":
+        dialog_player.stream = shrug
+        dialog_player.play()
+    elif evt == "end":
+        pass
     else:
         push_warning("Event not handled: '%s' during %s" % [evt, _active])

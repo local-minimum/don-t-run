@@ -15,7 +15,10 @@
 [ext_resource type="AudioStream" uid="uid://dsavi83ltgdhm" path="res://music/Ludum Dare 60 - Sixth Floor.ogg" id="9_x7n7a"]
 [ext_resource type="AudioStream" uid="uid://dvibtvnlom2sg" path="res://music/Ludum Dare 60 - Typewriter.ogg" id="10_2cm0v"]
 [ext_resource type="AudioStream" uid="uid://dgajga0o31cup" path="res://audio/player/hum.mp3" id="11_2cm0v"]
+[ext_resource type="AudioStream" uid="uid://c032im24xbgfj" path="res://audio/player/eww.mp3" id="12_fvt22"]
 [ext_resource type="AudioStream" uid="uid://cj0aejbdrvx8y" path="res://music/Ludum Dare 60 - Main Menu.ogg" id="12_j6ca7"]
+[ext_resource type="AudioStream" uid="uid://dai2utilqk1op" path="res://audio/player/shrug.mp3" id="13_lvt7k"]
+[ext_resource type="AudioStream" uid="uid://c3h5m6u1vcvi5" path="res://audio/player/cold.mp3" id="14_3fuq5"]
 
 [node name="Terminal" type="Control" unique_id=1766387531 node_paths=PackedStringArray("os", "game", "_music_players")]
 layout_mode = 3
@@ -119,6 +122,9 @@ office_music = ExtResource("9_x7n7a")
 final_music = ExtResource("10_2cm0v")
 dialog_player = NodePath("../DialogPlayer")
 breath = ExtResource("11_2cm0v")
+eww = ExtResource("12_fvt22")
+shrug = ExtResource("13_lvt7k")
+cold = ExtResource("14_3fuq5")
 
 [node name="Ground Floor" type="Node" parent="TerminalGame" unique_id=1983827917]
 
@@ -759,9 +765,9 @@ script = ExtResource("7_iaufv")
 actions = Array[String](["GO", "USE"])
 target = "DOOR"
 place = NodePath("../../Antechamber")
-_descriptions = Array[String](["As you reach for the handle you pull back, its is that cold, freezing.{WAIT 1}
+_descriptions = Array[String](["As you reach for the handle you pull back, its is that cold, freezing.{WAIT 1}{SIGNAL cold}
 
-Still you need to see this through, so wrapping your hand in the bottom of your t-shirt, you reach and quickly jerk the door up.", "You open the door to the antechamber, still as cold as the first time."])
+Still you need to see this through, so wrapping your hand in the bottom of your t-shirt, you reach and quickly jerk the door up.", "You open the door to the antechamber,{SIGNAL cold} still as cold as the first time."])
 auto_increment_description = true
 metadata/_custom_type_script = "uid://b3qt00giuv02a"
 
@@ -830,7 +836,7 @@ script = ExtResource("7_iaufv")
 actions = Array[String](["GO", "USE"])
 target = "DOOR"
 place = NodePath("../../Hall Corner by Office")
-_descriptions = Array[String](["You RUN out of the icy room, not that the hall outside is that much better."])
+_descriptions = Array[String](["You RUN out of the icy room, not that the hall outside is that much better.{SIGNAL uncold}"])
 metadata/_custom_type_script = "uid://b3qt00giuv02a"
 
 [node name="Glass Door" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1453774215]

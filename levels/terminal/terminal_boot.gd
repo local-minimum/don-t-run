@@ -66,7 +66,7 @@ func _load_game() -> void:
 
 func _handle_loaded_game() -> void:
     game_loaded.emit()
-    if !main.text_event.is_connected(_handle_text_event):
+    if main.text_event.is_connected(_handle_text_event):
         main.text_event.disconnect(_handle_text_event)
 
 func _handle_text_event(evt: String) -> void:
