@@ -1,6 +1,9 @@
 extends Node
 class_name TerminalOS
 
+signal booting_done
+signal game_loaded
+
 @export var main: TerminalText
 @export var input: TerminalText
 @export var options: Control
@@ -26,6 +29,9 @@ func _ready() -> void:
     if powered_on:
         _power_on()
 
+    if !main.text_event.is_connected(_handle_text_event):
+        main.text_event.connect(_handle_text_event)
+
 func _power_on() -> void:
     input.autoplay = true
     input.autoclear = true
@@ -45,6 +51,7 @@ func _start_boot() -> void:
 func _handle_boot_done() -> void:
     _booted = true
     main.autoclear = false
+    booting_done.emit()
     if diskett_inserted:
         _load_game()
 
@@ -56,4 +63,12 @@ func _load_game() -> void:
         main.play()
 
 func _handle_loaded_game() -> void:
-    pass
+    game_loaded.emit()
+    if !main.text_event.is_connected(_handle_text_event):
+        main.text_event.disconnect(_handle_text_event)
+
+func _handle_text_event(evt: String) -> void:
+    if evt == "run-game":
+        pass
+    else:
+        push_warning("unhandled text even '%s'" % evt)

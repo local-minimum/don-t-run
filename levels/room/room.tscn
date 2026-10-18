@@ -33,8 +33,14 @@ material = SubResource("StandardMaterial3D_kjfgv")
 size = Vector2(0.47, 0.325)
 center_offset = Vector3(0, 0, 0.003)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_kjfgv"]
+size = Vector3(0.08, 0.02, 0.05)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxucq"]
 albedo_texture = ExtResource("4_y43wp")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0ltmj"]
+size = Vector3(0.14829102, 0.03, 0.1564087)
 
 [node name="Room" type="Node3D" unique_id=2066819157]
 
@@ -52,37 +58,58 @@ shadow_enabled = true
 
 [node name="office" parent="." unique_id=2051788375 instance=ExtResource("1_vl2mj")]
 
-[node name="Computer" parent="office" index="0" unique_id=909722265]
+[node name="Computer" parent="office" index="0" unique_id=526475355]
 transform = Transform3D(0.991357, 0, 0.13119161, 0, 1, 0, -0.13119161, 0, 0.991357, -0.034168378, 0, -0.103820324)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Computer Screen" parent="office/Computer" index="0" unique_id=1043010678]
+[node name="Computer Screen" parent="office/Computer" index="0" unique_id=1120463630]
 transform = Transform3D(1, 0, 0, 0, 0.9832431, 0.18229939, 0, -0.18229939, 0.9832431, 0, 0.8059594, -0.09473042)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 304907302) index="0" unique_id=5116129]
+[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 2044362677) index="0" unique_id=5116129]
 transform = Transform3D(0.9999999, 0, -2.9802322e-08, 0, 0.9999998, 0, -2.9802322e-08, -1.4901161e-08, 0.9999998, 0, 0, 0)
 mesh = SubResource("QuadMesh_kjfgv")
 
-[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=1780083823]
+[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=1122911927]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Keys" parent="office/Computer" index="2" unique_id=1164845327]
+[node name="Keys" parent="office/Computer" index="2" unique_id=1310189162]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Power Button" parent="office/Computer" index="3" unique_id=1437982564]
+[node name="Power Button" parent="office/Computer" index="3" unique_id=1639279619]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Floppy" parent="office" index="1" unique_id=1247612523]
-transform = Transform3D(-0.87145424, 0, 0.49047682, 0, 1, 0, -0.49047682, 0, -0.87145424, 0.39774168, 0.7576627, -0.050624996)
+[node name="Power" type="StaticBody3D" parent="office/Computer/Power Button" index="0" unique_id=1138353885]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="office/Computer/Power Button/Power" unique_id=1254343612]
+shape = SubResource("BoxShape3D_kjfgv")
+
+[node name="Floppy" parent="office" index="1" unique_id=148046377]
+transform = Transform3D(-0.7674706, 0, 0.64108425, 0, 1, 0, -0.64108425, 0, -0.7674706, 0.4036778, 0.758, -0.115909226)
 surface_material_override/0 = SubResource("StandardMaterial3D_vxucq")
 
+[node name="Floppy" type="StaticBody3D" parent="office/Floppy" index="0" unique_id=431883617]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="office/Floppy/Floppy" unique_id=233715378]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0034912527, 0, -0.0019104332)
+shape = SubResource("BoxShape3D_0ltmj")
+
 [node name="Camera3D" type="Camera3D" parent="." unique_id=619072814]
-transform = Transform3D(0.99972916, 0.007715501, -0.021957425, -0.0010392137, 0.9573082, 0.28906736, 0.02325033, -0.28896624, 0.95705694, 0.010645666, 1.0922902, 0.31630272)
+transform = Transform3D(0.99972916, 0.007715501, -0.021957425, -0.0010392137, 0.9573082, 0.28906736, 0.02325033, -0.28896624, 0.95705694, -3.314577e-05, 1.2328757, 0.7817595)
 fov = 72.0
 
-[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("viewport")]
+[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "viewport", "power_button", "display", "floppy", "floppy_button")]
 script = ExtResource("3_vxucq")
+terminal = NodePath("../SubViewport/Terminal")
 viewport = NodePath("../SubViewport")
+power_button = NodePath("../office/Computer/Power Button")
+display = NodePath("../office/Computer/Computer Screen/Screen/Display")
+floppy = NodePath("../office/Floppy")
+floppy_button = NodePath("../office/Computer/FloppyDrive Button")
+
+[connection signal="mouse_entered" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_entered"]
+[connection signal="mouse_exited" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_exited"]
+[connection signal="mouse_entered" from="office/Floppy/Floppy" to="InputManager" method="_on_floppy_mouse_entered"]
+[connection signal="mouse_exited" from="office/Floppy/Floppy" to="InputManager" method="_on_floppy_mouse_exited"]
 
 [editable path="office"]

@@ -91,16 +91,15 @@ C:> {CURSOR 2 0.4}"
 load_game_squence = "{SPEED 0.4}A:
 
 {SPEED 0}A:> {WAIT 1}{SPEED 0.4}DIR
-{CURSOR 0}{SPEED 0}do_not_run.exe    60k{WAIT 0.1}
-do_not_run.dat    1.2M{WAIT 0.1}
+{CURSOR 0}{SPEED 0}do-not-run.exe    60k{WAIT 0.1}
+do-not-run.dat    1.2M{WAIT 0.1}
 
-A:> {CURSOR 2 0.4}{WAIT 1}{SPEED 0.15}do_not_run.exe{WAIT 5}{CURSOR 0}
+A:> {CURSOR 2 0.4}{WAIT 1}{SPEED 0.15}do-not-run.exe{SIGNAL run-game}{WAIT 3}{CURSOR 0}
 {SPEED 0}Loading{SPEED 0.6}...
 {CLEAR}"
 
 [node name="TerminalGame" type="Node" parent="." unique_id=480895150 node_paths=PackedStringArray("main", "input", "options", "start")]
 script = ExtResource("4_7ttak")
-autoplay = true
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
