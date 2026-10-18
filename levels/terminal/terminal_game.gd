@@ -1,6 +1,8 @@
 extends Node
 class_name TerminalGame
 
+@export var term: Terminal
+
 @export var autoplay: bool
 
 @export var main: TerminalText
@@ -10,6 +12,14 @@ class_name TerminalGame
 @export var start: GamePlace
 @export var input_prefix: String = "{CLEAR}{SPEED 0}{CURSOR 1 0.2}> "
 @export var default_actions: Array[String] = [GamePlace.ACTION_LOOK, GamePlace.ACTION_GO, GamePlace.ACTION_USE, GamePlace.ACTION_TAKE]
+
+@export var ground_music: AudioStream
+
+@export var office_music: AudioStream
+@export var final_music: AudioStream
+
+@export var dialog_player: AudioStreamPlayer
+@export var breath: AudioStream
 
 var carried: Array[GameInteraction]
 var current: GamePlace
@@ -32,6 +42,7 @@ func _ready() -> void:
         play()
 
 func play() -> void:
+    term.play_music(ground_music)
     main.clear_text()
     main.set_defaults()
     main.show()
@@ -193,4 +204,12 @@ func _continue_more(_opt: String) -> void:
         input.data = input_prefix
 
 func _handle_text_event(evt: String) -> void:
-    push_warning("Event not handled: '%s' during %s" % [evt, _active])
+    if evt == "breath":
+        dialog_player.stream = breath
+        dialog_player.play()
+    elif evt == "going-up":
+        term.play_music(office_music)
+    elif evt == "typewriter":
+        term.play_music(final_music)
+    else:
+        push_warning("Event not handled: '%s' during %s" % [evt, _active])

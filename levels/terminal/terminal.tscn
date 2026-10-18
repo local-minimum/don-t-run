@@ -10,10 +10,14 @@
 [ext_resource type="AudioStream" uid="uid://b2bk547nkmp6y" path="res://audio/player/should_i.mp3" id="6_8ixx7"]
 [ext_resource type="Script" uid="uid://br3ay75u35q2m" path="res://levels/terminal/game_interaction.gd" id="6_g45n6"]
 [ext_resource type="Script" uid="uid://b3qt00giuv02a" path="res://levels/terminal/game_transition.gd" id="7_iaufv"]
+[ext_resource type="AudioStream" uid="uid://d0nosl78qtxsg" path="res://music/Ludum Dare 60 - Ground Floor.ogg" id="8_vqjme"]
 [ext_resource type="Script" uid="uid://bjeignrgr6k7h" path="res://levels/terminal/game_inv_check.gd" id="9_4ov15"]
+[ext_resource type="AudioStream" uid="uid://dsavi83ltgdhm" path="res://music/Ludum Dare 60 - Sixth Floor.ogg" id="9_x7n7a"]
+[ext_resource type="AudioStream" uid="uid://dvibtvnlom2sg" path="res://music/Ludum Dare 60 - Typewriter.ogg" id="10_2cm0v"]
+[ext_resource type="AudioStream" uid="uid://dgajga0o31cup" path="res://audio/player/hum.mp3" id="11_2cm0v"]
 [ext_resource type="AudioStream" uid="uid://cj0aejbdrvx8y" path="res://music/Ludum Dare 60 - Main Menu.ogg" id="12_j6ca7"]
 
-[node name="Terminal" type="Control" unique_id=1766387531 node_paths=PackedStringArray("os", "game")]
+[node name="Terminal" type="Control" unique_id=1766387531 node_paths=PackedStringArray("os", "game", "_music_players")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,6 +28,7 @@ theme = ExtResource("1_dbc1e")
 script = ExtResource("2_aan13")
 os = NodePath("Terminal Boot")
 game = NodePath("TerminalGame")
+_music_players = [NodePath("MusicPlayer 1"), NodePath("MusicPlayer 2")]
 
 [node name="Background" type="ColorRect" parent="." unique_id=2105327747]
 layout_mode = 1
@@ -93,7 +98,7 @@ C:> {CURSOR 2 0.4}"
 load_game_squence = "{SPEED 0.4}A:
 
 {SPEED 0}A:> {WAIT 1}{SPEED 0.4}DIR
-{CURSOR 0}{SPEED 0}do-not-run.exe    60k{WAIT 0.1}
+{CURSOR 0}{SPEED 0}do-not-run.exe     60k{WAIT 0.1}
 do-not-run.dat    1.2M{WAIT 0.1}
 
 A:> {CURSOR 2 0.4}{WAIT 1}{SPEED 0.15}do-not-run.exe{SIGNAL run-game}{WAIT 3}{CURSOR 0}
@@ -102,12 +107,18 @@ A:> {CURSOR 2 0.4}{WAIT 1}{SPEED 0.15}do-not-run.exe{SIGNAL run-game}{WAIT 3}{CU
 dialog_player = NodePath("../DialogPlayer")
 should_i = ExtResource("6_8ixx7")
 
-[node name="TerminalGame" type="Node" parent="." unique_id=480895150 node_paths=PackedStringArray("main", "input", "options", "start")]
+[node name="TerminalGame" type="Node" parent="." unique_id=480895150 node_paths=PackedStringArray("term", "main", "input", "options", "start", "dialog_player")]
 script = ExtResource("4_7ttak")
+term = NodePath("..")
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
 start = NodePath("Ground Floor/Car")
+ground_music = ExtResource("8_vqjme")
+office_music = ExtResource("9_x7n7a")
+final_music = ExtResource("10_2cm0v")
+dialog_player = NodePath("../DialogPlayer")
+breath = ExtResource("11_2cm0v")
 
 [node name="Ground Floor" type="Node" parent="TerminalGame" unique_id=1983827917]
 
@@ -382,7 +393,7 @@ target = "BUTTONS"
 place = NodePath("../../../6th Floor/6th Floor Reception")
 blocked = true
 _descriptions = Array[String](["You take a deep breath{SIGNAL breath} - whatever this is, it cannot be that bad - and press the 6.
-{CURSOR 2}{WAIT 2}{CURSOR 0}
+{CURSOR 2}{WAIT 2}{CURSOR 0}{SIGNAL going-up}
 The doors close. Almost soundlessly.  And the elevator speeds upwards much too fast for just a six stories ride.
 {CURSOR 2}{MORE}{CURSOR 0}{CLEAR}"])
 metadata/_custom_type_script = "uid://b3qt00giuv02a"
