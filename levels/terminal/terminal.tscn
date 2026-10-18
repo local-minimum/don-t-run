@@ -532,6 +532,26 @@ triggers = Array[String](["LOOK DOOR 2"])
 _descriptions = Array[String](["There's no obvious indication that this door has been used more or less than any of the other two doors."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
+[node name="Right Door to Hall" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=249625229 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR 3"
+place = NodePath("../../Hall Corner by Office")
+_descriptions = Array[String](["The third door - on the right side of the reception counter looks like the other two.
+
+If you have the badge and you are expected, then why does this feel so wrong.
+
+The door opens up into a hall and in the distance, it bends to the left. 
+
+Walking over there, the hall barren: no posters, a plain concrete floor,  white and grey colors on all sides,  no doors except a single one where the hall bends.{CURSOR 2}{MORE}{CURSOR 0}{CLEAR}"])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Look Right Door to Hall" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=124095591]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK DOOR 3"])
+_descriptions = Array[String](["It’s on the RIGHT side of the counter and it is the third door according to your logic, so maybe it is the correct way forward? "])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
 [node name="Doors" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=1088954365]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK DOORS", "USE DOORS", "GO DOORS"])
