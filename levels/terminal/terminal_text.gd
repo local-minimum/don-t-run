@@ -33,6 +33,7 @@ var _char_speed: float = 0.0
 var _next_char: float = 0.0
 var _full_text: String
 var _moring: bool = false
+var _stalling: bool = false
 
 func _ready() -> void:
     set_defaults()
@@ -51,6 +52,7 @@ func clear_text() -> void:
 
 func continue_text() -> void:
     _moring = false
+    _stalling = false
 
 func set_defaults() -> void:
     _char_speed = default_speed
@@ -113,6 +115,10 @@ func _process_command() -> bool:
         text_paused.emit()
         return false
 
+    elif command.begins_with("STALL"):
+        _stalling = true
+        return false
+
     else:
         push_error("Unknown command", command)
     return true
@@ -157,6 +163,9 @@ func _change_cursor(mode: int = - 1, delta: float = 0.0, force: bool = true) -> 
     return true
 
 func _process(delta: float) -> void:
+    if _stalling:
+        return
+
     if !_moring:
         _next_char -= delta
     if _moring || !_playing || _next_char > 0.0:

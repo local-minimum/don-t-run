@@ -6,6 +6,7 @@ signal abort_option()
 
 @export var selected_color = "grey"
 @export var selected_bgcolor = "blue"
+@export var sep = " / "
 
 var options: Array[String]:
     set(value):
@@ -35,7 +36,7 @@ func _update_render():
     var t: String = ""
     for opt: String in options:
         if !t.is_empty():
-            t += " "
+            t += sep
 
         if opt == selected:
             t += "[color=%s][bgcolor=%s]%s[/bgcolor][/color]" % [selected_color, selected_bgcolor, opt]

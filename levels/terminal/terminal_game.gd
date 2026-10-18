@@ -188,6 +188,9 @@ func _continue_more(_opt: String) -> void:
     options.options = []
     options.active = false
     input.data = "%sMORE " %  [input_prefix]
+    await get_tree().create_timer(0.3).timeout
+    if input.data.contains("MORE"):
+        input.data = input_prefix
 
 func _handle_text_event(evt: String) -> void:
     push_warning("Event not handled: '%s' during %s" % [evt, _active])

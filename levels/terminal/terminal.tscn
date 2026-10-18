@@ -95,7 +95,7 @@ autoplay = true
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
-start = NodePath("6th Floor/Antechamber")
+start = NodePath("Ground Floor/Car")
 
 [node name="Ground Floor" type="Node" parent="TerminalGame" unique_id=1983827917]
 
@@ -752,10 +752,12 @@ triggers = Array[String](["LOOK DOOR AT END OF HALL"])
 _descriptions = Array[String](["The hall stretches far and there are no doors except for a single, lonely door in the far end."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
-[node name="Antechamber" type="Node" parent="TerminalGame/6th Floor" unique_id=1869697965]
+[node name="Antechamber" type="Node" parent="TerminalGame/6th Floor" unique_id=1869697965 node_paths=PackedStringArray("passes", "fails")]
 script = ExtResource("9_4ov15")
 state_check = "WARMTH"
+passes = [NodePath("Typewriter")]
 passes_description = -1
+fails = [NodePath("Typewriter Cold")]
 fails_description = -1
 location = "ANTECHAMBER"
 state_descriptors = Dictionary[String, String]({
@@ -774,6 +776,12 @@ To its side is an empty tray, presumably for processed documents.", "The room is
 auto_increment_description = true
 metadata/_custom_type_script = "uid://gsfx6wsb66de"
 
+[node name="Around" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=297061358]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK AROUND"])
+_descriptions = Array[String](["You walk around the room. Because it is too cold to stand still with the little clothes you have on. You don't see anything of note that you didn't catch as you walked into the room. But it might also be that you are too cold to notice anything. "])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
 [node name="Door" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=461461338 node_paths=PackedStringArray("place")]
 script = ExtResource("7_iaufv")
 actions = Array[String](["GO", "USE"])
@@ -781,18 +789,6 @@ target = "DOOR"
 place = NodePath("../../Hall Corner by Office")
 _descriptions = Array[String](["You RUN out of the icy room, not that the hall outside is that much better."])
 metadata/_custom_type_script = "uid://b3qt00giuv02a"
-
-[node name="Chairs" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1708380278]
-script = ExtResource("6_g45n6")
-triggers = Array[String](["USE WAITING CHAIR"])
-_descriptions = Array[String](["If you sit down there your bum will not only freeze solid, you will also get frozen stuck to the chair."])
-metadata/_custom_type_script = "uid://br3ay75u35q2m"
-
-[node name="Look Chairs" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=3824631]
-script = ExtResource("6_g45n6")
-triggers = Array[String](["LOOK WAITING CHAIRS"])
-_descriptions = Array[String](["For an so sparse, finding three chairs next to each other here feels like quite a lot. It also doesn't bode well for the amount of time this will take. At least though, there's no one ahead of you already waiting here."])
-metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Glass Door" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1453774215]
 script = ExtResource("6_g45n6")
@@ -805,4 +801,58 @@ Trying to turn its brass knob you realize it is locked. You also very much regre
 
 You are not checking if it is locked again."])
 auto_increment_description = true
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Chairs" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1708380278]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["USE WAITING CHAIRS"])
+_descriptions = Array[String](["If you sit down there your bum will not only freeze solid, you will also get frozen stuck to the chair."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Look Chairs" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=3824631]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK WAITING CHAIRS"])
+_descriptions = Array[String](["For an so sparse, finding three chairs next to each other here feels like quite a lot. It also doesn't bode well for the amount of time this will take. At least though, there's no one ahead of you already waiting here."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Tray" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=879031523]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK TRAY"])
+_descriptions = Array[String](["The tray is empty, but something tells you that if you were to put your letter into the typewriter, write don't something suitably secretary-like and put it in that tray{SPEED 1}...{SPEED 0}{WAIT 1}
+
+Then maybe this whole ordeal would be solved."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Typewriter" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=2058298002]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["USE TYPEWRITER"])
+_descriptions = Array[String](["{SIGNAL typewriter}You walk around the desk.
+{CURSOR 2}{MORE}{CURSOR 0}
+Pull out the chair.{WAIT 1}
+
+And sit down.
+{CURSOR 2}{MORE}{CURSOR 0}{CLEAR}
+You pull out your letter from your pocket, unfold it, and feed it into the machine.
+
+Then you sit for a while and think about {SPEED 0.5}what to write...
+{CURSOR 2}{MORE}{CURSOR 0}{SPEED 0.1}
+With your right hand, your index finger ready to hammer down on the keys, you reach out towards the typewriter{WAIT 1}{SIGNAL end}{STALL}"])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Typewriter Cold" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1914590703]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["USE TYPEWRITER"])
+_descriptions = Array[String](["Your hands are much too stiff already before sitting down to type something. It's not going to work. You need to find some warmth before proceeding."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Take Typewriter" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1323196526]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["TAKE TYPEWRITER"])
+_descriptions = Array[String](["It would be a worthy souvenir after all you've suffered here, but no. You need to use it first."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Look Typewriter" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=640993067]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK TYPEWRITER"])
+_descriptions = Array[String](["It is deeply red, old, but well kept and by the looks of it in working order. "])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
