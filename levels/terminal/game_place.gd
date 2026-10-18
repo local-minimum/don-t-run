@@ -12,6 +12,7 @@ const ACTION_TAKE = "TAKE"
 @export var state_descriptors: Dictionary[String, String] = {}
 var _transitions: Array[GameTransition]
 var _interactions: Array[GameInteraction]
+var added_targets: Array[String]
 
 func get_extended_description(game: TerminalGame) -> String:
     var ret: String = "==%s==\n%s" % [location, description]
@@ -26,7 +27,7 @@ var actions: Array[String]:
     get():
         var ret: Array[String] = []
         for t: GameTransition in _transitions:
-            if t.hidden || t.blocked:
+            if t.hidden && !added_targets.has(t.target) || t.blocked:
                 continue
 
             for a: String in t.actions:
@@ -34,14 +35,12 @@ var actions: Array[String]:
                     ret.append(a)
 
         for i: GameInteraction in _interactions:
-            if i.hidden || i.blocked:
+            if i.hidden && !i.is_in_targets(added_targets) || i.blocked:
                 continue
 
             i.append_trigger_actions(ret)
 
         return ret
-
-var added_targets: Array[String]
 
 var targets: Array[String]:
     get():

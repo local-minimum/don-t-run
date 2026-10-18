@@ -91,7 +91,7 @@ autoplay = true
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
-start = NodePath("6th Floor/Conference Room")
+start = NodePath("6th Floor/Workers Lounge")
 
 [node name="Ground Floor" type="Node" parent="TerminalGame" unique_id=1983827917]
 
@@ -622,6 +622,7 @@ metadata/_custom_type_script = "uid://br3ay75u35q2m"
 [node name="Workers Lounge" type="Node" parent="TerminalGame/6th Floor" unique_id=1713603343]
 script = ExtResource("4_3equl")
 location = "WORKER'S LOUNGE"
+_descriptions = Array[String](["There room is quite large with three circular tables, no chairs, and a kitchen area with several microwaves, a dish washer and off to the side one of those institutional coffee machines."])
 metadata/_custom_type_script = "uid://gsfx6wsb66de"
 
 [node name="Door" type="Node" parent="TerminalGame/6th Floor/Workers Lounge" unique_id=1079187788 node_paths=PackedStringArray("place")]
@@ -631,3 +632,48 @@ target = "DOOR"
 place = NodePath("../../Hall Corner by Lounge")
 _descriptions = Array[String](["You exit the worker's lounge."])
 metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Tables" type="Node" parent="TerminalGame/6th Floor/Workers Lounge" unique_id=850860588]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK TABLES"])
+_descriptions = Array[String](["All three tables look exactly the same. Round. Clean. Not a bread crumb on them, which perhaps isn't all too strange given that there are no chairs in the room."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Coffe Machine" type="Node" parent="TerminalGame/6th Floor/Workers Lounge" unique_id=1053836553]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK COFFEE MACHINE", "USE COFFEE MACHINE"])
+add_targets = Array[String](["COFFEE", "HOT CHOCOLATE"])
+_descriptions = Array[String](["It looks like a mid-sized machine suitable for a work place with well more than ten people working there.
+
+It offers both coffee and hot chocolate."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Coffee" type="Node" parent="TerminalGame/6th Floor/Workers Lounge" unique_id=1634540720]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["TAKE COFFEE", "MAKE COFFEE"])
+hidden = true
+_descriptions = Array[String](["The machine gurgles, buzzes and then starts to spurt out a steaming black liquid into a paper cup.
+
+You are indeed very cold and a bit of coffee couldn't hurt.
+
+It tastes, well not great.{WAIT 0.5} There's a metallic tone,{WAIT 0.5} as if there's something wrong with the water,{WAIT 0.5} and sour.{CURSOR 2}{MORE}{CURSOR 0}{CLEAR}
+
+Still, you needed to warm up a bit.", "One coffee is more than enough. It was rather sour, bland, and you have yet to find a clean toilet up here in the office."])
+auto_increment_description = true
+add_global_state = Array[String](["WARMTH"])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Hot Chocolate" type="Node" parent="TerminalGame/6th Floor/Workers Lounge" unique_id=890313053]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["TAKE HOT CHOCOLATE", "MAKE HOT CHOCOLATE"])
+hidden = true
+_descriptions = Array[String](["The machine gurgles, buzzes, stutters and then starts to spurt out a steaming thick liquid into a paper cup.{WAIT 0.5}
+
+It smells delicious!{WAIT 1}
+
+The hot thick liquid fills your stomach with a sweet warmth.{WAIT 2} And then radiates out into your body, almost as if your blood was getting replaced by a thick chocolately liquid...{MORE}{CURSOR 0}{CLEAR}
+
+You did need that.", "Chocolate is quite filling, and you cannot see yourself drinking another."])
+auto_increment_description = true
+add_global_state = Array[String](["WARMTH"])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"

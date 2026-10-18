@@ -13,6 +13,12 @@ func is_target(target: String) -> bool:
             return true
     return false
 
+func is_in_targets(targets: Array[String]) -> bool:
+    for t: String in targets:
+        if is_target(t):
+            return true
+    return false
+
 func append_trigger_actions(ret: Array[String]) -> void:
     if blocked:
         return
