@@ -23,6 +23,15 @@ script = ExtResource("2_aan13")
 os = NodePath("Terminal Boot")
 game = NodePath("TerminalGame")
 
+[node name="Background" type="ColorRect" parent="." unique_id=2105327747]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02507907, 0.16247961, 0.039315447, 1)
+
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="." unique_id=252420213]
 layout_mode = 1
 anchors_preset = 15
