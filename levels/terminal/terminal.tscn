@@ -7,9 +7,11 @@
 [ext_resource type="Script" uid="uid://co4n5geqmi6cg" path="res://levels/terminal/terminal_boot.gd" id="3_6a7pf"]
 [ext_resource type="Script" uid="uid://gsfx6wsb66de" path="res://levels/terminal/game_place.gd" id="4_3equl"]
 [ext_resource type="Script" uid="uid://bwfemkwllniac" path="res://levels/terminal/terminal_game.gd" id="4_7ttak"]
+[ext_resource type="AudioStream" uid="uid://b2bk547nkmp6y" path="res://audio/player/should_i.mp3" id="6_8ixx7"]
 [ext_resource type="Script" uid="uid://br3ay75u35q2m" path="res://levels/terminal/game_interaction.gd" id="6_g45n6"]
 [ext_resource type="Script" uid="uid://b3qt00giuv02a" path="res://levels/terminal/game_transition.gd" id="7_iaufv"]
 [ext_resource type="Script" uid="uid://bjeignrgr6k7h" path="res://levels/terminal/game_inv_check.gd" id="9_4ov15"]
+[ext_resource type="AudioStream" uid="uid://cj0aejbdrvx8y" path="res://music/Ludum Dare 60 - Main Menu.ogg" id="12_j6ca7"]
 
 [node name="Terminal" type="Control" unique_id=1766387531 node_paths=PackedStringArray("os", "game")]
 layout_mode = 3
@@ -74,7 +76,7 @@ bbcode_enabled = true
 fit_content = true
 script = ExtResource("3_5iqdh")
 
-[node name="Terminal Boot" type="Node" parent="." unique_id=1515797097 node_paths=PackedStringArray("main", "input", "options")]
+[node name="Terminal Boot" type="Node" parent="." unique_id=1515797097 node_paths=PackedStringArray("main", "input", "options", "dialog_player")]
 script = ExtResource("3_6a7pf")
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
@@ -97,6 +99,8 @@ do-not-run.dat    1.2M{WAIT 0.1}
 A:> {CURSOR 2 0.4}{WAIT 1}{SPEED 0.15}do-not-run.exe{SIGNAL run-game}{WAIT 3}{CURSOR 0}
 {SPEED 0}Loading{SPEED 0.6}...
 {CLEAR}"
+dialog_player = NodePath("../DialogPlayer")
+should_i = ExtResource("6_8ixx7")
 
 [node name="TerminalGame" type="Node" parent="." unique_id=480895150 node_paths=PackedStringArray("main", "input", "options", "start")]
 script = ExtResource("4_7ttak")
@@ -864,3 +868,14 @@ script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK TYPEWRITER"])
 _descriptions = Array[String](["It is deeply red, old, but well kept and by the looks of it in working order. "])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="DialogPlayer" type="AudioStreamPlayer" parent="." unique_id=1973808475]
+bus = &"Dialogue"
+
+[node name="MusicPlayer 1" type="AudioStreamPlayer" parent="." unique_id=700999492]
+stream = ExtResource("12_j6ca7")
+autoplay = true
+bus = &"Music"
+
+[node name="MusicPlayer 2" type="AudioStreamPlayer" parent="." unique_id=1925335757]
+bus = &"Music"

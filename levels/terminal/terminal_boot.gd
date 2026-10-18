@@ -11,6 +11,9 @@ signal game_loaded
 @export_multiline() var boot_sequence: String
 @export_multiline() var load_game_squence: String
 
+@export var dialog_player: AudioStreamPlayer
+@export var should_i: AudioStream
+
 var _booted: bool
 
 @export var powered_on: bool:
@@ -47,7 +50,6 @@ func _start_boot() -> void:
     if !main.autoplay:
         main.play()
 
-
 func _handle_boot_done() -> void:
     _booted = true
     main.autoclear = false
@@ -69,6 +71,7 @@ func _handle_loaded_game() -> void:
 
 func _handle_text_event(evt: String) -> void:
     if evt == "run-game":
-        pass
+        dialog_player.stream = should_i
+        dialog_player.play()
     else:
         push_warning("unhandled text even '%s'" % evt)

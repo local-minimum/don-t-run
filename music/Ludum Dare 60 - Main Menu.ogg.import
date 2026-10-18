@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/Ludum Dare 60 - Main Menu.ogg-cd947c3b18891ec
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

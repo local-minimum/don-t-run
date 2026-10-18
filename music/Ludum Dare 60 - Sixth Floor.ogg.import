@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/Ludum Dare 60 - Sixth Floor.ogg-e22824031e777
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0
