@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://q1jsjkhxr0ky" path="res://levels/terminal/terminal.tscn" id="3_cvwik"]
 [ext_resource type="Script" uid="uid://cobj5qubg1tff" path="res://levels/room/input_manager.gd" id="3_vxucq"]
 [ext_resource type="Texture2D" uid="uid://cmxamqqhrc82k" path="res://models/Floppy.png" id="4_y43wp"]
+[ext_resource type="Script" uid="uid://gf0fuxbnld7f" path="res://levels/room/player_cam.gd" id="5_266tv"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cvwik"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -41,6 +42,9 @@ albedo_texture = ExtResource("4_y43wp")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0ltmj"]
 size = Vector3(0.14829102, 0.03, 0.1564087)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1m3gh"]
+albedo_color = Color(0.40267584, 0.26613033, 0.18145639, 1)
 
 [node name="Room" type="Node3D" unique_id=2066819157]
 
@@ -94,11 +98,15 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vxucq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0034912527, 0, -0.0019104332)
 shape = SubResource("BoxShape3D_0ltmj")
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=619072814]
-transform = Transform3D(0.99972916, 0.007715501, -0.021957425, -0.0010392137, 0.9573082, 0.28906736, 0.02325033, -0.28896624, 0.95705694, 0.010816975, 1.090035, 0.30883595)
-fov = 72.0
+[node name="Table" parent="office" index="2" unique_id=748074301]
+surface_material_override/0 = SubResource("StandardMaterial3D_1m3gh")
 
-[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "viewport", "power_button", "display", "floppy", "floppy_button")]
+[node name="PlayerCam" type="Camera3D" parent="." unique_id=619072814]
+transform = Transform3D(0.9997291, 0.0077154986, -0.021957433, -0.0010392137, 0.9573082, 0.2890674, 0.023250328, -0.28896627, 0.9570569, 0.010816975, 1.090035, 0.30883595)
+fov = 72.0
+script = ExtResource("5_266tv")
+
+[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "viewport", "power_button", "display", "floppy", "floppy_button", "player_cam")]
 script = ExtResource("3_vxucq")
 terminal = NodePath("../SubViewport/Terminal")
 viewport = NodePath("../SubViewport")
@@ -106,6 +114,7 @@ power_button = NodePath("../office/Computer/Power Button")
 display = NodePath("../office/Computer/Computer Screen/Screen/Display")
 floppy = NodePath("../office/Floppy")
 floppy_button = NodePath("../office/Computer/FloppyDrive Button")
+player_cam = NodePath("../PlayerCam")
 
 [connection signal="mouse_entered" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_entered"]
 [connection signal="mouse_exited" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_exited"]

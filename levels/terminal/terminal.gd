@@ -1,7 +1,9 @@
 extends Control
 class_name Terminal
 
+@warning_ignore_start("unused_signal")
 signal mist(on: bool)
+@warning_ignore_restore("unused_signal")
 
 @export var os: TerminalOS
 @export var game: TerminalGame
