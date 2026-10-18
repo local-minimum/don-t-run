@@ -63,7 +63,7 @@ func start_current() -> void:
     _active = current
     current.sync(self)
     main.text_done.connect(_handle_description_done, CONNECT_ONE_SHOT)
-    main.data = current.extended_description
+    main.data = current.get_extended_description(self)
 
 func _handle_description_done() -> void:
     input.data = input_prefix
@@ -150,9 +150,11 @@ func _do_selected_option(option: GameBit) -> void:
     main.text_done.connect(start_current, CONNECT_ONE_SHOT)
     _active = option
     if option == null:
-        main.data = "You cannot do that.\n\n"
+        if _action == "LOOK":
+            main.data = "You see nothing special.\n\n"
+        else:
+            main.data = "You cannot do that.\n\n"
     else:
-
         main.data = "%s\n\n" % option.description
         if option.auto_increment_description:
             option.active_description += 1

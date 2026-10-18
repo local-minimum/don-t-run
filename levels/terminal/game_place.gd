@@ -13,12 +13,14 @@ const ACTION_TAKE = "TAKE"
 var _transitions: Array[GameTransition]
 var _interactions: Array[GameInteraction]
 
-var extended_description: String:
-    get():
-        var ret: String = "==%s==\n%s" % [location, description]
-        for s: String in state:
-            ret += state_descriptors.get(s, "")
-        return ret
+func get_extended_description(game: TerminalGame) -> String:
+    var ret: String = "==%s==\n%s" % [location, description]
+    for s: String in state:
+        ret += state_descriptors.get(s, "")
+    for s: String in game.state:
+        if state_descriptors.has(s) && !state.has(s):
+            ret += state_descriptors[s]
+    return ret
 
 var actions: Array[String]:
     get():

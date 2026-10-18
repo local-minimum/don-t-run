@@ -91,7 +91,7 @@ autoplay = true
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
-start = NodePath("Ground Floor/Car")
+start = NodePath("6th Floor/Conference Room")
 
 [node name="Ground Floor" type="Node" parent="TerminalGame" unique_id=1983827917]
 
@@ -226,6 +226,14 @@ The second one depicts what looks like a worker's lounge with a water cooler to 
 The last poster has the word \"TOGETHER\" repeated over and over in different colors."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
+[node name="Take Posters" type="Node" parent="TerminalGame/Ground Floor/Lobby" unique_id=666479732]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["TAKE POSTERS"])
+_descriptions = Array[String](["The do look kinda sick, in an ironic way and looking around you see no obvious surveillance equipment.{WAIT 1}
+
+However, it'd be way too awkward to waltz into this meeting with their own posters as loot under one arm. Maybe on the way out though, if things go south.", "Nope, at least not yet."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
 [node name="Stand" type="Node" parent="TerminalGame/Ground Floor/Lobby" unique_id=154872230]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK STAND"])
@@ -300,8 +308,8 @@ metadata/_custom_type_script = "uid://b3qt00giuv02a"
 [node name="Elevator" type="Node" parent="TerminalGame/Ground Floor" unique_id=201960388 node_paths=PackedStringArray("inv_check", "passes", "fails")]
 script = ExtResource("9_4ov15")
 inv_check = NodePath("../Car/Letter")
-passes = NodePath("Button letter")
-fails = NodePath("Button no letter")
+passes = [NodePath("Button letter")]
+fails = [NodePath("Button no letter")]
 location = "ELEVATOR"
 state = Array[String](["NOT HERE"])
 state_descriptors = Dictionary[String, String]({
@@ -345,7 +353,7 @@ metadata/_custom_type_script = "uid://b3qt00giuv02a"
 [node name="Elevaor Internal" type="Node" parent="TerminalGame/Ground Floor" unique_id=627600762 node_paths=PackedStringArray("passes")]
 script = ExtResource("9_4ov15")
 state_check = "KNOWS FLOOR"
-passes = NodePath("Floor Buttons")
+passes = [NodePath("Floor Buttons")]
 fails_description = 1
 location = "ELEVATOR"
 _descriptions = Array[String](["There elevator seems to wait for you to press the button labeled \"6.\"", "The elevator waits for you to press the floor you need to go. But you don't have a clue which and you are not going to be a bad citizen and press all buttons."])
@@ -371,14 +379,20 @@ metadata/_custom_type_script = "uid://b3qt00giuv02a"
 
 [node name="6th Floor" type="Node" parent="TerminalGame" unique_id=837745511]
 
-[node name="6th Floor Reception" type="Node" parent="TerminalGame/6th Floor" unique_id=1030407607]
-script = ExtResource("4_3equl")
+[node name="6th Floor Reception" type="Node" parent="TerminalGame/6th Floor" unique_id=1030407607 node_paths=PackedStringArray("inv_check", "passes", "fails")]
+script = ExtResource("9_4ov15")
+inv_check = NodePath("Visitors Badge")
+state_check = "EXPECTED"
+passes = [NodePath("Door to Conference"), NodePath("Look Door to Conference"), NodePath("Left Door to Hall"), NodePath("Look Left Door to Hall")]
+passes_description = -1
+fails = [NodePath("Doors")]
+fails_description = -1
 location = "RECEPTION"
 _descriptions = Array[String](["The elevator spills you out into another soulless, and abandoned room.
 
 There's a counter. It very much feels like someone should be sitting there.
 
-Behind the counter on the wall, is what must be the company logo. There are a couple of sturdy looking evergreen plants in various pots and good thing they weren't any exotic species as whomever runs this place has turned the AC way, way down.
+Behind the counter on the wall, is what must be the company logo. There are a couple small but of sturdy looking firs in various planters and good thing they weren't any exotic flowers as whomever runs this place has turned the AC way, way down.
 
 You are freezing.
 
@@ -403,7 +417,7 @@ metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Counter" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=1696112175]
 script = ExtResource("6_g45n6")
-triggers = Array[String](["LOOK COUNTER"])
+triggers = Array[String](["LOOK COUNTER", "GO COUNTER"])
 add_targets = Array[String](["COMPUTER", "BADGE"])
 _descriptions = Array[String](["Even though it feels wrong, you walk around the reception counter, you rest your hand against the back of the office chair and you can still feel a lingering warmth of someone having been sitting here just recently.
 
@@ -423,6 +437,13 @@ auto_increment_description = true
 add_global_state = Array[String](["EXPECTED"])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
+[node name="Take Computer" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=434928469]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["TAKE COMPUTER"])
+hidden = true
+_descriptions = Array[String](["You are no thief{WAIT 0.4}, and besides it looks heavy."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
 [node name="Visitors Badge" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=605022537]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK BADGE"])
@@ -430,10 +451,183 @@ hidden = true
 _descriptions = Array[String](["It is a plastic badge in a lanyard. It says visitor with large letters and there's a faint arctic blue eight-looking symbol in the background."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
-[node name="Pickup Visitors Badge" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=1867888759]
+[node name="Pickup Visitors Badge" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=1867888759 node_paths=PackedStringArray("pickup")]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["TAKE BADGE"])
+pickup = [NodePath("../Visitors Badge")]
 autoblock = true
 hidden = true
 _descriptions = Array[String](["There doesn't seem to be anyone around. And if you were to wander past the doors, it would feel much better to have a proper badge."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Planters" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=971763997]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK PLANTERS"])
+_descriptions = Array[String](["The firs look well kept, green and no needles on the floor around them. The soil is moist and the fragrance from the tree, though subtle, brings back a vivid feeling winter holidays. With that comes a strong urge for a big cup of hot chocolate, or maybe coffee."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Door to Conference" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=1032068934 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR 1"
+place = NodePath("../../Conference Room")
+_descriptions = Array[String](["The door on the left side of the room looks just like the other two doors. Leaning in to listen to it, you cannot make out any sound from the other side.{WAIT 1}
+
+Carefully you reach out to the handle, and it opens up as if that was the most natural thing."])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Look Door to Conference" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=745138148]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK DOOR 1"])
+_descriptions = Array[String](["In your mind, counting left to right you called this one door 1. Maybe that's a good place as any to start? It looks just like the other two doors, but it is the only door not in the far side wall.
+
+Leaning in to listen to it, you cannot make out any sound from the other side."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Left Door to Hall" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=1850069375 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR 2"
+place = NodePath("../../Hall Corner by Lounge")
+_descriptions = Array[String](["You thought of this door as door 2 - on the left side of the reception counter.{WAIT 1}
+
+Carefully you reach out to the handle. Not sure this is the right thing to do.
+
+The door opens up into a quite long hall and in the far end it bends to the right. 
+
+Walking over there, the hall is completely empty: no decoration, no carpet, a simple milky off-white color on all sides,  no doors except a single one in the far end.{CURSOR 2}{MORE}{CURSOR 0}{CLEAR}"])
+add_global_state = Array[String](["RECEPTION LOUNGE"])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Look Left Door to Hall" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=1685688051]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK DOOR 2"])
+_descriptions = Array[String](["There's no obvious indication that this door has been used more or less than any of the other two doors."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Doors" type="Node" parent="TerminalGame/6th Floor/6th Floor Reception" unique_id=1088954365]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK DOORS", "USE DOORS", "GO DOORS"])
+_descriptions = Array[String](["There are three doors, they look quite similar, if not near identical and non of them give you a hint where you should continue. If you should. There's no discernible noise coming from any of them."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Conference Room" type="Node" parent="TerminalGame/6th Floor" unique_id=759879901]
+script = ExtResource("4_3equl")
+location = "CONFERENCE ROOM"
+_descriptions = Array[String](["The room has a large solid wooden table in the middle that could easily fit more than ten people, yet the only chairs you can see are two cheap looking plastic chairs off in one corner. 
+
+There's a projector, a whiteboard and the door you came in through."])
+metadata/_custom_type_script = "uid://gsfx6wsb66de"
+
+[node name="Door" type="Node" parent="TerminalGame/6th Floor/Conference Room" unique_id=1425348728 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR"
+place = NodePath("../../6th Floor Reception")
+_descriptions = Array[String](["You go back to the reception area."])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Projector" type="Node" parent="TerminalGame/6th Floor/Conference Room" unique_id=680804291]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK PROJECTOR"])
+_descriptions = Array[String](["It is your generic modern office appliance, but on the cheaper side since it isn't a big fancy thing hanging from the ceiling and instead a light-weight one standing in the middle of the table facing an empty wall."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Take Projector" type="Node" parent="TerminalGame/6th Floor/Conference Room" unique_id=1469474678]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["TAKE PROJECTOR"])
+_descriptions = Array[String](["It's chained to the table and pulling on the chain it seems sturdier than the projector itself.
+
+You are feeling more and more disturbed and annoyed with this place though and after you provided yourself with the visitor's badge, apparently you did cross a mental line where you wouldn't mind some sort of souvenir for all this trouble."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Use Projector" type="Node" parent="TerminalGame/6th Floor/Conference Room" unique_id=1569284671]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["USE PROJECTOR"])
+add_targets = Array[String](["CHART"])
+_descriptions = Array[String](["You press the on button and the little machine whirs into life casting what looks like a sales projections chart on the wall, though the order of the months along the x-axis looks all jumbled, starting with the current year with July, August, May. Strange.", "The projector is already on and there's no real reason to turn it off. There's no \"Next Slide\"-button. It is a projector. You'd need access to the computer to progress in the presentation. But there's no computer around."])
+auto_increment_description = true
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Chart" type="Node" parent="TerminalGame/6th Floor/Conference Room" unique_id=219691953]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK CHART"])
+hidden = true
+_descriptions = Array[String](["The projected graph on the wall still shows the sales projections chart on the wall. The order of the months continues to be July, August, and then May. "])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Whiteboard" type="Node" parent="TerminalGame/6th Floor/Conference Room" unique_id=533609340]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK WHITEBOARD"])
+_descriptions = Array[String](["The whiteboard is clean. There's a lone red marker pen in a little stand attached to its lower left corner.{CURSOR 2}{WAIT 0.5}{CURSOR 0}
+
+{SPEED 0.3}WAIT...{SPEED -1}{CURSOR 2}{WAIT 0.5}{CURSOR 0}
+
+You can barely make out an old erased text written in the center of the board in faint red:{CURSOR 2}{WAIT 1}{CURSOR 0}
+
+{SPEED 0.5}DON'T RUN!{SPEED -1}{SIGNAL shrug}"])
+add_global_state = Array[String](["FOLLOWED"])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Hall Corner by Lounge" type="Node" parent="TerminalGame/6th Floor" unique_id=1571051598]
+script = ExtResource("4_3equl")
+location = "HALL CORNER"
+state_descriptors = Dictionary[String, String]({
+"FOLLOWED": " You have this unnerving feeling that at any time someone will round the other corner and confront you about what you are doing here."
+})
+_descriptions = Array[String](["You stand next to a door.
+
+The hall goes off in two directions. One towards a corner that looks identical to this one, but mirrored. The other has a single door in the far end."])
+add_global_state = Array[String](["LOUNGE CORNER"])
+metadata/_custom_type_script = "uid://gsfx6wsb66de"
+
+[node name="Around" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Lounge" unique_id=561888297]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK AROUND"])
+_descriptions = Array[String](["From the looks of it the hall forms a U-shape. At least the part you can see from here. Yet you have not found any door leaing into the inner area. Only out from the U."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Door Reception" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Lounge" unique_id=197977664 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR AT END OF HALL"
+place = NodePath("../../6th Floor Reception")
+_descriptions = Array[String](["As you walk the hall, it feels like it stretches unnecessarily far without any doors{WAIT 1} until it abruptly ends in a single door.
+
+You waste no time lingering and reach to open the door."])
+add_global_state = Array[String](["RECEPTION LOUNGE"])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Look Door Reception" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Lounge" unique_id=534617973]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK DOOR AT END OF HALL"])
+_descriptions = Array[String](["The hall stretches far and ends in a lonely door."])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Door Lounge" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Lounge" unique_id=1929152726 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR"
+place = NodePath("../../Workers Lounge")
+_descriptions = Array[String](["As you open the door you feel your hand getting a little moist. The door handle must not have been entirely dry.", "You open the door to the worker's lounge."])
+auto_increment_description = true
+metadata/_custom_type_script = "uid://b3qt00giuv02a"
+
+[node name="Look Door Lounge" type="Node" parent="TerminalGame/6th Floor/Hall Corner by Lounge" unique_id=1395484520]
+script = ExtResource("6_g45n6")
+triggers = Array[String](["LOOK DOOR"])
+_descriptions = Array[String](["There are a few stains around the handle area, but otherwise it looks just like all other doors around here. "])
+metadata/_custom_type_script = "uid://br3ay75u35q2m"
+
+[node name="Workers Lounge" type="Node" parent="TerminalGame/6th Floor" unique_id=1713603343]
+script = ExtResource("4_3equl")
+location = "WORKER'S LOUNGE"
+metadata/_custom_type_script = "uid://gsfx6wsb66de"
+
+[node name="Door" type="Node" parent="TerminalGame/6th Floor/Workers Lounge" unique_id=1079187788 node_paths=PackedStringArray("place")]
+script = ExtResource("7_iaufv")
+actions = Array[String](["GO", "USE"])
+target = "DOOR"
+place = NodePath("../../Hall Corner by Lounge")
+_descriptions = Array[String](["You exit the worker's lounge."])
+metadata/_custom_type_script = "uid://b3qt00giuv02a"

@@ -100,6 +100,8 @@ func _process_command() -> bool:
         var parts: PackedStringArray = command.split(" ")
         if parts.size() > 1:
             var time: float = float(parts[1])
+            if time < 0:
+                time = default_speed
             _char_speed = time
             _next_char = _char_speed
         else:
