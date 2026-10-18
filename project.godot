@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Don't Run"
-run/main_scene="uid://q1jsjkhxr0ky"
+run/main_scene="uid://7ibc8au4h1xi"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

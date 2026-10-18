@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://2hy08xvmcmsa" path="res://models/office.blend" id="1_vl2mj"]
 [ext_resource type="Material" uid="uid://7a5d0mwyl8er" path="res://levels/room/computer_mat.tres" id="2_cvwik"]
 [ext_resource type="PackedScene" uid="uid://q1jsjkhxr0ky" path="res://levels/terminal/terminal.tscn" id="3_cvwik"]
+[ext_resource type="Script" uid="uid://cobj5qubg1tff" path="res://levels/room/input_manager.gd" id="3_vxucq"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cvwik"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -16,7 +17,7 @@ background_mode = 2
 sky = SubResource("Sky_vxucq")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_0ltmj"]
-viewport_path = NodePath("office/Computer/Computer Screen/Screen/Screen/SubViewport")
+viewport_path = NodePath("SubViewport")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kjfgv"]
 resource_local_to_scene = true
@@ -27,10 +28,14 @@ emission_texture = SubResource("ViewportTexture_0ltmj")
 [sub_resource type="QuadMesh" id="QuadMesh_kjfgv"]
 resource_local_to_scene = true
 material = SubResource("StandardMaterial3D_kjfgv")
-size = Vector2(0.47, 0.29)
+size = Vector2(0.47, 0.325)
 center_offset = Vector3(0, 0, 0.003)
 
 [node name="Room" type="Node3D" unique_id=2066819157]
+
+[node name="SubViewport" type="SubViewport" parent="." unique_id=938471173]
+
+[node name="Terminal" parent="SubViewport" unique_id=1766387531 instance=ExtResource("3_cvwik")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1267568766]
 environment = SubResource("Environment_y43wp")
@@ -41,35 +46,33 @@ shadow_enabled = true
 
 [node name="office" parent="." unique_id=2051788375 instance=ExtResource("1_vl2mj")]
 
-[node name="Computer" parent="office" index="0" unique_id=490120021]
+[node name="Computer" parent="office" index="0" unique_id=1887865532]
 transform = Transform3D(0.92024046, 0, 0.39135343, 0, 1, 0, -0.39135343, 0, 0.92024046, -0.2279279, 0, -0.074254155)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Computer Screen" parent="office/Computer" index="0" unique_id=784510345]
+[node name="Computer Screen" parent="office/Computer" index="0" unique_id=495477705]
 transform = Transform3D(1, 0, 0, 0, 0.9832431, 0.18229939, 0, -0.18229939, 0.9832431, 0, 0.8059594, -0.09473042)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Screen" parent="office/Computer/Computer Screen" index="0" unique_id=673449733]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16260055, 0.007661298)
-
-[node name="Screen" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" index="0" unique_id=5116129]
+[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 1251476968) index="0" unique_id=5116129]
+transform = Transform3D(0.9999999, 0, -2.9802322e-08, 0, 0.9999998, 0, -2.9802322e-08, -1.4901161e-08, 0.9999998, 0, 0, 0)
 mesh = SubResource("QuadMesh_kjfgv")
 
-[node name="SubViewport" type="SubViewport" parent="office/Computer/Computer Screen/Screen/Screen" unique_id=938471173]
-
-[node name="Terminal" parent="office/Computer/Computer Screen/Screen/Screen/SubViewport" unique_id=1766387531 instance=ExtResource("3_cvwik")]
-
-[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=2085926542]
+[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=1223973283]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Keys" parent="office/Computer" index="2" unique_id=356379794]
+[node name="Keys" parent="office/Computer" index="2" unique_id=1468106064]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Power Button" parent="office/Computer" index="3" unique_id=1432814452]
+[node name="Power Button" parent="office/Computer" index="3" unique_id=530934599]
 surface_material_override/0 = ExtResource("2_cvwik")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=619072814]
 transform = Transform3D(0.96266466, -0.07324473, 0.26059923, 0, 0.9626979, 0.2705785, -0.2706968, -0.26047635, 0.92675525, 0.010645666, 1.0922902, 0.31630272)
 fov = 72.0
+
+[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("viewport")]
+script = ExtResource("3_vxucq")
+viewport = NodePath("../SubViewport")
 
 [editable path="office"]
