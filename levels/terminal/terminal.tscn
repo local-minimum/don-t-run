@@ -131,7 +131,7 @@ cold = ExtResource("14_3fuq5")
 [node name="Car" type="Node" parent="TerminalGame/Ground Floor" unique_id=1432951969]
 script = ExtResource("4_3equl")
 location = "CAR"
-_descriptions = Array[String](["Fortunately, you had found a parking place right outside the address that the rather stern letter had directed you to.
+_descriptions = Array[String](["Fortunately, you found a parking place right outside the address that the rather stern letter had directed you to.
 
 It is a nondescript six stories tall brick building in the middle of a block. The street is busy.", "You are sitting in your car outside the building indicated in the letter you received in the mail two days ago."])
 auto_increment_description = true
