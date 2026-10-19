@@ -2,7 +2,6 @@ TODO
 
 Tier 2
 
-- Mist
 - Movable cam
 - Selection of power and diskette (controller bindings)
 
