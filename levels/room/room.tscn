@@ -16,6 +16,8 @@
 [ext_resource type="AudioStream" uid="uid://du04kemme0g1u" path="res://audio/scare.mp3" id="9_pf8v0"]
 [ext_resource type="Texture2D" uid="uid://dswonskv0okp4" path="res://models/Snowman.png" id="10_y8hd4"]
 [ext_resource type="FontFile" uid="uid://cyxki4kpoa0ho" path="res://fonts/albertsthal-typewriter/Albertsthal Typewriter.ttf" id="11_y8hd4"]
+[ext_resource type="PackedScene" uid="uid://cmu6b7uymaon4" path="res://models/elephant.blend" id="17_s5tn8"]
+[ext_resource type="Texture2D" uid="uid://c34lbes1clsim" path="res://particles/Elephant.png" id="18_nijk1"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cvwik"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -140,6 +142,11 @@ font_color = Color(0.8234027, 0, 0.20572937, 1)
 shadow_size = 2
 shadow_color = Color(0.99201375, 0.59309363, 0.59470344, 0.85882354)
 shadow_offset = Vector2(2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l06wv"]
+albedo_texture = ExtResource("18_nijk1")
+emission_enabled = true
+emission = Color(0.42188266, 0.10113374, 0.57609755, 1)
 
 [node name="Room" type="Node3D" unique_id=2066819157]
 
@@ -457,6 +464,13 @@ color = Color(0.14117648, 0.42745098, 0.8901961, 0.08627451)
 [node name="SFX Player" type="AudioStreamPlayer" parent="." unique_id=1481844323]
 bus = &"SFX"
 
+[node name="elephant" parent="." unique_id=756469063 instance=ExtResource("17_s5tn8")]
+transform = Transform3D(0.081095695, 0, -0.99670637, 0, 1, 0, 0.99670637, 0, 0.081095695, -1.3982544, 0, -0.82055664)
+
+[node name="Elephant" parent="elephant" index="0" unique_id=645496033]
+transform = Transform3D(0.8856151, -0.09744777, 0.45408142, 0.109373875, 0.9940007, -3.7252903e-09, -0.45135725, 0.04966464, 0.89096034, 0.57717276, 0.868042, -0.94944215)
+surface_material_override/0 = SubResource("StandardMaterial3D_l06wv")
+
 [connection signal="mouse_entered" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_entered"]
 [connection signal="mouse_exited" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_exited"]
 [connection signal="mouse_entered" from="office/Floppy/Floppy" to="InputManager" method="_on_floppy_mouse_entered"]
@@ -464,3 +478,4 @@ bus = &"SFX"
 
 [editable path="office"]
 [editable path="snowman"]
+[editable path="elephant"]
