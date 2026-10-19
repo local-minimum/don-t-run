@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://qj1c0d2i781t"]
+
+[ext_resource type="Texture2D" uid="uid://pfsf2md8b4tx" path="res://models/TypeWriter.png" id="1_bwb16"]
+
+[resource]
+albedo_texture = ExtResource("1_bwb16")

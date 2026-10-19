@@ -1,0 +1,28 @@
+extends Node
+
+@export var terminal: Terminal
+@export var typewriter: Node3D
+@export var computer: Node3D
+@export var floppy: Node3D
+
+func _ready() -> void:
+    terminal.mist.connect(_handle_mist)
+    terminal.outro.connect(_handle_outro)
+
+func _handle_outro() -> void:
+    var t1: float = 0.05
+    var t2: float = 0.025
+    floppy.hide()
+    computer.hide()
+    typewriter.show()
+    await get_tree().create_timer(t1).timeout
+    typewriter.hide()
+    await get_tree().create_timer(t2).timeout
+    typewriter.show()
+    await get_tree().create_timer(t1).timeout
+    typewriter.hide()
+    await get_tree().create_timer(t2).timeout
+    typewriter.show()
+
+func _handle_mist(on: bool) -> void:
+    pass

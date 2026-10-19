@@ -227,6 +227,6 @@ func _handle_text_event(evt: String) -> void:
         dialog_player.stream = shrug
         dialog_player.play()
     elif evt == "end":
-        pass
+        term.outro.emit()
     else:
         push_warning("Event not handled: '%s' during %s" % [evt, _active])
