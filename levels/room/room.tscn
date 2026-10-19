@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cmxamqqhrc82k" path="res://models/Floppy.png" id="4_y43wp"]
 [ext_resource type="Material" uid="uid://qj1c0d2i781t" path="res://levels/room/typewriter_mat.tres" id="5_8viko"]
 [ext_resource type="Script" uid="uid://gf0fuxbnld7f" path="res://levels/room/player_cam.gd" id="5_266tv"]
+[ext_resource type="Texture2D" uid="uid://cdses2m05efo6" path="res://models/Table.png" id="5_axngq"]
 [ext_resource type="Script" uid="uid://jeqij3fpgg7h" path="res://levels/room/outro.gd" id="8_2akcw"]
 [ext_resource type="PackedScene" uid="uid://bdbiqjkr35mve" path="res://models/snowman.blend" id="9_62xjn"]
 [ext_resource type="AudioStream" uid="uid://du04kemme0g1u" path="res://audio/scare.mp3" id="9_pf8v0"]
@@ -50,7 +51,7 @@ albedo_texture = ExtResource("4_y43wp")
 size = Vector3(0.14829102, 0.03, 0.1564087)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1m3gh"]
-albedo_color = Color(0.40267584, 0.26613033, 0.18145639, 1)
+albedo_texture = ExtResource("5_axngq")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_veu46"]
 albedo_texture = ExtResource("10_y8hd4")
@@ -87,25 +88,25 @@ shadow_enabled = true
 
 [node name="office" parent="." unique_id=2051788375 instance=ExtResource("1_vl2mj")]
 
-[node name="Computer" parent="office" index="0" unique_id=1103919381]
+[node name="Computer" parent="office" index="0" unique_id=1470917339]
 transform = Transform3D(0.991357, 0, 0.13119161, 0, 1, 0, -0.13119161, 0, 0.991357, -0.034168378, 0, -0.103820324)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Computer Screen" parent="office/Computer" index="0" unique_id=27303887]
+[node name="Computer Screen" parent="office/Computer" index="0" unique_id=1924437023]
 transform = Transform3D(1, 0, 0, 0, 0.9832431, 0.18229939, 0, -0.18229939, 0.9832431, 0, 0.8059594, -0.09473042)
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 1759890396) index="0" unique_id=5116129]
+[node name="Display" type="MeshInstance3D" parent="office/Computer/Computer Screen/Screen" parent_id_path=PackedInt32Array(2051788375, 1519298310) index="0" unique_id=5116129]
 transform = Transform3D(0.9999999, 0, -2.9802322e-08, 0, 0.9999998, 0, -2.9802322e-08, -1.4901161e-08, 0.9999998, 0, 0, 0)
 mesh = SubResource("QuadMesh_kjfgv")
 
-[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=56479095]
+[node name="FloppyDrive Button" parent="office/Computer" index="1" unique_id=952197205]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Keys" parent="office/Computer" index="2" unique_id=1938797846]
+[node name="Keys" parent="office/Computer" index="2" unique_id=1209614849]
 surface_material_override/0 = ExtResource("2_cvwik")
 
-[node name="Power Button" parent="office/Computer" index="3" unique_id=1754559749]
+[node name="Power Button" parent="office/Computer" index="3" unique_id=49112400]
 surface_material_override/0 = ExtResource("2_cvwik")
 
 [node name="Power" type="StaticBody3D" parent="office/Computer/Power Button" index="0" unique_id=1138353885]
@@ -113,7 +114,7 @@ surface_material_override/0 = ExtResource("2_cvwik")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="office/Computer/Power Button/Power" unique_id=1254343612]
 shape = SubResource("BoxShape3D_kjfgv")
 
-[node name="Floppy" parent="office" index="1" unique_id=508459256]
+[node name="Floppy" parent="office" index="1" unique_id=407142101]
 transform = Transform3D(-0.7674706, 0, 0.64108425, 0, 1, 0, -0.64108425, 0, -0.7674706, 0.4036778, 0.758, -0.115909226)
 surface_material_override/0 = SubResource("StandardMaterial3D_vxucq")
 
@@ -123,27 +124,27 @@ surface_material_override/0 = SubResource("StandardMaterial3D_vxucq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0034912527, 0, -0.0019104332)
 shape = SubResource("BoxShape3D_0ltmj")
 
-[node name="Table" parent="office" index="2" unique_id=647985571]
+[node name="Table" parent="office" index="2" unique_id=2028558198]
 surface_material_override/0 = SubResource("StandardMaterial3D_1m3gh")
 
-[node name="Type Writer" parent="office" index="3" unique_id=1692389737]
+[node name="Type Writer" parent="office" index="3" unique_id=1632358739]
 transform = Transform3D(0.99164456, 0, 0.12900019, 0, 1, 0, -0.12900019, 0, 0.99164456, -0.02050828, 0.86667174, -0.1378666)
 visible = false
 surface_material_override/0 = ExtResource("5_8viko")
 
-[node name="Carriage" parent="office/Type Writer" index="0" unique_id=1282216839]
+[node name="Carriage" parent="office/Type Writer" index="0" unique_id=1426801768]
 surface_material_override/0 = ExtResource("5_8viko")
 
-[node name="Ink Band" parent="office/Type Writer" index="1" unique_id=14467908]
+[node name="Ink Band" parent="office/Type Writer" index="1" unique_id=1327303096]
 surface_material_override/0 = ExtResource("5_8viko")
 
-[node name="Keys_001" parent="office/Type Writer" index="2" unique_id=1644889532]
+[node name="Keys_001" parent="office/Type Writer" index="2" unique_id=560219229]
 surface_material_override/0 = ExtResource("5_8viko")
 
-[node name="SpaceBar" parent="office/Type Writer" index="3" unique_id=29597298]
+[node name="SpaceBar" parent="office/Type Writer" index="3" unique_id=56238530]
 surface_material_override/0 = ExtResource("5_8viko")
 
-[node name="Types" parent="office/Type Writer" index="4" unique_id=1051434124]
+[node name="Types" parent="office/Type Writer" index="4" unique_id=538122543]
 surface_material_override/0 = ExtResource("5_8viko")
 
 [node name="PlayerCam" type="Camera3D" parent="." unique_id=619072814]

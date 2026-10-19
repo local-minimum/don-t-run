@@ -2,10 +2,10 @@ TODO
 
 Tier 2
 
-- Selection of power and diskette (controller bindings)
 - Mist
 - Coffee mug
 - Movable cam
+- Selection of power and diskette (controller bindings)
 
 Tier 3
 
