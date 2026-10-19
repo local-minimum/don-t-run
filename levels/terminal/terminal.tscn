@@ -350,7 +350,7 @@ _descriptions = Array[String](["This winter's been quite absurd.
 You'd better believe my word:
 I came in for a dump,
 but from my rump
-came a solid icicle-turd."])
+came a solid icicle-turd.!"])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Elevator" type="Node" parent="TerminalGame/Ground Floor" unique_id=201960388 node_paths=PackedStringArray("inv_check", "passes", "fails")]
