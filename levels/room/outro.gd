@@ -6,6 +6,10 @@ extends Node
 @export var floppy: Node3D
 @export var snowman: Node3D
 @export var snowman_spot: SpotLight3D
+@export var end_ui: CanvasLayer
+
+@export var player: AudioStreamPlayer
+@export var end_scare: AudioStream
 
 func _ready() -> void:
     terminal.mist.connect(_handle_mist)
@@ -15,10 +19,12 @@ func _ready() -> void:
     floppy.show()
     snowman.hide()
     snowman_spot.hide()
+    end_ui.hide()
 
 func _handle_outro() -> void:
     var t1: float = 0.05
     var t2: float = 0.025
+    player.stream = end_scare
     floppy.hide()
     computer.hide()
     typewriter.show()
@@ -30,10 +36,13 @@ func _handle_outro() -> void:
     typewriter.hide()
     await get_tree().create_timer(t2).timeout
     typewriter.show()
-    await get_tree().create_timer(0.5).timeout
+    await get_tree().create_timer(3.0).timeout
     snowman.show()
     await get_tree().create_timer(0.05).timeout
+    player.play()
     snowman_spot.show()
+    await get_tree().create_timer(5.0).timeout
+    end_ui.show()
 
 func _handle_mist(on: bool) -> void:
     pass

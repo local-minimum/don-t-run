@@ -9,7 +9,9 @@
 [ext_resource type="Script" uid="uid://gf0fuxbnld7f" path="res://levels/room/player_cam.gd" id="5_266tv"]
 [ext_resource type="Script" uid="uid://jeqij3fpgg7h" path="res://levels/room/outro.gd" id="8_2akcw"]
 [ext_resource type="PackedScene" uid="uid://bdbiqjkr35mve" path="res://models/snowman.blend" id="9_62xjn"]
+[ext_resource type="AudioStream" uid="uid://du04kemme0g1u" path="res://audio/scare.mp3" id="9_pf8v0"]
 [ext_resource type="Texture2D" uid="uid://dswonskv0okp4" path="res://models/Snowman.png" id="10_y8hd4"]
+[ext_resource type="FontFile" uid="uid://cyxki4kpoa0ho" path="res://fonts/albertsthal-typewriter/Albertsthal Typewriter.ttf" id="11_y8hd4"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cvwik"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -52,6 +54,22 @@ albedo_color = Color(0.40267584, 0.26613033, 0.18145639, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_veu46"]
 albedo_texture = ExtResource("10_y8hd4")
+
+[sub_resource type="LabelSettings" id="LabelSettings_kjfgv"]
+font = ExtResource("11_y8hd4")
+font_size = 200
+font_color = Color(0.8234027, 0, 0.20572937, 1)
+shadow_size = 10
+shadow_color = Color(0.99201375, 0.59309363, 0.59470344, 0.85882354)
+shadow_offset = Vector2(5, 2)
+
+[sub_resource type="LabelSettings" id="LabelSettings_y8hd4"]
+font = ExtResource("11_y8hd4")
+font_size = 34
+font_color = Color(0.8234027, 0, 0.20572937, 1)
+shadow_size = 2
+shadow_color = Color(0.99201375, 0.59309363, 0.59470344, 0.85882354)
+shadow_offset = Vector2(2, 1)
 
 [node name="Room" type="Node3D" unique_id=2066819157]
 
@@ -143,7 +161,7 @@ floppy = NodePath("../office/Floppy")
 floppy_button = NodePath("../office/Computer/FloppyDrive Button")
 player_cam = NodePath("../PlayerCam")
 
-[node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("terminal", "typewriter", "computer", "floppy", "snowman", "snowman_spot")]
+[node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("terminal", "typewriter", "computer", "floppy", "snowman", "snowman_spot", "end_ui", "player")]
 script = ExtResource("8_2akcw")
 terminal = NodePath("../SubViewport/Terminal")
 typewriter = NodePath("../office/Type Writer")
@@ -151,6 +169,9 @@ computer = NodePath("../office/Computer")
 floppy = NodePath("../office/Floppy")
 snowman = NodePath("../snowman")
 snowman_spot = NodePath("../snowman_spot")
+end_ui = NodePath("../Ending")
+player = NodePath("../SFX Player")
+end_scare = ExtResource("9_pf8v0")
 
 [node name="snowman" parent="." unique_id=371916942 instance=ExtResource("9_62xjn")]
 transform = Transform3D(0.98947, 0, -0.14473817, 0, 1, 0, 0.14473817, 0, 0.98947, 0.80371857, 0.99731445, -2.1757278)
@@ -163,6 +184,75 @@ surface_material_override/0 = SubResource("StandardMaterial3D_veu46")
 transform = Transform3D(1, 0, 0, 0, 0.9697056, -0.24427646, 0, 0.24427646, 0.9697056, 0.80371857, 0.42445445, 0.042046577)
 light_color = Color(1, 1, 0.8235294, 1)
 light_energy = 0.7
+
+[node name="Ending" type="CanvasLayer" parent="." unique_id=420427851]
+
+[node name="The End" type="HBoxContainer" parent="Ending" unique_id=834266358]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 80
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Ending/The End" unique_id=958155880]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Ending/The End/HBoxContainer" unique_id=1249196552]
+layout_mode = 2
+text = "T"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label2" type="Label" parent="Ending/The End/HBoxContainer" unique_id=774240352]
+layout_mode = 2
+text = "H"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label3" type="Label" parent="Ending/The End/HBoxContainer" unique_id=58933126]
+layout_mode = 2
+text = "E"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Ending/The End" unique_id=1581307610]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Ending/The End/HBoxContainer2" unique_id=1787693109]
+layout_mode = 2
+text = "E"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label2" type="Label" parent="Ending/The End/HBoxContainer2" unique_id=1236508505]
+layout_mode = 2
+text = "N"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label3" type="Label" parent="Ending/The End/HBoxContainer2" unique_id=1053977269]
+layout_mode = 2
+text = "D"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="MarginContainer" type="MarginContainer" parent="Ending" unique_id=815834428]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="Label" type="Label" parent="Ending/MarginContainer" unique_id=1664454675]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "Thank you for playing!"
+label_settings = SubResource("LabelSettings_y8hd4")
+
+[node name="SFX Player" type="AudioStreamPlayer" parent="." unique_id=1481844323]
+bus = &"SFX"
 
 [connection signal="mouse_entered" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_entered"]
 [connection signal="mouse_exited" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_exited"]
