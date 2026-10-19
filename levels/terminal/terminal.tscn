@@ -116,7 +116,7 @@ term = NodePath("..")
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
-start = NodePath("Ground Floor/Car")
+start = NodePath("6th Floor/Workers Lounge")
 ground_music = ExtResource("8_vqjme")
 office_music = ExtResource("9_x7n7a")
 final_music = ExtResource("10_2cm0v")
@@ -734,7 +734,7 @@ triggers = Array[String](["TAKE COFFEE", "MAKE COFFEE"])
 hidden = true
 _descriptions = Array[String](["The machine gurgles, buzzes and then starts to spurt out a steaming black liquid into a paper cup.
 
-You are indeed very cold and a bit of coffee couldn't hurt.
+You are indeed very cold and a bit of coffee couldn't hurt.{SIGNAL cup}
 
 It tastes, well not great.{WAIT 0.5} There's a metallic tone,{WAIT 0.5} as if there's something wrong with the water,{WAIT 0.5} and it is sour.{CURSOR 2}{MORE}{CURSOR 0}{CLEAR}
 
@@ -747,7 +747,7 @@ metadata/_custom_type_script = "uid://br3ay75u35q2m"
 script = ExtResource("6_g45n6")
 triggers = Array[String](["TAKE HOT CHOCOLATE", "MAKE HOT CHOCOLATE"])
 hidden = true
-_descriptions = Array[String](["The machine gurgles, buzzes, stutters and then starts to spurt out a steaming thick liquid into a paper cup.{WAIT 0.5}
+_descriptions = Array[String](["The machine gurgles, buzzes, stutters and then starts to spurt out a steaming thick liquid into a paper cup.{SIGNAL cup}{WAIT 0.5}
 
 It smells delicious!{WAIT 1}
 

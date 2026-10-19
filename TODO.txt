@@ -3,7 +3,6 @@ TODO
 Tier 2
 
 - Mist
-- Coffee mug
 - Movable cam
 - Selection of power and diskette (controller bindings)
 

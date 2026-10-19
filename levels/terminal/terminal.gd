@@ -4,6 +4,7 @@ class_name Terminal
 @warning_ignore_start("unused_signal")
 signal mist(on: bool)
 signal outro()
+signal cup()
 @warning_ignore_restore("unused_signal")
 
 @export var os: TerminalOS

@@ -217,6 +217,8 @@ func _handle_text_event(evt: String) -> void:
     elif evt == "disgusting":
         dialog_player.stream = eww
         dialog_player.play()
+    elif evt == "cup":
+        term.cup.emit()
     elif evt == "cold":
         dialog_player.stream = cold
         dialog_player.play()

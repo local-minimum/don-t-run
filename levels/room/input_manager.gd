@@ -9,6 +9,10 @@ extends Node
 @export var floppy: Node3D
 @export var floppy_button: Node3D
 
+@export var cuppa: Node3D
+@export var player: AudioStreamPlayer
+@export var scare: AudioStream
+
 @export var player_cam: PlayerCam
 
 var _powered_on: bool
@@ -18,9 +22,11 @@ var _hovered = Hovered.NONE
 var _titling: bool = true
 
 func _ready() -> void:
+    cuppa.hide()
     title.show()
     display.scale.y = 0
     terminal.os.game_loaded.connect(_handle_game_loaded)
+    terminal.cup.connect(_handle_cup, CONNECT_ONE_SHOT)
 
 func _input(event: InputEvent) -> void:
     if _titling:
@@ -106,3 +112,8 @@ func _insert_floppy() -> void:
 
 func _handle_game_loaded() -> void:
     terminal.game.play()
+
+func _handle_cup() -> void:
+    cuppa.show()
+    player.stream = scare
+    player.play()
