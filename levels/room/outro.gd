@@ -8,6 +8,9 @@ extends Node
 func _ready() -> void:
     terminal.mist.connect(_handle_mist)
     terminal.outro.connect(_handle_outro)
+    typewriter.hide()
+    computer.show()
+    floppy.show()
 
 func _handle_outro() -> void:
     var t1: float = 0.05
