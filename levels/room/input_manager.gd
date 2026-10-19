@@ -4,10 +4,12 @@ extends Node
 @export var title: CanvasLayer
 @export var viewport: SubViewport
 @export var power_button: Node3D
+@export var power_button_selection: Node3D
 @export var display: Node3D
 
 @export var floppy: Node3D
 @export var floppy_button: Node3D
+@export var floppy_selection: Node3D
 
 @export var cuppa: Node3D
 @export var player: AudioStreamPlayer
@@ -27,8 +29,14 @@ func _ready() -> void:
     display.scale.y = 0
     terminal.os.game_loaded.connect(_handle_game_loaded)
     terminal.cup.connect(_handle_cup, CONNECT_ONE_SHOT)
+    floppy_selection.hide()
+    power_button_selection.hide()
 
 func _input(event: InputEvent) -> void:
+    if _floppied && _powered_on:
+        viewport.push_input(event, true)
+        return
+
     if _titling:
         if event is InputEventMouseButton || event is InputEventJoypadButton || event is InputEventKey:
             _titling = false
@@ -36,23 +44,37 @@ func _input(event: InputEvent) -> void:
         return
 
     if _hovered != Hovered.NONE:
-        if event.is_action_pressed("world_select"):
+        if event.is_action_pressed("world_select") || event.is_action_pressed("select_option"):
             if _hovered == Hovered.BUTTON && !_powered_on:
+                power_button_selection.hide()
                 _powered_on = true
                 _anim_power_on()
                 return
             elif _hovered == Hovered.FLOPPY && !_floppied:
+                floppy_selection.hide()
                 _floppied = true
                 _insert_floppy()
                 return
 
-    viewport.push_input(event, true)
-
+    if event.is_action_pressed("prev_option"):
+        _hovered = Hovered.BUTTON if _hovered == Hovered.FLOPPY else Hovered.FLOPPY
+        if _hovered == Hovered.BUTTON:
+            _on_power_mouse_entered()
+        else:
+            _on_floppy_mouse_entered()
+    elif event.is_action_pressed("next_option"):
+        _hovered = Hovered.FLOPPY if _hovered == Hovered.BUTTON else Hovered.BUTTON
+        if _hovered == Hovered.BUTTON:
+            _on_power_mouse_entered()
+        else:
+            _on_floppy_mouse_entered()
 
 func _on_power_mouse_entered() -> void:
     if _powered_on:
         return
 
+    floppy_selection.hide()
+    power_button_selection.show()
     Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
     _hovered = Hovered.BUTTON
 
@@ -60,18 +82,22 @@ func _on_power_mouse_exited() -> void:
     if _hovered == Hovered.BUTTON:
         _hovered = Hovered.NONE
         Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+        power_button_selection.hide()
 
 func _on_floppy_mouse_entered() -> void:
     if _floppied:
         return
 
     Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
+    floppy_selection.show()
+    power_button_selection.hide()
     _hovered = Hovered.FLOPPY
 
 func _on_floppy_mouse_exited() -> void:
     if _hovered == Hovered.FLOPPY:
         _hovered = Hovered.NONE
         Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+        floppy_selection.hide()
 
 func _anim_power_on() -> void:
     var origin: Vector3 = power_button.position
