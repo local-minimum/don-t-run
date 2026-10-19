@@ -1,6 +1,7 @@
 extends Node
 @export var terminal: Terminal
 
+@export var title: CanvasLayer
 @export var viewport: SubViewport
 @export var power_button: Node3D
 @export var display: Node3D
@@ -14,12 +15,20 @@ var _powered_on: bool
 var _floppied: bool
 enum Hovered { NONE, BUTTON, FLOPPY }
 var _hovered = Hovered.NONE
+var _titling: bool = true
 
 func _ready() -> void:
+    title.show()
     display.scale.y = 0
     terminal.os.game_loaded.connect(_handle_game_loaded)
 
 func _input(event: InputEvent) -> void:
+    if _titling:
+        if event is InputEventMouseButton || event is InputEventJoypadButton || event is InputEventKey:
+            _titling = false
+            title.hide()
+        return
+
     if _hovered != Hovered.NONE:
         if event.is_action_pressed("world_select"):
             if _hovered == Hovered.BUTTON && !_powered_on:

@@ -57,7 +57,7 @@ albedo_texture = ExtResource("10_y8hd4")
 
 [sub_resource type="LabelSettings" id="LabelSettings_kjfgv"]
 font = ExtResource("11_y8hd4")
-font_size = 200
+font_size = 160
 font_color = Color(0.8234027, 0, 0.20572937, 1)
 shadow_size = 10
 shadow_color = Color(0.99201375, 0.59309363, 0.59470344, 0.85882354)
@@ -151,9 +151,10 @@ transform = Transform3D(0.9997291, 0.0077154986, -0.021957433, -0.0010392137, 0.
 fov = 72.0
 script = ExtResource("5_266tv")
 
-[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "viewport", "power_button", "display", "floppy", "floppy_button", "player_cam")]
+[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "title", "viewport", "power_button", "display", "floppy", "floppy_button", "player_cam")]
 script = ExtResource("3_vxucq")
 terminal = NodePath("../SubViewport/Terminal")
+title = NodePath("../Title")
 viewport = NodePath("../SubViewport")
 power_button = NodePath("../office/Computer/Power Button")
 display = NodePath("../office/Computer/Computer Screen/Screen/Display")
@@ -186,6 +187,7 @@ light_color = Color(1, 1, 0.8235294, 1)
 light_energy = 0.7
 
 [node name="Ending" type="CanvasLayer" parent="." unique_id=420427851]
+visible = false
 
 [node name="The End" type="HBoxContainer" parent="Ending" unique_id=834266358]
 anchors_preset = 15
@@ -250,6 +252,90 @@ size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Thank you for playing!"
 label_settings = SubResource("LabelSettings_y8hd4")
+
+[node name="Title" type="CanvasLayer" parent="." unique_id=1334015082]
+
+[node name="Dont Run" type="HBoxContainer" parent="Title" unique_id=1386194897]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 80
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Title/Dont Run" unique_id=2094850723]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Title/Dont Run/HBoxContainer" unique_id=2141996946]
+layout_mode = 2
+text = "D"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label2" type="Label" parent="Title/Dont Run/HBoxContainer" unique_id=1509105937]
+layout_mode = 2
+text = "O"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label3" type="Label" parent="Title/Dont Run/HBoxContainer" unique_id=1899291058]
+layout_mode = 2
+text = "N"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label4" type="Label" parent="Title/Dont Run/HBoxContainer" unique_id=2106548628]
+layout_mode = 2
+text = "'"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label5" type="Label" parent="Title/Dont Run/HBoxContainer" unique_id=1764000313]
+layout_mode = 2
+text = "T"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Title/Dont Run" unique_id=1311415238]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Title/Dont Run/HBoxContainer2" unique_id=1479418497]
+layout_mode = 2
+text = "R"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label2" type="Label" parent="Title/Dont Run/HBoxContainer2" unique_id=1251471058]
+layout_mode = 2
+text = "U"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="Label3" type="Label" parent="Title/Dont Run/HBoxContainer2" unique_id=134458380]
+layout_mode = 2
+text = "N"
+label_settings = SubResource("LabelSettings_kjfgv")
+
+[node name="MarginContainer" type="MarginContainer" parent="Title" unique_id=1793852524]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="Label" type="Label" parent="Title/MarginContainer" unique_id=1684344447]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "By Local Minimum, Splith & xymidaz"
+label_settings = SubResource("LabelSettings_y8hd4")
+
+[node name="ColorRect" type="ColorRect" parent="Title" unique_id=1468896671]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.14117648, 0.42745098, 0.8901961, 0.08627451)
 
 [node name="SFX Player" type="AudioStreamPlayer" parent="." unique_id=1481844323]
 bus = &"SFX"

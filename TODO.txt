@@ -1,11 +1,8 @@
 TODO
 
-Tier 1
-- Cursor! https://docs.godotengine.org/en/stable/tutorials/inputs/custom_mouse_cursor.html
-
 Tier 2
 
-- Selection of power and diskette
+- Selection of power and diskette (controller bindings)
 - Mist
 - Coffee mug
 - Movable cam
