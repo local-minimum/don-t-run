@@ -187,7 +187,7 @@ shape = SubResource("BoxShape3D_kjfgv")
 surface_material_override/0 = ExtResource("4_326eg")
 
 [node name="Cup" parent="office" index="1" unique_id=545543483]
-transform = Transform3D(0.886017, 0, -0.46365267, 0, 1, 0, 0.46365267, 0, 0.886017, 0.3200847, 0.81926227, -0.062482007)
+transform = Transform3D(0.886017, 0, -0.46365267, 0, 1, 0, 0.46365267, 0, 0.886017, 0.3105327, 0.81926227, -0.15806305)
 surface_material_override/0 = SubResource("StandardMaterial3D_axngq")
 
 [node name="Node3D" type="Node3D" parent="office/Cup" index="0" unique_id=1612824752]
@@ -248,10 +248,18 @@ surface_material_override/0 = ExtResource("5_8viko")
 [node name="Types" parent="office/Type Writer" index="4" unique_id=250754210]
 surface_material_override/0 = ExtResource("5_8viko")
 
-[node name="PlayerCam" type="Camera3D" parent="." unique_id=619072814]
-transform = Transform3D(0.9997291, 0.0077154986, -0.021957433, -0.0010392137, 0.9573082, 0.2890674, 0.023250328, -0.28896627, 0.9570569, 0.010816975, 1.090035, 0.30883595)
+[node name="CamStart" type="Node3D" parent="." unique_id=484513467]
+transform = Transform3D(0.99972916, 0.0077154986, -0.021957435, -0.0010392139, 0.9573082, 0.28906742, 0.02325033, -0.28896627, 0.95705694, 0.010816975, 1.090035, 0.30883595)
+
+[node name="PlayerCam" type="Camera3D" parent="." unique_id=619072814 node_paths=PackedStringArray("game_pos", "start_pos")]
+transform = Transform3D(0.99972916, 0.0077154986, -0.021957433, -0.0010392139, 0.9573082, 0.28906742, 0.02325033, -0.28896627, 0.95705694, 0.010816975, 1.090035, 0.30883595)
 fov = 72.0
 script = ExtResource("5_266tv")
+game_pos = NodePath("../Cam While playing")
+start_pos = NodePath("../CamStart")
+
+[node name="Cam While playing" type="Node3D" parent="." unique_id=1574542026]
+transform = Transform3D(0.99372053, -0.039297465, 0.10476264, 0.0076696724, 0.9580164, 0.28661084, -0.11162741, -0.28400758, 0.952302, 0.10928741, 1.0508499, 0.14661011)
 
 [node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "title", "viewport", "power_button", "power_button_selection", "display", "floppy", "floppy_button", "floppy_selection", "cuppa", "player", "player_cam")]
 script = ExtResource("3_vxucq")
@@ -269,8 +277,9 @@ player = NodePath("../SFX Player")
 scare = ExtResource("9_pf8v0")
 player_cam = NodePath("../PlayerCam")
 
-[node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("terminal", "typewriter", "computer", "floppy", "snowman", "snowman_spot", "end_ui", "player", "fog")]
+[node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("player_cam", "terminal", "typewriter", "computer", "floppy", "snowman", "snowman_spot", "end_ui", "player", "fog")]
 script = ExtResource("8_2akcw")
+player_cam = NodePath("../PlayerCam")
 terminal = NodePath("../SubViewport/Terminal")
 typewriter = NodePath("../office/Type Writer")
 computer = NodePath("../office/Computer")

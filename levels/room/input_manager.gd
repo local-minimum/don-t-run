@@ -1,6 +1,5 @@
 extends Node
 @export var terminal: Terminal
-
 @export var title: CanvasLayer
 @export var viewport: SubViewport
 @export var power_button: Node3D
@@ -137,6 +136,7 @@ func _insert_floppy() -> void:
     )
 
 func _handle_game_loaded() -> void:
+    player_cam.go_play()
     terminal.game.play()
 
 func _handle_cup() -> void:

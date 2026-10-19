@@ -1,4 +1,5 @@
 extends Node
+@export var player_cam: PlayerCam
 
 @export var terminal: Terminal
 @export var typewriter: Node3D
@@ -30,6 +31,7 @@ func _handle_outro() -> void:
     floppy.hide()
     computer.hide()
     typewriter.show()
+    player_cam.go_start_pos(0.2)
     await get_tree().create_timer(t1).timeout
     typewriter.hide()
     await get_tree().create_timer(t2).timeout
