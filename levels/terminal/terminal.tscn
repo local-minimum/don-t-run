@@ -827,12 +827,12 @@ state_descriptors = Dictionary[String, String]({
 })
 _descriptions = Array[String](["There's a cold mist that wisps up from the floor as you open the door.
 
-On the far side of the room there's a frosted glass door with the letters \"S. Man\" written across it. Right next to it, three empty chairs. Presumably for those waiting their turn. You'd freeze to death waiting there.
+On the far side of the room there's a frosted glass door with the letters \"S. Man\" written across it. Right next to the door are three empty chairs. Presumably for those waiting their turn. You'd freeze to death.
 
 {CURSOR 2}{MORE}{CURSOR 0}{CLEAR}
 There's a robust oak desk, behind it a leather office chair.{WAIT 1}
 
-But on the desk,{WAIT 0.5} it takes you a moment to realize what it is,{WAIT 0.5} stands a glistening red, ancient looking typewriter.{WAIT 2}
+But on the desk,{WAIT 0.5} it takes you a moment to realize what it is,{WAIT 0.5} stands a glistening red, anachronistic, ancient looking typewriter.{WAIT 2}
 
 To its side is an empty tray, presumably for processed documents.", "The room is ice cold. There's a frosted glass door leading to S. Man's office, some waiting chairs, a sturdy desk with a bright red, but ancient typewriter on it. To its side a tray."])
 auto_increment_description = true
@@ -841,7 +841,7 @@ metadata/_custom_type_script = "uid://gsfx6wsb66de"
 [node name="Around" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=297061358]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK AROUND"])
-_descriptions = Array[String](["You walk around the room. Because it is [b]too cold[/b] to stand still with the little clothes you have on. You don't see anything of note that you didn't catch as you walked into the room. But it might also be that you are too cold to notice anything. "])
+_descriptions = Array[String](["You walk around the room because it is \\[b\\]too cold\\[/b\\] to stand still with the little clothes you have on. You don't see anything of note that you didn't catch as you walked into the room. But it might also be that you are too cold to notice things."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Door" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=461461338 node_paths=PackedStringArray("place")]
@@ -855,11 +855,11 @@ metadata/_custom_type_script = "uid://b3qt00giuv02a"
 [node name="Glass Door" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1453774215]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["USE GLASS DOOR", "GO GLASS DOOR", "LOOK GLASS DOOR"])
-_descriptions = Array[String](["It impossible to see anything on the far side of the [b]frosted[/b] glass door. There is no light on in the inner room. 
+_descriptions = Array[String](["It impossible to see anything on the far side of the \\[b\\]frosted\\[/b\\] glass door. There is no light in the inner room.
 
 The cold mist on the floor seems to emanate from under the door.
 
-Trying to turn its brass knob you realize it is locked. You also very much regret having touched the knob - your fingers now frozen to the [b]bone[/b].  ", "It still is impossible to see anything through the door and the cold [b]mist[/b] continues to pour through under the door.
+Trying to turn its brass knob you realize it is locked. You also very much regret having touched the knob - your fingers now frozen to the \\[b\\]bone\\[/b\\].", "It still is impossible to see anything through the door and the cold \\[b\\]mist\\[/b\\] continues to pour through under it.
 
 You are not checking if it is locked again."])
 auto_increment_description = true
@@ -874,15 +874,15 @@ metadata/_custom_type_script = "uid://br3ay75u35q2m"
 [node name="Look Chairs" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=3824631]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK WAITING CHAIRS"])
-_descriptions = Array[String](["For an so sparse, finding three chairs next to each other here feels like quite a lot. It also doesn't bode well for the amount of time this will take. At least though, there's no one ahead of you already waiting here."])
+_descriptions = Array[String](["For an office so sparse in chairs, finding three next to each other here feels like quite a lot. It doesn't bode well for the amount of time this might take. At least though, there's no one ahead of you already waiting here."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Tray" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=879031523]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["LOOK TRAY"])
-_descriptions = Array[String](["The tray is empty, but something tells you that if you were to put your letter into the typewriter, write don't something suitably secretary-like and put it in that tray{SPEED 1}...{SPEED 0}{WAIT 1}
+_descriptions = Array[String](["The tray is empty, but something tells you that if you were to put your letter into the typewriter, write something suitably secretary-like and put it in that tray{SPEED 1}...{SPEED 0}{WAIT 1}
 
-Then maybe this whole ordeal would be solved."])
+Then maybe this whole ordeal would be over."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Typewriter" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=2058298002]
@@ -894,23 +894,23 @@ Pull out the chair.{WAIT 1}
 
 And sit down.
 {CURSOR 2}{MORE}{CURSOR 0}{CLEAR}
-You pull out your letter from your pocket, unfold it, and feed it into the [b]typewriter[/b].
+You pull out your letter from your pocket, unfold it, and feed it into the \\[b\\]typewriter\\[/b\\].
 
-Then you sit for a while and think about {SPEED 0.5}what to write...
-{CURSOR 2}{MORE}{CURSOR 0}{SPEED 0.1}
-With your right hand, your index finger ready to hammer down on the keys, you reach out towards [b]the machine[/b]{WAIT 1}{SIGNAL end}{STALL}"])
+Then you sit for a while and think about {SPEED 0.3}what to write... {CURSOR 2}{MORE}{CURSOR 0}{SPEED 0.08}
+
+With your right hand, your index finger ready to hammer down on the keys, you reach out towards \\[b\\]the machine\\[/b\\] and hit the the “L”{WAIT 1}{SIGNAL end}{STALL}"])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Typewriter Cold" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1914590703]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["USE TYPEWRITER"])
-_descriptions = Array[String](["Your hands are much too [b]tiff[/b] already before sitting down to type something. It's not going to work. You need to find some warmth before proceeding."])
+_descriptions = Array[String](["Your hands are much too [b\\]stiff\\[/b\\] already before sitting down to type something. It's not going to work. You need to find some warmth before proceeding."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Take Typewriter" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=1323196526]
 script = ExtResource("6_g45n6")
 triggers = Array[String](["TAKE TYPEWRITER"])
-_descriptions = Array[String](["It would be a worthy souvenir after all you've suffered here, but no. You need to use it first."])
+_descriptions = Array[String](["It would be a worthy souvenir after all that you've suffered here, but no. You need to use it first."])
 metadata/_custom_type_script = "uid://br3ay75u35q2m"
 
 [node name="Look Typewriter" type="Node" parent="TerminalGame/6th Floor/Antechamber" unique_id=640993067]
