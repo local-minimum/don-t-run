@@ -63,7 +63,7 @@ albedo_texture = ExtResource("10_y8hd4")
 environment = SubResource("Environment_y43wp")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1955088839]
-transform = Transform3D(-0.8660254, -0.4893442, -0.102675706, 0, -0.20535138, 0.97868836, -0.50000006, 0.84756887, 0.17783946, 0, 0, 0)
+transform = Transform3D(-0.8660253, -0.4967226, 0.057154838, 0, 0.11430964, 0.99344516, -0.50000006, 0.86034864, -0.098995104, -0.18167116, 0.035827637, -0.096069336)
 light_energy = 0.5
 shadow_enabled = true
 
@@ -143,22 +143,24 @@ floppy = NodePath("../office/Floppy")
 floppy_button = NodePath("../office/Computer/FloppyDrive Button")
 player_cam = NodePath("../PlayerCam")
 
-[node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("terminal", "typewriter", "computer", "floppy")]
+[node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("terminal", "typewriter", "computer", "floppy", "snowman", "snowman_spot")]
 script = ExtResource("8_2akcw")
 terminal = NodePath("../SubViewport/Terminal")
 typewriter = NodePath("../office/Type Writer")
 computer = NodePath("../office/Computer")
 floppy = NodePath("../office/Floppy")
+snowman = NodePath("../snowman")
+snowman_spot = NodePath("../snowman_spot")
 
 [node name="snowman" parent="." unique_id=371916942 instance=ExtResource("9_62xjn")]
 transform = Transform3D(0.98947, 0, -0.14473817, 0, 1, 0, 0.14473817, 0, 0.98947, 0.80371857, 0.99731445, -2.1757278)
 
-[node name="Snowman" parent="snowman" index="0" unique_id=598375691]
+[node name="Snowman" parent="snowman" index="0" unique_id=565016064]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.41046143)
 surface_material_override/0 = SubResource("StandardMaterial3D_veu46")
 
-[node name="SpotLight3D" type="SpotLight3D" parent="." unique_id=1738608552]
-transform = Transform3D(1, 0, 0, 0, 0.9882081, -0.15311658, 0, 0.15311658, 0.9882081, 0.80371857, 0.3177284, -0.3384156)
+[node name="snowman_spot" type="SpotLight3D" parent="." unique_id=1738608552]
+transform = Transform3D(1, 0, 0, 0, 0.9697056, -0.24427646, 0, 0.24427646, 0.9697056, 0.80371857, 0.42445445, 0.042046577)
 light_color = Color(1, 1, 0.8235294, 1)
 light_energy = 0.7
 
