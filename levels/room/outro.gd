@@ -10,12 +10,14 @@ extends Node
 
 @export var player: AudioStreamPlayer
 @export var end_scare: AudioStream
+@export var fog: Node3D
 
 func _ready() -> void:
     terminal.mist.connect(_handle_mist)
     terminal.outro.connect(_handle_outro)
     typewriter.hide()
     computer.show()
+    fog.hide()
     floppy.show()
     snowman.hide()
     snowman_spot.hide()
@@ -45,4 +47,4 @@ func _handle_outro() -> void:
     end_ui.show()
 
 func _handle_mist(on: bool) -> void:
-    pass
+    fog.visible = on

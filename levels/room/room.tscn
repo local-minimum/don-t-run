@@ -93,6 +93,34 @@ size = Vector3(0.14829102, 0.03, 0.1564087)
 vertex_color_use_as_albedo = true
 albedo_texture = ExtResource("5_axngq")
 
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_kseuc"]
+lifetime_randomness = 0.4
+emission_shape = 3
+emission_box_extents = Vector3(1, 0.05, 0.5)
+inherit_velocity_ratio = 0.287
+direction = Vector3(0, 2, 0)
+spread = 90.0
+gravity = Vector3(0, 0, 0)
+alpha_curve = SubResource("CurveTexture_kseuc")
+turbulence_noise_strength = 0.1
+turbulence_noise_scale = 20.0
+turbulence_noise_speed = Vector3(0.1, 0.1, 0.1)
+turbulence_influence_min = 0.2
+turbulence_influence_max = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_326eg"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.03137255)
+albedo_texture = ExtResource("5_kseuc")
+emission_enabled = true
+emission = Color(0.641934, 0.641934, 0.641934, 1)
+disable_receive_shadows = true
+billboard_mode = 2
+
+[sub_resource type="QuadMesh" id="QuadMesh_4fjth"]
+material = SubResource("StandardMaterial3D_326eg")
+size = Vector2(0.2, 0.2)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_veu46"]
 albedo_texture = ExtResource("10_y8hd4")
 
@@ -181,6 +209,18 @@ shape = SubResource("BoxShape3D_0ltmj")
 [node name="Table" parent="office" index="3" unique_id=1326463122]
 surface_material_override/0 = SubResource("StandardMaterial3D_1m3gh")
 
+[node name="Node3D" type="Node3D" parent="office/Table" index="0" unique_id=1095946414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7263068, 0)
+
+[node name="Desk Fog" type="GPUParticles3D" parent="office/Table/Node3D" unique_id=908825061]
+cast_shadow = 0
+amount = 400
+lifetime = 30.0
+preprocess = 2.63
+explosiveness = 0.15
+process_material = SubResource("ParticleProcessMaterial_kseuc")
+draw_pass_1 = SubResource("QuadMesh_4fjth")
+
 [node name="Type Writer" parent="office" index="4" unique_id=1849673105]
 transform = Transform3D(0.99164456, 0, 0.12900019, 0, 1, 0, -0.12900019, 0, 0.99164456, -0.02050828, 0.86667174, -0.1378666)
 visible = false
@@ -220,7 +260,7 @@ player = NodePath("../SFX Player")
 scare = ExtResource("9_pf8v0")
 player_cam = NodePath("../PlayerCam")
 
-[node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("terminal", "typewriter", "computer", "floppy", "snowman", "snowman_spot", "end_ui", "player")]
+[node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("terminal", "typewriter", "computer", "floppy", "snowman", "snowman_spot", "end_ui", "player", "fog")]
 script = ExtResource("8_2akcw")
 terminal = NodePath("../SubViewport/Terminal")
 typewriter = NodePath("../office/Type Writer")
@@ -231,6 +271,7 @@ snowman_spot = NodePath("../snowman_spot")
 end_ui = NodePath("../Ending")
 player = NodePath("../SFX Player")
 end_scare = ExtResource("9_pf8v0")
+fog = NodePath("../office/Table/Node3D")
 
 [node name="snowman" parent="." unique_id=371916942 instance=ExtResource("9_62xjn")]
 transform = Transform3D(0.98947, 0, -0.14473817, 0, 1, 0, 0.14473817, 0, 0.98947, 0.80371857, 0.99731445, -2.1757278)
