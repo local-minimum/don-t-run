@@ -113,11 +113,10 @@ should_i = ExtResource("6_8ixx7")
 [node name="TerminalGame" type="Node" parent="." unique_id=480895150 node_paths=PackedStringArray("term", "main", "input", "options", "start", "dialog_player")]
 script = ExtResource("4_7ttak")
 term = NodePath("..")
-autoplay = true
 main = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("../AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
-start = NodePath("6th Floor/6th Floor Reception")
+start = NodePath("Ground Floor/Car")
 ground_music = ExtResource("8_vqjme")
 office_music = ExtResource("9_x7n7a")
 final_music = ExtResource("10_2cm0v")

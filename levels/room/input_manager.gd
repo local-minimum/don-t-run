@@ -38,18 +38,25 @@ func _on_power_mouse_entered() -> void:
     if _powered_on:
         return
 
+    Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
     _hovered = Hovered.BUTTON
 
 func _on_power_mouse_exited() -> void:
     if _hovered == Hovered.BUTTON:
         _hovered = Hovered.NONE
+        Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 func _on_floppy_mouse_entered() -> void:
+    if _floppied:
+        return
+
+    Input.set_default_cursor_shape(Input.CURSOR_POINTING_HAND)
     _hovered = Hovered.FLOPPY
 
 func _on_floppy_mouse_exited() -> void:
     if _hovered == Hovered.FLOPPY:
         _hovered = Hovered.NONE
+        Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
 func _anim_power_on() -> void:
     var origin: Vector3 = power_button.position

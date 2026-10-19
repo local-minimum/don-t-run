@@ -2,7 +2,6 @@ TODO
 
 Tier 1
 - Cursor! https://docs.godotengine.org/en/stable/tutorials/inputs/custom_mouse_cursor.html
-- Read through all text
 
 Tier 2
 
