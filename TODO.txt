@@ -1,0 +1,20 @@
+TODO
+
+Tier 1
+- Cursor! https://docs.godotengine.org/en/stable/tutorials/inputs/custom_mouse_cursor.html
+- Swap for type writer
+- Monster
+- Frosted Door
+- Lighting
+- THE END
+- Read through all text
+
+Tier 2
+
+- Mist
+- Coffee mug
+
+Tier 3
+
+- Toy elephant
+
