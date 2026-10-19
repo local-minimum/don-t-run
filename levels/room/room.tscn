@@ -467,7 +467,7 @@ bus = &"SFX"
 [node name="elephant" parent="." unique_id=756469063 instance=ExtResource("17_s5tn8")]
 transform = Transform3D(0.081095695, 0, -0.99670637, 0, 1, 0, 0.99670637, 0, 0.081095695, -1.3982544, 0, -0.82055664)
 
-[node name="Elephant" parent="elephant" index="0" unique_id=645496033]
+[node name="Elephant" parent="elephant" index="0" unique_id=1708722507]
 transform = Transform3D(0.8856151, -0.09744777, 0.45408142, 0.109373875, 0.9940007, -3.7252903e-09, -0.45135725, 0.04966464, 0.89096034, 0.57717276, 0.868042, -0.94944215)
 surface_material_override/0 = SubResource("StandardMaterial3D_l06wv")
 

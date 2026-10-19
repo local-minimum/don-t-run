@@ -4,10 +4,6 @@ Tier 2
 
 - Movable cam
 
-Tier 3
-
-- Toy elephant
-
 FINAL
 - Check start in car
 - Check no autoplay
