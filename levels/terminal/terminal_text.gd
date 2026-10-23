@@ -40,6 +40,7 @@ func _ready() -> void:
     if !autoplay:
         set_process(false)
 
+
 func play() -> void:
     _playing = true
     _next_char = default_speed

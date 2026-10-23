@@ -1,9 +1,10 @@
-TODO
+# DSL
+Language for logic needed for the game but not knowing of the game
 
-Tier 2
+# Text-Adventure parser of the DSL
 
-- Movable cam
+# Text-Adventure
 
-FINAL
-- Check start in car
-- Check no autoplay
+# Text displayer
+- use visible characters instead
+- add fast forward for fuck's sake
