@@ -4,8 +4,8 @@ var tests: Array[Array] = [
     ["", "[STATEMENT]"],
     ["func(43)", "[STATEMENT: [FUNCTION func: [LITERAL_INT 43]]]"],
     ["INVENTORY(LOBBY BADGE)", "[STATEMENT: [FUNCTION INVENTORY: [PARAMETER LOBBY BADGE]]]"],
-    ["true", "[STATEMENT: [LITTERAL_BOOL true]]"],
-    ["\"test\\\"\" && 1.2", "[STATEMENT: [OP_AND: [LITERAL_STRING: test\"], [LITERAL_FLOAT 1.2]]]"]
+    ["true", "[STATEMENT: [LITERAL_BOOL true]]"],
+    ["\"test\\\"\" && 1.2", "[STATEMENT: [OP_AND: [LITERAL_STRING test\"], [LITERAL_FLOAT 1.2]]]"]
 ]
 func _ready() -> void:
     var t: LToken = LToken.new()

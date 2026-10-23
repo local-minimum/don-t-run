@@ -11,7 +11,10 @@ func _init(_type: Type = Type.STATEMENT, data: String = "") -> void:
 var _data: String
 var type: Type = Type.STATEMENT
 
-func info(recursive: bool = false) -> String:
+func info(recursive: bool = false, depth: int = 100) -> String:
+    if depth < 0:
+        return "[!TOO DEEP]"
+
     var ret: String = "[%s%s" % [Type.find_key(type), "" if _data.is_empty() else " %s" % _data]
     if type == Type.ERROR:
         return ret + (": \"%s\"]" % value)
@@ -23,9 +26,10 @@ func info(recursive: bool = false) -> String:
         ret += ": "
         var first: bool = true
         for child: LToken in _decendents:
-            ret += child.info(true)
             if !first:
                 ret += ", "
+            ret += child.info(true, depth - 1)
+
             first = false
 
     return ret + "]"
@@ -67,7 +71,9 @@ func parse(text: String) -> void:
 
         else:
             if in_string_litteral:
-                if text[idx] == "\"" && (char_buffer.is_empty() || char_buffer[char_buffer.length() - 1] != "\\"):
+                var p_letter: String = "" if char_buffer.is_empty() else char_buffer[char_buffer.length() -1]
+                var letter: String = text[idx]
+                if letter == "\"" && p_letter != "\\":
                     in_string_litteral = false
                     if !_can_have_more_decendants(active):
                         type = Type.ERROR
@@ -76,8 +82,11 @@ func parse(text: String) -> void:
 
                     var d: LToken = LToken.new(Type.LITERAL_STRING, char_buffer)
                     active._decendents.append(d)
+                    d._parent = active
                     active = d
                     char_buffer = ""
+                elif letter == "\"" && p_letter == "\\":
+                    char_buffer = char_buffer.trim_suffix("\\") + letter
                 else:
                     char_buffer += text[idx]
 
@@ -215,11 +224,6 @@ func parse(text: String) -> void:
                 "&":
                     if !char_buffer.is_empty() && char_buffer[char_buffer.length() - 1] == "&":
                         char_buffer = char_buffer.trim_suffix("&").strip_edges()
-                        if char_buffer.is_empty() && active._decendents.is_empty():
-                            type = Type.ERROR
-                            value = "&& must have a left side at %s" % idx
-                            return
-
 
                         var d: LToken = LToken.new(Type.OP_AND)
                         active = _add_left_side(d, active, char_buffer)
@@ -227,11 +231,6 @@ func parse(text: String) -> void:
                             type = Type.ERROR
                             value = "Not a valid left side of && at %s" % idx
                             return
-
-
-                        d._parent = active
-                        active._decendents.append(d)
-                        active = d
 
                         char_buffer = ""
                     elif char_buffer.is_empty():
@@ -248,11 +247,6 @@ func parse(text: String) -> void:
                 "|":
                     if !char_buffer.is_empty() && char_buffer[char_buffer.length() - 1] == "|":
                         char_buffer = char_buffer.trim_suffix("|").strip_edges()
-                        if char_buffer.is_empty() && active._decendents.is_empty():
-                            type = Type.ERROR
-                            value = "&& must have a left side at %s" % idx
-                            return
-
 
                         var d: LToken = LToken.new(Type.OP_OR)
                         active = _add_left_side(d, active, char_buffer)
@@ -260,11 +254,6 @@ func parse(text: String) -> void:
                             type = Type.ERROR
                             value = "Not a valid left side of || at %s" % idx
                             return
-
-
-                        d._parent = active
-                        active._decendents.append(d)
-                        active = d
 
                         char_buffer = ""
                     elif char_buffer.is_empty():
@@ -286,7 +275,6 @@ func parse(text: String) -> void:
                             value = "%s cannot take string '%s' at %s" % [active.info(), char_buffer, idx]
                             return
 
-
                         var d: LToken = LToken.new(Type.LITERAL_STRING, char_buffer)
                         active._decendents.append(d)
                         active = d
@@ -299,6 +287,10 @@ func parse(text: String) -> void:
                             return
 
                         in_string_litteral = true
+                ".":
+                    char_buffer += "."
+                ":":
+                    char_buffer += ":"
                 _:
                     type = Type.ERROR
                     value = "Illegal character '%s' at %s" % [text[idx], idx]
@@ -306,6 +298,23 @@ func parse(text: String) -> void:
 
             idx += 1
             continue
+
+    char_buffer = char_buffer.strip_edges()
+    if !char_buffer.is_empty():
+        if !_can_have_more_decendants(active):
+            type = Type.ERROR
+            value = "%s doesn't allow more decendants but had remaining '%s'" % [active.info(true), char_buffer]
+            return
+
+        var dtype: Type = _char_buffer_disambiguation(char_buffer)
+        if dtype == Type.ERROR:
+            type = Type.ERROR
+            value = "Invalid remaining parameter or literal '%s'" % [char_buffer]
+            return
+
+        var child: LToken = LToken.new(dtype, char_buffer)
+        active._decendents.append(child)
+        child._parent = active
 
     if !_is_complete(self):
         type = Type.ERROR
@@ -338,8 +347,9 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
         if !_can_have_more_decendants(active) || !_can_have_more_decendants(new_token):
             return null
 
-        active._decendents.append(LToken.new(dtype, char_buffer))
-        new_token._decendents.append(active)
+        var child: LToken = LToken.new(dtype, char_buffer)
+        active._decendents.append(child)
+        child._parent = active
 
         var par: LToken = active._parent
         while par.type == Type.OP_AND && new_token.type == Type.OP_OR:
@@ -352,7 +362,33 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
             return null
 
         par._decendents.append(new_token)
+        new_token._parent = par
         new_token._decendents.append(a)
+        a._parent = new_token
+        return new_token
+
+    elif [Type.LITERAL_STRING, Type.LITERAL_INT, Type.LITERAL_BOOL, Type.LITERAL_FLOAT].has(active.type):
+        if !char_buffer.is_empty():
+            return null
+
+        var par: LToken = active._parent
+        if par == null:
+            return null
+
+        while par.type == Type.OP_AND && new_token.type == Type.OP_OR:
+            par = par._parent
+
+            if par == null:
+                return null
+
+        var child: LToken = par._decendents.pop_back()
+        if child == null:
+            return
+
+        child._parent = new_token
+        new_token._decendents.append(child)
+        par._decendents.append(new_token)
+        new_token._parent = par
         return new_token
 
     elif active.type == Type.OP_OR || new_token.type == Type.OP_AND:
@@ -405,7 +441,9 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
 
         child._decendents.append(LToken.new(dtype, char_buffer))
         new_token._decendents.append(child)
+        child._parent = new_token
         active._decendents.append(new_token)
+        new_token._parent = active
 
         return new_token
 
