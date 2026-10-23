@@ -5,8 +5,13 @@ var tests: Array[Array] = [
     ["func(43)", "[STATEMENT: [FUNCTION func: [LITERAL_INT 43]]]"],
     ["INVENTORY(LOBBY BADGE)", "[STATEMENT: [FUNCTION INVENTORY: [PARAMETER LOBBY BADGE]]]"],
     ["true", "[STATEMENT: [LITERAL_BOOL true]]"],
-    ["\"test\\\"\" && 1.2", "[STATEMENT: [OP_AND: [LITERAL_STRING test\"], [LITERAL_FLOAT 1.2]]]"]
+    ["\"test\\\"\" && 1.2", "[STATEMENT: [OP_AND: [LITERAL_STRING test\"], [LITERAL_FLOAT 1.2]]]"],
+    ["func(a) || func2(b)", "[STATEMENT: [OP_OR: [FUNCTION func: [PARAMETER a]], [FUNCTION func: [PARAMETER b]]]]"],
+    ["a && b && c", "[STATEMENT: [OP_AND: [PARAMETER a], [OP_AND: [PARAMETER b], [PARAMETER c]]]]"],
+    ["a && b || c", "[STATEMENT: [OP_OR: [OP_AND: [PARAMETER a], [PARAMETER b]], [PARAMETER c]]]"],
+    ["a || b && c", "[STATEMENT: [OP_OR: [PARAMETER a], [OP_AND: [PARAMETER b], [PARAMETER c]]]]"]
 ]
+
 func _ready() -> void:
     var t: LToken = LToken.new()
 
@@ -15,4 +20,5 @@ func _ready() -> void:
         if t.info(true) == test[1]:
             print("PASS: %s => %s" % test)
         else:
+            t.parse(test[0])
             print("FAIL: %s => %s not %s" % [test[0], t.info(true), test[1]])

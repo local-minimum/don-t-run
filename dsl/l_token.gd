@@ -395,19 +395,18 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
         if char_buffer.is_empty():
             return null
 
-        if active._decendents.size() != 1:
-            return null
-
         if !_can_have_more_decendants(active) || !_can_have_more_decendants(new_token):
             return null
 
         dtype = _char_buffer_disambiguation(char_buffer)
-        if char_buffer.is_empty():
+        if dtype == Type.ERROR:
             return null
 
-        new_token._decendents.append(LToken.new(dtype, char_buffer))
+        var child: LToken = LToken.new(dtype, char_buffer)
+        new_token._decendents.append(child)
+        child._parent = new_token
         active._decendents.append(new_token)
-
+        new_token._parent = active
         return new_token
 
     if char_buffer.is_empty():
