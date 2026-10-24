@@ -60,7 +60,21 @@ func _add_descendant(descendant: LToken, take_descendants_place: bool = false) -
 
     return true
 
+func _create_token_type_from_buffer(char_buffer: String, idx: int, strip: bool = true) -> LToken:
+    if strip:
+        char_buffer = char_buffer.strip_edges()
 
+    if char_buffer.is_empty():
+        type = Type.ERROR
+        value = "Missing parameter or literal at %s" % idx
+        return null
+
+    var dtype: Type = _char_buffer_disambiguation(char_buffer)
+    if dtype == Type.ERROR:
+        type = Type.ERROR
+        value = "Invalid parameter or literal at %s" % idx
+        return null
+    return LToken.new(dtype, char_buffer)
 
 func parse(text: String) -> void:
     if _parent || type != Type.STATEMENT && type != Type.ERROR:
@@ -103,10 +117,6 @@ func parse(text: String) -> void:
                 var letter: String = text[idx]
                 if letter == "\"" && p_letter != "\\":
                     in_string_litteral = false
-                    if !_can_have_more_decendants(active):
-                        type = Type.ERROR
-                        value = "%s cannot have string literal '%s' at %s" % [active.info(), char_buffer, idx]
-                        return
 
                     var d: LToken = LToken.new(Type.LITERAL_STRING, char_buffer)
                     if !active._add_descendant(d):
@@ -133,42 +143,32 @@ func parse(text: String) -> void:
                     char_buffer += " "
 
                 ",":
-                    char_buffer = char_buffer.strip_edges()
                     if active.type == Type.FUNCTION:
-                        if char_buffer.is_empty():
-                            type = Type.ERROR
-                            value = "Function has empty parameter at %s" % idx
+                        var child: LToken = _create_token_type_from_buffer(char_buffer, idx)
+                        if child == null:
                             return
 
-                        var dtype: Type = _char_buffer_disambiguation(char_buffer)
-                        if dtype == Type.ERROR:
-                            type = Type.ERROR
-                            value = "Invalid parameter or literal to function at %s" % idx
-                            return
-
-                        if !active._add_descendant(LToken.new(dtype, char_buffer)):
+                        if !active._add_descendant(child):
                             type = Type.ERROR
                             value = "Failed to add '%s' to %s at %s" % [char_buffer, active.info(true, 1), idx]
                             return
 
                         char_buffer = ""
                     else:
-                        if !char_buffer.is_empty():
-                            if !_can_have_more_decendants(active):
+                        if char_buffer.is_empty():
+                            if active.type == Type.FUNCTION:
                                 type = Type.ERROR
-                                value = "Attempting to add too many decendants to %s at %s" % [Type.find_key(active.type), idx]
+                                value = "Empty function parameter to %s at %s" % [active.info(true, 1), idx]
+                                return
+                        else:
+                            var child: LToken = _create_token_type_from_buffer(char_buffer, idx)
+                            if child == null:
                                 return
 
-                        var dtype: Type = _char_buffer_disambiguation(char_buffer)
-                        if dtype == Type.ERROR:
-                            type = Type.ERROR
-                            value = "Invalid parameter or literal at %s" % idx
-                            return
-
-                        if !active._add_descendant(LToken.new(dtype, char_buffer)):
-                            type = Type.ERROR
-                            value = "Failed to add '%s' to %s at %s" % [char_buffer, active.info(true, 1), idx]
-                            return
+                            if !active._add_descendant(child):
+                                type = Type.ERROR
+                                value = "Failed to add '%s' to %s at %s" % [char_buffer, active.info(true, 1), idx]
+                                return
 
                         while active != null && active.type != Type.FUNCTION:
                             active = active._parent
@@ -224,13 +224,10 @@ func parse(text: String) -> void:
                             value = "%s cannot have '%s' decendant at %s" % [active.info(), char_buffer, idx]
                             return
 
-                        var dtype: Type = _char_buffer_disambiguation(char_buffer)
-                        if dtype == Type.ERROR:
-                            type = Type.ERROR
-                            value = "Invalid type at %s" % [idx]
+                        var child: LToken = _create_token_type_from_buffer(char_buffer, idx, false)
+                        if child == null:
                             return
 
-                        var child: LToken = LToken.new(dtype, char_buffer)
                         if !active._add_descendant(child):
                             type = Type.ERROR
                             value = "%s cannot be added to %s at %s" % [child.info(), active.info(true, 1), idx]
@@ -359,13 +356,10 @@ func parse(text: String) -> void:
             value = "%s doesn't allow more decendants but had remaining '%s'" % [active.info(true), char_buffer]
             return
 
-        var dtype: Type = _char_buffer_disambiguation(char_buffer)
-        if dtype == Type.ERROR:
-            type = Type.ERROR
-            value = "Invalid remaining parameter or literal '%s'" % [char_buffer]
+        var child: LToken = _create_token_type_from_buffer(char_buffer, idx, false)
+        if child == null:
             return
 
-        var child: LToken = LToken.new(dtype, char_buffer)
         if !active._add_descendant(child):
             type = Type.ERROR
             value = "Could not add descendant %s to %s" % [child.info(), active.info(true, 1)]
@@ -389,20 +383,17 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
     if !char_buffer.is_empty():
         char_buffer = char_buffer.strip_edges()
 
-    var dtype: Type
+    var dtype: Type = _char_buffer_disambiguation(char_buffer)
+    var child: LToken = LToken.new(dtype, char_buffer) if dtype != Type.ERROR else null
+
     if active.type == Type.FUNCTION:
-        if open.has(active) != char_buffer.is_empty():
+        if open.has(active) == char_buffer.is_empty():
             return null
 
         if open.has(active):
-            dtype = _char_buffer_disambiguation(char_buffer)
-            if dtype == Type.ERROR:
+            if child == null:
                 return null
 
-            if !_can_have_more_decendants(active) || !_can_have_more_decendants(new_token):
-                return null
-
-            var child: LToken = LToken.new(dtype, char_buffer)
             if !new_token._add_descendant(child) || !active._add_descendant(new_token):
                 return null
 
@@ -411,89 +402,30 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
         if !_can_have_more_decendants(new_token):
             return null
 
-        var par: LToken = active._parent
-        while par.type == Type.OP_AND && new_token.type == Type.OP_OR:
-            par = par._parent
-            if par == null:
-                return null
-
-        var a: LToken = par._descendants.pop_back()
-        if a != active && a.type != Type.OP_AND:
-            return null
-
-        if !par._add_descendant(new_token) || !new_token._add_descendant(a):
-            return null
-
-        return new_token
+        return _insert_operator_in_tree(active, new_token)
 
     elif active.type == Type.OP_NOT:
         if active._parent == null:
             return null
 
-        if char_buffer.is_empty() && !_is_complete(active):
+        if child && !_can_have_more_decendants(active):
             return null
 
-        dtype = _char_buffer_disambiguation(char_buffer)
-        if dtype == Type.ERROR:
+        if child && !active._add_descendant(child):
             return null
 
-        if !_can_have_more_decendants(active) || !_can_have_more_decendants(new_token):
-            return null
-
-        var child: LToken = LToken.new(dtype, char_buffer)
-        if !active._add_descendant(child):
-            return null
-
-        var par: LToken = active._parent
-        while par.type == Type.OP_AND && new_token.type == Type.OP_OR:
-            par = par._parent
-            if par == null:
-                return null
-
-        var a: LToken = par._descendants.pop_back()
-        if a != active && a.type != Type.OP_AND:
-            return null
-
-        if !par._add_descendant(new_token) || !new_token._add_descendant(a):
-            return null
-
-        return new_token
+        return _insert_operator_in_tree(active, new_token)
 
     elif [Type.LITERAL_STRING, Type.LITERAL_INT, Type.LITERAL_BOOL, Type.LITERAL_FLOAT].has(active.type):
         if !char_buffer.is_empty():
             return null
 
-        var par: LToken = active._parent
-        if par == null:
-            return null
-
-        while par.type == Type.OP_AND && new_token.type == Type.OP_OR:
-            par = par._parent
-
-            if par == null:
-                return null
-
-        var child: LToken = par._descendants.pop_back()
-        if child == null:
-            return
-
-        if !new_token._add_descendant(child) || !par._add_descendant(new_token):
-            return null
-
-        return new_token
+        return _insert_operator_in_tree(active, new_token)
 
     elif active.type == Type.OP_OR || new_token.type == Type.OP_AND:
-        if char_buffer.is_empty():
+        if child == null:
             return null
 
-        if !_can_have_more_decendants(active) || !_can_have_more_decendants(new_token):
-            return null
-
-        dtype = _char_buffer_disambiguation(char_buffer)
-        if dtype == Type.ERROR:
-            return null
-
-        var child: LToken = LToken.new(dtype, char_buffer)
         if !new_token._add_descendant(child) || !active._add_descendant(new_token):
             return null
 
@@ -514,27 +446,21 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
         active = active._parent
 
     if need_shuffle:
-        if active._descendants.is_empty():
+        if child == null || active._descendants.is_empty():
             return null
 
         if !_can_have_more_decendants(new_token):
             return null
 
-        var child: LToken = active._descendants.pop_back()
-        if child.type != Type.OP_AND && child._descendants.size() != 1:
+        var last: LToken = active._descendants.pop_back()
+        if last.type != Type.OP_AND && last._descendants.size() != 1:
             return null
 
-        dtype = _char_buffer_disambiguation(char_buffer)
-        if dtype == Type.ERROR:
-            return null
 
-        if !child._add_descendant(LToken.new(dtype, char_buffer)) || !new_token._add_descendant(child) || !active._add_descendant(new_token):
+        if !last._add_descendant(child) || !new_token._add_descendant(last) || !active._add_descendant(new_token):
             return null
 
         return new_token
-
-    if !_can_have_more_decendants(new_token) || !_can_have_more_decendants(active):
-        return null
 
     dtype = _char_buffer_disambiguation(char_buffer)
     if dtype == Type.ERROR:
@@ -545,7 +471,29 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
 
     return new_token
 
+static func _insert_operator_in_tree(active: LToken, new_token: LToken) -> LToken:
+    var par: LToken = active._parent
+    if par == null:
+        return null
+
+    while par.type == Type.OP_AND && new_token.type == Type.OP_OR:
+        par = par._parent
+        if par == null:
+            return null
+
+    var repl: LToken = par._descendants.pop_back()
+    if repl != active && repl.type != Type.OP_AND:
+        return null
+
+    if par._add_descendant(new_token) && new_token._add_descendant(repl):
+        return new_token
+    return null
+
+
 static func _char_buffer_disambiguation(char_buffer: String) -> Type:
+    if char_buffer.is_empty():
+        return Type.ERROR
+
     if char_buffer == "true" || char_buffer == "false":
         return Type.LITERAL_BOOL
 

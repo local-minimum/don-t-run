@@ -6,7 +6,8 @@ var tests: Array[Array] = [
     ["INVENTORY(LOBBY BADGE)", "[STATEMENT: [FUNCTION INVENTORY: [PARAMETER LOBBY BADGE]]]"],
     ["true", "[STATEMENT: [LITERAL_BOOL true]]"],
     ["\"test\\\"\" && 1.2", "[STATEMENT: [OP_AND: [LITERAL_STRING test\"], [LITERAL_FLOAT 1.2]]]"],
-    ["func(a) || func2(b)", "[STATEMENT: [OP_OR: [FUNCTION func: [PARAMETER a]], [FUNCTION func: [PARAMETER b]]]]"],
+    ["1 && 2", "[STATEMENT: [OP_AND: [LITERAL_INT 1], [LITERAL_INT 2]]]"],
+    ["func(a) || func2(b)", "[STATEMENT: [OP_OR: [FUNCTION func: [PARAMETER a]], [FUNCTION func2: [PARAMETER b]]]]"],
     ["a && b && c", "[STATEMENT: [OP_AND: [PARAMETER a], [OP_AND: [PARAMETER b], [PARAMETER c]]]]"],
     ["a && b || c", "[STATEMENT: [OP_OR: [OP_AND: [PARAMETER a], [PARAMETER b]], [PARAMETER c]]]"],
     ["a || b && c", "[STATEMENT: [OP_OR: [PARAMETER a], [OP_AND: [PARAMETER b], [PARAMETER c]]]]"]
