@@ -15,12 +15,9 @@ var tests: Array[Array] = [
 ]
 
 func _ready() -> void:
-    var t: LToken = LToken.new()
-
     for test in tests:
-        t.parse(test[0])
+        var t: LToken = LDSL_Parser.parse(test[0])
         if t.info(true) == test[1]:
             print("PASS: %s => %s" % test)
         else:
-            #t.parse(test[0])
             print("FAIL: %s => %s not %s" % [test[0], t.info(true), test[1]])

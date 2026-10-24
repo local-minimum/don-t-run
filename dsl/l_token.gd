@@ -36,30 +36,6 @@ func info(recursive: bool = false, depth: int = 100) -> String:
 
     return ret + "]"
 
-func _add_descendant(descendant: LToken, take_descendants_place: bool = false) -> bool:
-    if descendant == self:
-        push_error("%s cannot have itself as descendant" % [self.info(true, 1)])
-        return false
-
-    if !_can_have_more_decendants(self):
-        return false
-
-    var parent: LToken = descendant._parent
-
-    if parent && parent != self:
-        parent._descendants.erase(descendant)
-
-    descendant._parent = self
-    _descendants.append(descendant)
-
-    if take_descendants_place:
-        if self._parent:
-            self._parent._descendants.erase(self)
-        parent._descendants.append(self)
-        self._parent = parent
-
-    return true
-
 var value: Variant = "Token not evaluated"
 
 var is_error: bool:
