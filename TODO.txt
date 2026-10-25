@@ -1,9 +1,8 @@
-# DSL
-Language for logic needed for the game but not knowing of the game
+# Text-Adventure loader
 
 # Text-Adventure parser of the DSL
 
-# Text-Adventure
+# Text-Adventure player
 
 # Text displayer
 - use visible characters instead

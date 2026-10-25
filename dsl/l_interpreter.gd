@@ -14,11 +14,10 @@ func _enter_tree() -> void:
 
     print(_valid_functions)
 
-func eval(statement: LToken) -> Variant:
+func eval(statement: LToken, values: Dictionary[LToken, Variant]) -> Variant:
     if statement == null:
         return null
 
-    var values: Dictionary[LToken, Variant] = {}
     var current: LToken = statement
     var visited: Array[LToken]
     var bail:int = 100
@@ -52,16 +51,36 @@ func eval(statement: LToken) -> Variant:
 
     return values.get(statement, null)
 
+func _get_function_parameters(token: LToken) -> Array[LToken]:
+    var params: Array[LToken] = []
+    if !token.type == LToken.Type.FUNCTION:
+        return params
+
+    var stack: Array[LToken] = [token]
+    while !stack.is_empty():
+        var current: LToken = stack.pop_back()
+        for descendant: LToken in current._descendants:
+            if descendant.is_parameter:
+                params.append(descendant.parameter_name)
+            elif descendant.type != LToken.Type.FUNCTION && !_LITERALS.has(descendant.Type):
+                stack.append(descendant)
+
+    return params
+
 
 func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
     if _LITERALS.has(token.type):
         values[token] = token.value
         return true
 
+    if token.type == LToken.Type.PARAMETER:
+        values[token] = token
+
     if token.type == LToken.Type.STATEMENT:
         if token._descendants.is_empty():
             values[token] = null
             return true
+
         elif values.has(token._descendants[0]):
             values[token] = values[token._descendants[0]]
             return true
@@ -72,6 +91,7 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
                 if values.has(token._descendants[0]):
                     values[token] = !values[token._descendants[0]]
                     return true
+
             LToken.Type.OP_AND:
                 if !values.has(token._descendants[0]):
                     return false

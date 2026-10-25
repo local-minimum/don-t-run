@@ -39,6 +39,8 @@ func _ready() -> void:
         else:
             print("FAIL: %s => %s not %s" % [test[0], t.info(true), test[1]])
 
+    print('---')
+
     for test in tests2:
         var t: LToken = LDSL_Parser.parse(test[0])
         if t.is_error:
