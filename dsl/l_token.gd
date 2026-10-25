@@ -27,6 +27,10 @@ var is_error: bool:
     get():
         return type == Type.ERROR
 
+var is_parameter: bool:
+    get():
+        return type == Type.PARAMETER
+
 var function_name: String:
     get():
         if type != Type.FUNCTION:
@@ -48,7 +52,6 @@ func get_parent_function() -> LToken:
         p = p._parent
 
     return null
-
 
 
 func info(recursive: bool = false, depth: int = 100) -> String:

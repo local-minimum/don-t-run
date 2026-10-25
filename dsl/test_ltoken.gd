@@ -25,10 +25,10 @@ var tests2: Array[Array] = [
     ["\"hello\"", "hello"],
     ["true && false", false],
     ["!false", true],
-    ["1 && 2", true],
+    ["1 && 2", 2],
     ["add(1, 2)", 3],
-    ["false || 1 && 2", true],
-    ["pick_true_index(false, false, true, false)", 2],
+    ["false || 1 && 2", 2],
+    ["pick_index(0, 2, 1, 0, 2, 51)", 2],
 ]
 
 func _ready() -> void:

@@ -67,19 +67,39 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
             return true
 
     elif _OPS.has(token.type):
-        if token._descendants.all(func (d: LToken) -> bool: return values.has(d)):
-            match token.type:
-                LToken.Type.OP_NOT:
+        match token.type:
+            LToken.Type.OP_NOT:
+                if values.has(token._descendants[0]):
                     values[token] = !values[token._descendants[0]]
-                LToken.Type.OP_AND:
-                    values[token] = values[token._descendants[0]] && values[token._descendants[1]]
-                LToken.Type.OP_OR:
-                    values[token] = values[token._descendants[0]] || values[token._descendants[1]]
-                _:
-                    push_error("Operator %s not implemented" % [LToken.Type.find_key(token.type)])
+                    return true
+            LToken.Type.OP_AND:
+                if !values.has(token._descendants[0]):
                     return false
 
-            return true
+                if !values[token._descendants[0]]:
+                    values[token] = false
+                    return true
+
+                if values.has(token._descendants[1]):
+                    values[token] = values[token._descendants[1]]
+                    return true
+
+            LToken.Type.OP_OR:
+                if !values.has(token._descendants[0]):
+                    return false
+
+                if values[token._descendants[0]]:
+                    values[token] = true
+                    return true
+
+                if values.has(token._descendants[1]):
+                    values[token] = values[token._descendants[1]]
+                    return true
+            _:
+                push_error("Operator %s not implemented" % [LToken.Type.find_key(token.type)])
+                return false
+
+        return false
 
     elif token.type == LToken.Type.FUNCTION:
         if !_valid_functions.has(token.function_name):
@@ -88,39 +108,22 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
             return true
 
         if token._descendants.all(func (d: LToken) -> bool: return values.has(d)):
-            values[token] = call("_func_%s" % token.function_name, token._descendants.map(func (d: LToken) -> Variant: return values.get(d, null)))
+            values[token] = callv("_func_%s" % token.function_name, token._descendants.map(func (d: LToken) -> Variant: return values.get(d, null)))
             return true
 
     return false
 
-func _func_pick_true_index(args: Array) -> int:
+"""Picks a random index of arguments that matches the first argument"""
+func _func_pick_index(value: Variant, ...args: Array) -> int:
     if args.is_empty():
         return -1
 
     var opts: Array[int] = []
     for idx: int in args.size():
-        if args[idx]:
+        if args[idx] == value:
             opts.append(idx)
 
     return opts.pick_random()
 
-func _func_add(args: Array) -> Variant:
-    if args.is_empty():
-        return null
-
-    var sum: Variant
-    match typeof(args[0]):
-        TYPE_BOOL:
-            sum = false
-        TYPE_INT:
-            sum = 0
-        TYPE_FLOAT:
-            sum = 0.0
-        TYPE_STRING:
-            sum = ""
-        _:
-            sum = null
-
-    for val: Variant in args:
-        sum += val
-    return sum
+func _func_add(a: Variant, b: Variant) -> Variant:
+    return a + b
