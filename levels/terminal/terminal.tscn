@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://dai2utilqk1op" path="res://audio/player/shrug.mp3" id="13_lvt7k"]
 [ext_resource type="AudioStream" uid="uid://c3h5m6u1vcvi5" path="res://audio/player/cold.mp3" id="14_3fuq5"]
 [ext_resource type="Script" uid="uid://sd8kly2bogo7" path="res://dsl/test_ltoken.gd" id="20_0xa16"]
+[ext_resource type="Script" uid="uid://cko1u750hh2or" path="res://dsl/l_interpreter.gd" id="21_s2wgy"]
 
 [node name="Terminal" type="Control" unique_id=1766387531 node_paths=PackedStringArray("os", "game", "_music_players")]
 layout_mode = 3
@@ -940,5 +941,10 @@ bus = &"Music"
 [node name="MusicPlayer 2" type="AudioStreamPlayer" parent="." unique_id=1925335757]
 bus = &"Music"
 
-[node name="TestCFG" type="Node" parent="." unique_id=1700835680]
+[node name="TestCFG" type="Node" parent="." unique_id=1700835680 node_paths=PackedStringArray("interpreter")]
 script = ExtResource("20_0xa16")
+interpreter = NodePath("../LInterpreter")
+
+[node name="LInterpreter" type="Node" parent="." unique_id=2075708073]
+script = ExtResource("21_s2wgy")
+metadata/_custom_type_script = "uid://cko1u750hh2or"
