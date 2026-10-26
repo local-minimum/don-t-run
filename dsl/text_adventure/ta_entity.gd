@@ -15,3 +15,6 @@ var text_rule: LToken
 var texts: Array[String]
 
 var effect: LToken
+
+func _init(section: String) -> void:
+    id = section

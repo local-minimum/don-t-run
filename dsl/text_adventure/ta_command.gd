@@ -4,6 +4,10 @@ class_name TACommand
 var _action: String
 var _referent: String
 
+var is_specific: bool:
+    get():
+        return !catch_all_action && !catch_all_referent
+
 var catch_all_action: bool:
     get():
         return _action == "*"

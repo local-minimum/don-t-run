@@ -19,8 +19,8 @@
 [ext_resource type="AudioStream" uid="uid://cj0aejbdrvx8y" path="res://music/Ludum Dare 60 - Main Menu.ogg" id="12_j6ca7"]
 [ext_resource type="AudioStream" uid="uid://dai2utilqk1op" path="res://audio/player/shrug.mp3" id="13_lvt7k"]
 [ext_resource type="AudioStream" uid="uid://c3h5m6u1vcvi5" path="res://audio/player/cold.mp3" id="14_3fuq5"]
-[ext_resource type="Script" uid="uid://sd8kly2bogo7" path="res://dsl/test_ltoken.gd" id="20_0xa16"]
-[ext_resource type="Script" uid="uid://cko1u750hh2or" path="res://dsl/l_interpreter.gd" id="21_s2wgy"]
+[ext_resource type="Script" uid="uid://cfwjuv005nday" path="res://dsl/text_adventure/ta_story.gd" id="20_0xa16"]
+[ext_resource type="Script" uid="uid://cas8upiqpf441" path="res://dsl/text_adventure/ta_interpreter.gd" id="21_s2wgy"]
 
 [node name="Terminal" type="Control" unique_id=1766387531 node_paths=PackedStringArray("os", "game", "_music_players")]
 layout_mode = 3
@@ -941,10 +941,14 @@ bus = &"Music"
 [node name="MusicPlayer 2" type="AudioStreamPlayer" parent="." unique_id=1925335757]
 bus = &"Music"
 
-[node name="TestCFG" type="Node" parent="." unique_id=1700835680 node_paths=PackedStringArray("interpreter")]
+[node name="TAStory" type="Node" parent="." unique_id=1671764403 node_paths=PackedStringArray("interpreter")]
 script = ExtResource("20_0xa16")
-interpreter = NodePath("../LInterpreter")
+interpreter = NodePath("../TAInterpreter")
+story_file = "res://tesst.cfg"
+start_id = "RECEPTION"
+metadata/_custom_type_script = "uid://cfwjuv005nday"
 
-[node name="LInterpreter" type="Node" parent="." unique_id=2075708073]
+[node name="TAInterpreter" type="Node" parent="." unique_id=494913204 node_paths=PackedStringArray("story")]
 script = ExtResource("21_s2wgy")
-metadata/_custom_type_script = "uid://cko1u750hh2or"
+story = NodePath("../TAStory")
+metadata/_custom_type_script = "uid://cas8upiqpf441"

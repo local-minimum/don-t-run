@@ -9,3 +9,7 @@ func add_edge(edge: TAEdge) -> void:
 
     edge.node = self
     edges.append(edge)
+
+
+func _to_string() -> String:
+    return "[%s: %s edge%s]" % [id, edges.size(), "" if edges.size() == 1 else "s"]

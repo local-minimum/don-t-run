@@ -23,3 +23,12 @@ var command_referents: Array[String]:
 
 var hidden: LToken
 var target: LToken
+
+func matches_command(action: String, referent: String, specific: bool) -> bool:
+    for command: TACommand in commands:
+        if command.is_specific == specific && command.matches(action, referent):
+            return true
+    return false
+
+func _to_string() -> String:
+    return "<%s>" % [id]

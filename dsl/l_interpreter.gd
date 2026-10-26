@@ -12,7 +12,7 @@ func _enter_tree() -> void:
             continue
         _valid_functions.append(m['name'].substr(6))
 
-    print(_valid_functions)
+    print("%s has valid functions: %s" % [self.name, _valid_functions])
 
 func eval(statement: LToken, values: Dictionary[LToken, Variant] = {}) -> Variant:
     if statement == null:
