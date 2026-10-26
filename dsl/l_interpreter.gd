@@ -14,7 +14,7 @@ func _enter_tree() -> void:
 
     print(_valid_functions)
 
-func eval(statement: LToken, values: Dictionary[LToken, Variant]) -> Variant:
+func eval(statement: LToken, values: Dictionary[LToken, Variant] = {}) -> Variant:
     if statement == null:
         return null
 
@@ -53,8 +53,6 @@ func eval(statement: LToken, values: Dictionary[LToken, Variant]) -> Variant:
 
 func _get_function_parameters(token: LToken) -> Array[LToken]:
     var params: Array[LToken] = []
-    if !token.type == LToken.Type.FUNCTION:
-        return params
 
     var stack: Array[LToken] = [token]
     while !stack.is_empty():
@@ -69,6 +67,9 @@ func _get_function_parameters(token: LToken) -> Array[LToken]:
 
 
 func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
+    if values.has(token):
+        return values[token]
+
     if _LITERALS.has(token.type):
         values[token] = token.value
         return true
@@ -133,7 +134,7 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
 
     return false
 
-"""Picks a random index of arguments that matches the first argument"""
+# Picks a random index of arguments that matches the first argument
 func _func_pick_index(value: Variant, ...args: Array) -> int:
     if args.is_empty():
         return -1
@@ -145,5 +146,42 @@ func _func_pick_index(value: Variant, ...args: Array) -> int:
 
     return opts.pick_random()
 
+# Pick a random value between two values or from 0 to given value if only one supplied
+func _func_rnd(a: Variant, b: Variant = null) -> Variant:
+    match typeof(a):
+        TYPE_INT:
+            if typeof(b) == typeof(a):
+                return randi_range(a, b)
+            return randi_range(0, a)
+        TYPE_FLOAT:
+            if typeof(b) == typeof(a):
+                return randf_range(a, b)
+            return randf_range(0, a)
+        _:
+            push_error("rnd only supports integer and floats, got %s" % a)
+            return randi_range(0, 1)
+
+func _func_first(...args: Array) -> Variant:
+    if args.is_empty():
+        return null
+
+    var last_idx: int = args.size() - 1
+    var idx: int = 0
+    while idx <= last_idx:
+        if idx == last_idx:
+            return args[last_idx]
+        if args[idx]:
+            return args[idx + 1]
+
+        idx += 2
+
+    return null
+
+func _func_if(condition: Variant, true_value: Variant, false_value: Variant) -> Variant:
+    return true_value if condition else false_value
+
 func _func_add(a: Variant, b: Variant) -> Variant:
     return a + b
+
+func _func_sub(a: Variant, b: Variant) -> Variant:
+    return a - b
