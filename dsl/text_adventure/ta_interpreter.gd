@@ -15,16 +15,33 @@ func _func_location(_fun: LToken, thing: LToken) -> bool:
 
     return eval(thing)
 
-func _func_add_location(fun: LToken, ...args: Array) -> void:
+func _func_add_location(fun: LToken, ...args: Array) -> bool:
     var node: TANode = active if active is TANode else (active as TAEdge).node
     if node == null:
-        return
+        return false
 
     for arg: LToken in args:
         if arg.is_parameter:
            node.state[arg.parameter_name] = true
         else:
-            push_warning("Cannot add location to %s (%s) argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
+            push_error("Cannot add location to %s (%s) argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
+            return false
+
+    return !args.is_empty()
+
+func _func_remove_location(fun: LToken, ...args: Array) -> bool:
+    var node: TANode = active if active is TANode else (active as TAEdge).node
+    if node == null:
+        return false
+
+    for arg: LToken in args:
+        if arg.is_parameter:
+            node.state.erase(arg.parameter_name)
+        else:
+            push_error("Cannot remove location to %s (%s) argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
+            return false
+
+    return !args.is_empty()
 
 func _func_move(_fun: LToken, target: LToken, pop_current: bool = true) -> bool:
     if !target.is_parameter:
@@ -122,3 +139,32 @@ func _func_param(fun: LToken, target: LToken) -> Variant:
                     values[param] = edge.command_referents
 
     return eval(target, values)
+
+func _func_rewrite_referant(fun: LToken, old: Variant, new: Variant) -> bool:
+    var edge: TAEdge = active if active is TAEdge else null
+    if edge == null:
+        push_error("Can only rewrite rereferant on edges, active is %s so skipping %s" % [active, fun.info(true, 1)])
+        return false
+
+    if old is String:
+        pass
+    elif old is LToken && (old as LToken).is_parameter:
+        old = (old as LToken).parameter_name
+    else:
+        push_error("The replaced referent must either be a string or parameter, got %s for %s" % [old, fun.info(true, 1)])
+        return false
+
+    if new is String:
+        pass
+    elif new is LToken && (new as LToken).is_parameter:
+        new = (new as LToken).parameter_name
+    else:
+        push_error("The replacing referent must either be a string or parameter, got %s for %s" % [new, fun.info(true, 1)])
+
+    var found: bool = false
+    for command: TACommand in edge.commands:
+        if command._referent == old:
+            found = true
+            edge.state[command] = command.replace_referent(new)
+
+    return found

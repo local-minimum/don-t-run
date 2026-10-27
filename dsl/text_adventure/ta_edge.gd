@@ -9,6 +9,7 @@ var command_actions: Array[String]:
     get():
         var ret: Array[String]
         for command: TACommand in commands:
+            command = state.get(command, command)
             if !command.catch_all_action:
                 ret.append(command._action)
         return ret
@@ -17,6 +18,7 @@ var command_referents: Array[String]:
     get():
         var ret: Array[String]
         for command: TACommand in commands:
+            command = state.get(command, command)
             if !command.catch_all_referent:
                 ret.append(command._referent)
         return ret

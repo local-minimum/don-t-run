@@ -8,6 +8,7 @@ class_name TAStory
 
 var nodes: Array[TANode]
 var active_node_stack: Array[TANode]
+var globals: Array[TAEntity]
 
 func _ready() -> void:
     if autoload:

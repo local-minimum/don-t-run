@@ -36,3 +36,6 @@ func matches(action: String, referent: String) -> bool:
 
 func _to_string() -> String:
     return "%s %s" % [_action, _referent]
+
+func replace_referent(referent: String) -> TACommand:
+    return TACommand.new([_action, referent])
