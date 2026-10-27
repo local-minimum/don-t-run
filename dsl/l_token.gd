@@ -31,6 +31,10 @@ var is_parameter: bool:
     get():
         return type == Type.PARAMETER
 
+var is_function: bool:
+    get():
+        return type == Type.FUNCTION
+
 var function_name: String:
     get():
         if type != Type.FUNCTION:

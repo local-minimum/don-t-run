@@ -51,6 +51,7 @@ func eval(statement: LToken, values: Dictionary[LToken, Variant] = {}) -> Varian
 
     return values.get(statement, null)
 
+# Lists all parameters not belonging to nested functions. Safe to call with function
 func _get_function_parameters(token: LToken) -> Array[LToken]:
     var params: Array[LToken] = []
 
@@ -60,7 +61,7 @@ func _get_function_parameters(token: LToken) -> Array[LToken]:
         for descendant: LToken in current._descendants:
             if descendant.is_parameter:
                 params.append(descendant.parameter_name)
-            elif descendant.type != LToken.Type.FUNCTION && !_LITERALS.has(descendant.Type):
+            elif !descendant.is_function && !is_literal(descendant):
                 stack.append(descendant)
 
     return params
@@ -70,11 +71,11 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
     if values.has(token):
         return values[token]
 
-    if _LITERALS.has(token.type):
+    if is_literal(token):
         values[token] = token.value
         return true
 
-    if token.type == LToken.Type.PARAMETER:
+    if token.is_parameter:
         values[token] = token
 
     if token.type == LToken.Type.STATEMENT:
@@ -86,7 +87,7 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
             values[token] = values[token._descendants[0]]
             return true
 
-    elif _OPS.has(token.type):
+    elif is_op(token):
         match token.type:
             LToken.Type.OP_NOT:
                 if values.has(token._descendants[0]):
@@ -122,20 +123,22 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
 
         return false
 
-    elif token.type == LToken.Type.FUNCTION:
+    elif token.is_function:
         if !_valid_functions.has(token.function_name):
             push_error("Function %s not supported (valid functions: %s)" % [token.info(true, 1), _valid_functions])
             values[token] = null
             return true
 
         if token._descendants.all(func (d: LToken) -> bool: return values.has(d)):
-            values[token] = callv("_func_%s" % token.function_name, token._descendants.map(func (d: LToken) -> Variant: return values.get(d, null)))
+            var vector: Array = [token]
+            vector.append_array(token._descendants.map(func (d: LToken) -> Variant: return values.get(d, null)))
+            values[token] = callv("_func_%s" % token.function_name, vector)
             return true
 
     return false
 
 # Picks a random index of arguments that matches the first argument
-func _func_pick_index(value: Variant, ...args: Array) -> int:
+func _func_pick_index(_fun: LToken, value: Variant, ...args: Array) -> int:
     if args.is_empty():
         return -1
 
@@ -147,7 +150,7 @@ func _func_pick_index(value: Variant, ...args: Array) -> int:
     return opts.pick_random()
 
 # Pick a random value between two values or from 0 to given value if only one supplied
-func _func_rnd(a: Variant, b: Variant = null) -> Variant:
+func _func_rnd(_fun: LToken, a: Variant, b: Variant = null) -> Variant:
     match typeof(a):
         TYPE_INT:
             if typeof(b) == typeof(a):
@@ -161,7 +164,7 @@ func _func_rnd(a: Variant, b: Variant = null) -> Variant:
             push_error("rnd only supports integer and floats, got %s" % a)
             return randi_range(0, 1)
 
-func _func_first(...args: Array) -> Variant:
+func _func_first(_fun: LToken, ...args: Array) -> Variant:
     if args.is_empty():
         return null
 
@@ -177,11 +180,32 @@ func _func_first(...args: Array) -> Variant:
 
     return null
 
-func _func_if(condition: Variant, true_value: Variant, false_value: Variant) -> Variant:
+func _func_if(_fun: LToken, condition: Variant, true_value: Variant, false_value: Variant) -> Variant:
     return true_value if condition else false_value
 
-func _func_add(a: Variant, b: Variant) -> Variant:
+func _func_add(_fun: LToken, a: Variant, b: Variant) -> Variant:
     return a + b
 
-func _func_sub(a: Variant, b: Variant) -> Variant:
+func _func_sub(_fun: LToken, a: Variant, b: Variant) -> Variant:
     return a - b
+
+func _func_eq(_fun: LToken, a: Variant, b: Variant) -> bool:
+    return a == b
+
+func _func_gt(_fun: LToken, a: Variant, b: Variant) -> bool:
+    return a > b
+
+func _func_lt(_fun: LToken, a: Variant, b: Variant) -> bool:
+    return a < b
+
+func _func_gte(_fun: LToken, a: Variant, b: Variant) -> bool:
+    return a >= b
+
+func _func_lte(_fun: LToken, a: Variant, b: Variant) -> bool:
+    return b <= a
+
+static func is_literal(t: LToken) -> bool:
+    return _LITERALS.has(t.type)
+
+static func is_op(t: LToken) -> bool:
+    return _OPS.has(t.type)

@@ -16,5 +16,8 @@ var texts: Array[String]
 
 var effect: LToken
 
+# Not loaded from conf
+var state: Dictionary
+
 func _init(section: String) -> void:
     id = section

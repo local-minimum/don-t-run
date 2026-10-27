@@ -15,6 +15,19 @@ func _ready() -> void:
             push_error("Failed to load story %s" % story_file)
         print(self)
 
+func set_active_node(node: TANode, pop_current: bool = true) -> void:
+    if !active_node_stack.is_empty() && active_node_stack[-1] == node:
+        return
+
+    if pop_current:
+        active_node_stack.pop_back()
+
+    active_node_stack.append(node)
+
+func _to_string() -> String:
+    return "{%s %s node%s, active: %s}" % [story_file.split("/")[-1], nodes.size(), "" if nodes.size() == 1 else "s", active_node_stack]
+
+#region Loading
 func load_story() -> bool:
     nodes.clear()
     active_node_stack.clear()
@@ -143,9 +156,7 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
             return false
 
     return true
-
-func _to_string() -> String:
-    return "{%s %s node%s, active: %s}" % [story_file.split("/")[-1], nodes.size(), "" if nodes.size() == 1 else "s", active_node_stack]
+#endregion Loading
 
 #region Entity
 func get_entity_name(entity: TAEntity) -> String:

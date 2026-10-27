@@ -946,6 +946,7 @@ script = ExtResource("20_0xa16")
 interpreter = NodePath("../TAInterpreter")
 story_file = "res://tesst.cfg"
 start_id = "RECEPTION"
+autoload = null
 metadata/_custom_type_script = "uid://cfwjuv005nday"
 
 [node name="TAInterpreter" type="Node" parent="." unique_id=494913204 node_paths=PackedStringArray("story")]
