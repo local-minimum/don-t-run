@@ -1,6 +1,7 @@
-# Text-Adventure loader
-
 # Text-Adventure parser of the DSL
+actually move edges if possible first! (add_global(INVENTORY, LETTER))
+
+text-modifiers by inventory???!
 
 # Text-Adventure player
 

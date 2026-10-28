@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://d01veociyi8q1"]
+
+[ext_resource type="Theme" uid="uid://c6vn3fa0xw4ki" path="res://levels/terminal/terminal_theme.tres" id="1_oa6g8"]
+[ext_resource type="Script" uid="uid://ciurabiofrno7" path="res://levels/terminal/terminal_text.gd" id="2_b283c"]
+[ext_resource type="Script" uid="uid://bnyriamesgxvh" path="res://levels/terminal/options_presenter.gd" id="3_dk86f"]
+[ext_resource type="AudioStream" uid="uid://cj0aejbdrvx8y" path="res://music/Ludum Dare 60 - Main Menu.ogg" id="4_v6o5t"]
+[ext_resource type="Script" uid="uid://cfwjuv005nday" path="res://dsl/text_adventure/ta_story.gd" id="5_8slpo"]
+[ext_resource type="Script" uid="uid://cas8upiqpf441" path="res://dsl/text_adventure/ta_interpreter.gd" id="6_854bb"]
+
+[node name="Terminal 2_0" type="Control" unique_id=226405839]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_oa6g8")
+
+[node name="Background" type="ColorRect" parent="." unique_id=468429917]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02507907, 0.16247961, 0.039315447, 1)
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="." unique_id=688451413]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="AspectRatioContainer" unique_id=308134372]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="AspectRatioContainer/MarginContainer" unique_id=1318757837]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Main Text" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=367095531]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+script = ExtResource("2_b283c")
+default_speed = 0.01
+
+[node name="Input Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=1659165201]
+layout_mode = 2
+size_flags_vertical = 8
+bbcode_enabled = true
+fit_content = true
+script = ExtResource("2_b283c")
+
+[node name="Options Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=541844506]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 8
+bbcode_enabled = true
+fit_content = true
+script = ExtResource("3_dk86f")
+
+[node name="DialogPlayer" type="AudioStreamPlayer" parent="." unique_id=2077137074]
+bus = &"Dialogue"
+
+[node name="MusicPlayer 1" type="AudioStreamPlayer" parent="." unique_id=1246061886]
+stream = ExtResource("4_v6o5t")
+autoplay = true
+bus = &"Music"
+
+[node name="MusicPlayer 2" type="AudioStreamPlayer" parent="." unique_id=1775923377]
+bus = &"Music"
+
+[node name="TAInterpreter" type="Node" parent="." unique_id=497376452 node_paths=PackedStringArray("story")]
+script = ExtResource("6_854bb")
+story = NodePath("../TAStory")
+metadata/_custom_type_script = "uid://cas8upiqpf441"
+
+[node name="TAStory" type="Node" parent="." unique_id=594991679 node_paths=PackedStringArray("interpreter")]
+script = ExtResource("5_8slpo")
+interpreter = NodePath("../TAInterpreter")
+story_file = "res://levels/new_terminal/story.cfg"
+start_id = "CAR"
+metadata/_custom_type_script = "uid://cfwjuv005nday"

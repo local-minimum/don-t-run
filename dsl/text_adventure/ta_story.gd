@@ -16,6 +16,12 @@ func _ready() -> void:
             push_error("Failed to load story %s" % story_file)
         print(self)
 
+func set_backtrack_active_node() -> bool:
+    if active_node_stack.size() < 2:
+        return false
+    active_node_stack.pop_back()
+    return true
+
 func set_active_node(node: TANode, pop_current: bool = true) -> void:
     if !active_node_stack.is_empty() && active_node_stack[-1] == node:
         return

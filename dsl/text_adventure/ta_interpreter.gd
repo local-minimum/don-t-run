@@ -109,6 +109,9 @@ func _func_move(_fun: LToken, target: LToken, pop_current: bool = true) -> bool:
 
     return false
 
+func _func_move_back(_fun: LToken) -> bool:
+    return story.set_backtrack_active_node()
+
 func _func_param(fun: LToken, target: LToken) -> Variant:
     if active == null:
         push_error("No active node trying to process %s" % [fun.info(true, 1)])
