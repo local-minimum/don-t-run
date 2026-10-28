@@ -41,9 +41,14 @@ func load_story() -> bool:
             pass
         elif section.contains(":") || t == "edge":
             continue
+        var global: bool = cfg.get_value(section, "global", false)
 
         var node: TANode = TANode.new(section)
-        nodes.append(node)
+        if global:
+            globals.append(node)
+        else:
+            nodes.append(node)
+
         if start_id == section:
             active_node_stack.append(node)
 
@@ -54,6 +59,7 @@ func load_story() -> bool:
             push_error("%s of %s is not a valid setting" % [key, section])
 
     for section in cfg.get_sections():
+        var global: bool = cfg.get_value(section, "global", false)
         var t: Variant = cfg.get_value(section, "type", "")
         if t == "node" || t != "edge" && !section.contains(":"):
             continue
@@ -97,13 +103,24 @@ func load_story() -> bool:
                     push_error("'%s' of '%s' not a valid setting" % [key, section])
 
 
+        if global:
+            globals.append(edge)
+            continue
+
         var found: bool = false
-        var node_id: String = edge.id.split(":")[0]
+        var node_id: String = section.split(":")[0]
         for node: TANode in nodes:
             if node.id == node_id:
                 found = true
                 node.add_edge(edge)
                 break
+
+        if !found:
+            for entity: TAEntity in globals:
+                if entity is TANode && entity.id == node_id:
+                    found = true
+                    (entity as TANode).add_edge(edge)
+                    break
 
         if !found:
             push_error("Edge '%s' with id '%s' cannot find a node with id '%s'" % [section, edge.id, node_id])
@@ -112,7 +129,7 @@ func load_story() -> bool:
 
 func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: String) -> bool:
     match key:
-        "type":
+        "type", "global":
             # This overrides default node vs edge assignment and should not be assigned to the node/edge
             pass
 

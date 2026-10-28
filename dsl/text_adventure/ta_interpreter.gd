@@ -4,6 +4,60 @@ class_name TAInterpreter
 @export var story: TAStory
 var active: TAEntity
 
+#region globals
+func _get_global(id: Variant) -> TAEntity:
+    if id is not String && (id is not LToken || (id as LToken).is_parameter):
+        return null
+
+    var sid: String = id if id is String else (id as LToken).parameter_name
+
+    for global: TAEntity in story.globals:
+        if global.id == sid:
+            return global
+
+    return null
+
+func _func_global(_fun: LToken, id: Variant, thing: LToken) -> bool:
+    var global: TAEntity = _get_global(id)
+    if global == null:
+        return false
+
+    var values: Dictionary[LToken, Variant] = {}
+    for param: LToken in _get_function_parameters(thing):
+        values[param] = global.state.has(thing.parameter_name)
+
+    return eval(thing, values)
+
+func _func_add_global(fun: LToken, id: Variant, ...args: Array) -> bool:
+    var global: TAEntity = _get_global(id)
+    if global == null:
+        return false
+
+    for arg: LToken in args:
+        if arg.is_parameter:
+           global.state[arg.parameter_name] = true
+        else:
+            push_error("Cannot add to global %s; %s's argument %s not parameter" % [global.id, fun.info(true, 1), arg.info(),])
+            return false
+
+    return !args.is_empty()
+
+func _func_remove_global(fun: LToken, id: Variant, ...args: Array) -> bool:
+    var global: TAEntity = _get_global(id)
+    if global == null:
+        return false
+
+    for arg: LToken in args:
+        if arg.is_parameter:
+            global.state.erase(arg.parameter_name)
+        else:
+            push_error("Cannot remove from global %s; %s's argument %s not parameter" % [global.id, fun.info(true, 1), arg.info(),])
+            return false
+
+    return !args.is_empty()
+#endregion globals
+
+#region location
 func _func_location(_fun: LToken, thing: LToken) -> bool:
     var node: TANode = active if active is TANode else (active as TAEdge).node
     if node == null:
@@ -13,7 +67,7 @@ func _func_location(_fun: LToken, thing: LToken) -> bool:
     for param: LToken in _get_function_parameters(thing):
         values[param] = node.state.has(thing.parameter_name)
 
-    return eval(thing)
+    return eval(thing, values)
 
 func _func_add_location(fun: LToken, ...args: Array) -> bool:
     var node: TANode = active if active is TANode else (active as TAEdge).node
@@ -24,7 +78,7 @@ func _func_add_location(fun: LToken, ...args: Array) -> bool:
         if arg.is_parameter:
            node.state[arg.parameter_name] = true
         else:
-            push_error("Cannot add location to %s (%s) argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
+            push_error("Cannot add to location  %s; %s's argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
             return false
 
     return !args.is_empty()
@@ -38,10 +92,11 @@ func _func_remove_location(fun: LToken, ...args: Array) -> bool:
         if arg.is_parameter:
             node.state.erase(arg.parameter_name)
         else:
-            push_error("Cannot remove location to %s (%s) argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
+            push_error("Cannot remove from location %s; %s's argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
             return false
 
     return !args.is_empty()
+#endregion location
 
 func _func_move(_fun: LToken, target: LToken, pop_current: bool = true) -> bool:
     if !target.is_parameter:
