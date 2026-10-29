@@ -35,7 +35,15 @@ func _func_add_global(fun: LToken, id: Variant, ...args: Array) -> bool:
 
     for arg: LToken in args:
         if arg.is_parameter:
-           global.state[arg.parameter_name] = true
+            var edge: TAEdge = story.find_edge(arg.parameter_name)
+            if edge:
+                if global is TANode:
+                    (global as TANode).add_edge(edge)
+                else:
+                    push_error("Failed to add edge %s to %s because not a node in %s" % [edge, global, arg.info()])
+                    return false
+            else:
+                global.state[arg.parameter_name] = true
         else:
             push_error("Cannot add to global %s; %s's argument %s not parameter" % [global.id, fun.info(true, 1), arg.info(),])
             return false
@@ -49,7 +57,17 @@ func _func_remove_global(fun: LToken, id: Variant, ...args: Array) -> bool:
 
     for arg: LToken in args:
         if arg.is_parameter:
-            global.state.erase(arg.parameter_name)
+            if global is TANode:
+                var node: TANode = global
+                var edge: TAEdge = node.get_edge(arg.parameter_name)
+                var target: TANode = story.get_first_noglobal_active_node()
+                if edge != null && target != null:
+                    target.add_edge(edge)
+                else:
+                    push_warning("There's no place to drop %s so it gets orphanned by %s from %s" % [edge, fun.info(true, 1), node])
+                    node.orphan_edge(edge)
+            else:
+                global.state.erase(arg.parameter_name)
         else:
             push_error("Cannot remove from global %s; %s's argument %s not parameter" % [global.id, fun.info(true, 1), arg.info(),])
             return false
@@ -76,7 +94,11 @@ func _func_add_location(fun: LToken, ...args: Array) -> bool:
 
     for arg: LToken in args:
         if arg.is_parameter:
-           node.state[arg.parameter_name] = true
+            var edge: TAEdge = story.find_edge(arg.parameter_name)
+            if edge:
+                node.add_edge(edge)
+            else:
+                node.state[arg.parameter_name] = true
         else:
             push_error("Cannot add to location  %s; %s's argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
             return false
@@ -90,7 +112,14 @@ func _func_remove_location(fun: LToken, ...args: Array) -> bool:
 
     for arg: LToken in args:
         if arg.is_parameter:
-            node.state.erase(arg.parameter_name)
+            var edge: TAEdge = node.get_edge(arg.parameter_name)
+            if edge != null:
+                if node.orphan_edge(edge):
+                    push_warning("Edge %s orphaned by %s from %s" % [edge, fun.info(true, 1), node])
+                else:
+                    node.state.erase(arg.parameter_name)
+            else:
+                node.state.erase(arg.parameter_name)
         else:
             push_error("Cannot remove from location %s; %s's argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
             return false

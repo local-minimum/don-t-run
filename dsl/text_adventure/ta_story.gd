@@ -6,6 +6,7 @@ class_name TAStory
 @export var start_id: String
 @export var autoload: bool = true
 
+var _edges: Dictionary[String, TAEdge] = {}
 var nodes: Array[TANode]
 var active_node_stack: Array[TANode]
 var globals: Array[TAEntity]
@@ -22,6 +23,14 @@ func set_backtrack_active_node() -> bool:
     active_node_stack.pop_back()
     return true
 
+func get_first_noglobal_active_node() -> TANode:
+    var i: int = active_node_stack.size() - 1
+    while i >= 0:
+        var n: TANode = active_node_stack[i]
+        if !globals.has(n):
+            return n
+    return null
+
 func set_active_node(node: TANode, pop_current: bool = true) -> void:
     if !active_node_stack.is_empty() && active_node_stack[-1] == node:
         return
@@ -30,6 +39,9 @@ func set_active_node(node: TANode, pop_current: bool = true) -> void:
         active_node_stack.pop_back()
 
     active_node_stack.append(node)
+
+func find_edge(id: String) -> TAEdge:
+    return _edges.get(id)
 
 func _to_string() -> String:
     return "{%s %s node%s, active: %s}" % [story_file.split("/")[-1], nodes.size(), "" if nodes.size() == 1 else "s", active_node_stack]
@@ -108,6 +120,7 @@ func load_story() -> bool:
                 _:
                     push_error("'%s' of '%s' not a valid setting" % [key, section])
 
+        _edges[edge.id] = edge
 
         if global:
             globals.append(edge)
