@@ -147,6 +147,9 @@ func _func_pick_index(_fun: LToken, value: Variant, ...args: Array) -> int:
         if args[idx] == value:
             opts.append(idx)
 
+    if opts.is_empty():
+        return -1
+
     return opts.pick_random()
 
 # Pick a random value between two values or from 0 to given value if only one supplied
