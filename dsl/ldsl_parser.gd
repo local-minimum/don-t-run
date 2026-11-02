@@ -10,6 +10,22 @@ static func _add_left_side(new_token: LToken, active: LToken, char_buffer: Strin
     var dtype: LToken.Type = _char_buffer_disambiguation(char_buffer)
     var child: LToken = LToken.new(dtype, char_buffer) if dtype != LToken.Type.ERROR else null
 
+    if active.type == LToken.Type.STATEMENT:
+        if child == null:
+            var existing: LToken = active._descendants.pop_back()
+            if existing == null:
+                return null
+
+            if _add_descendant(active, new_token) && _add_descendant(new_token, existing):
+                return new_token
+
+            return null
+
+        else:
+            if _add_descendant(new_token, child):
+                return new_token
+            return null
+
     if active.type == LToken.Type.FUNCTION:
         if open.has(active) == char_buffer.is_empty():
             return null
@@ -321,14 +337,15 @@ static func parse(text: String) -> LToken:
 
                 ",":
                     if active.type == LToken.Type.FUNCTION:
-                        var child: LToken = _create_token_type_from_buffer(statement, char_buffer, idx)
-                        if child == null:
-                            return _error(statement, "%s has empty parameter at %s" % [active.info(true, 1), idx])
+                        if !char_buffer.is_empty():
+                            var child: LToken = _create_token_type_from_buffer(statement, char_buffer, idx)
+                            if child == null:
+                                return _error(statement, "%s has empty parameter at %s using '%s'" % [active.info(true, 1), idx, char_buffer])
 
-                        if !_add_descendant(active, child):
-                            return _error(statement, "Failed to add '%s' to %s at %s" % [char_buffer, active.info(true, 1), idx])
+                            if !_add_descendant(active, child):
+                                return _error(statement, "Failed to add '%s' to %s at %s" % [char_buffer, active.info(true, 1), idx])
 
-                        char_buffer = ""
+                            char_buffer = ""
                     else:
                         if char_buffer.is_empty():
                             if active.type == LToken.Type.FUNCTION:
@@ -401,6 +418,8 @@ static func parse(text: String) -> LToken:
                     if !_is_complete(active):
                         return _error(statement, "%s is incomplete at %s" % [active.info(), idx])
 
+                    active = active._parent
+
                     char_buffer = ""
 
                 "!":
@@ -426,7 +445,7 @@ static func parse(text: String) -> LToken:
                         var d: LToken = LToken.new(LToken.Type.OP_AND)
                         active = _add_left_side(d, active, char_buffer, parenthesis_stack)
                         if active == null:
-                            return _error(statement, "Not a valid left side of && at %s" % idx)
+                            return _error(statement, "Not a valid left side of && at %s using buffer: '%s'" % [idx, char_buffer])
 
                         char_buffer = ""
                     elif char_buffer.is_empty():
@@ -443,7 +462,7 @@ static func parse(text: String) -> LToken:
                         var d: LToken = LToken.new(LToken.Type.OP_OR)
                         active = _add_left_side(d, active, char_buffer, parenthesis_stack)
                         if active == null:
-                            return _error(statement, "Not a valid left side of || at %s" % idx)
+                            return _error(statement, "Not a valid left side of || at %s using buffer: '%s'" % [idx, char_buffer])
 
                         char_buffer = ""
                     elif char_buffer.is_empty():

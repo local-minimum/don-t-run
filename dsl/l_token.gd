@@ -80,3 +80,6 @@ func info(recursive: bool = false, depth: int = 100) -> String:
             first = false
 
     return ret + "]"
+
+func _to_string() -> String:
+    return info(true)

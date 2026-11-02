@@ -11,6 +11,8 @@ var nodes: Array[TANode]
 var active_node_stack: Array[TANode]
 var globals: Array[TAEntity]
 
+const _VERBOSE: bool = false
+
 func _ready() -> void:
     if autoload:
         if !load_story():
@@ -43,6 +45,17 @@ func set_active_node(node: TANode, pop_current: bool = true) -> void:
 func find_edge(id: String) -> TAEdge:
     return _edges.get(id)
 
+func find_node(id: String) -> TANode:
+    for n: TANode in nodes:
+        if n.id == id:
+            return n
+
+    for e: TAEntity in globals:
+        if e is TANode && e.id == id:
+            return e
+
+    return null
+
 func _to_string() -> String:
     return "{%s %s node%s, active: %s}" % [story_file.split("/")[-1], nodes.size(), "" if nodes.size() == 1 else "s", active_node_stack]
 
@@ -54,6 +67,9 @@ func load_story() -> bool:
     cfg.load(story_file)
 
     for section in cfg.get_sections():
+        if _VERBOSE:
+            print("\n== %s ==" % [section])
+
         var t: Variant = cfg.get_value(section, "type", "")
         if t == "node":
             pass
@@ -84,12 +100,15 @@ func load_story() -> bool:
 
         var edge: TAEdge = TAEdge.new(section)
 
+        if _VERBOSE:
+            print("\n== %s ==" % [section])
+
         for key in cfg.get_section_keys(section):
             if _add_common_key(edge, cfg, section, key):
                 continue
 
             match key:
-                "commands":
+                "command", "commands":
                     var val: Variant = cfg.get_value(section, key)
                     if val is Array:
                         var arr: Array = val as Array
@@ -98,6 +117,12 @@ func load_story() -> bool:
                                 return cmd is Array && (cmd as Array).all(func (e: Variant) -> bool: return e is String)
                         ):
                             edge.commands.append_array(arr.map(func (cmd: Array) -> TACommand: return TACommand.new(cmd)))
+                            if _VERBOSE:
+                                print("COMMANDS: %s" % [val])
+                        elif arr.size() == 2 && arr.all(func(s: Variant) -> bool: return s is String):
+                            edge.commands.append(TACommand.new(arr))
+                            if _VERBOSE:
+                                print("COMMANDS: %s" % [val])
                         else:
                             push_error("Failed to parse '%s' of '%s'. All commands must be string arrays: %s" % [key, section, val])
                     else:
@@ -106,17 +131,20 @@ func load_story() -> bool:
                 "hidden":
                     var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
                     if val.is_error:
-                        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val])
+                        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
                     else:
                         edge.hidden = val
+                        if _VERBOSE:
+                            print("%s => %s" % [cfg.get_value(section, key), val])
 
                 "target":
                     var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
                     if val.is_error:
-                        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val])
+                        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
                     else:
                         edge.target = val
-
+                        if _VERBOSE:
+                            print("%s => %s" % [cfg.get_value(section, key), val])
                 _:
                     push_error("'%s' of '%s' not a valid setting" % [key, section])
 
@@ -165,6 +193,8 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
                 push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
             else:
                 entity.name = val
+                if _VERBOSE:
+                    print("%s => %s" % [cfg.get_value(section, key), val])
 
         "text_rule":
             var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
@@ -172,8 +202,10 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
                 push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
             else:
                 entity.text_rule = val
+                if _VERBOSE:
+                    print("%s => %s" % [cfg.get_value(section, key), val])
 
-        "text":
+        "text", "texts":
             var val: Variant = cfg.get_value(section, key)
             if val is String:
                 entity.texts.append(val)
@@ -188,6 +220,8 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
                 push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
             else:
                 entity.effect = val
+                if _VERBOSE:
+                    print("%s => %s" % [cfg.get_value(section, key), val])
 
         _:
             return false

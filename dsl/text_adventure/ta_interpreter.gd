@@ -125,6 +125,72 @@ func _func_remove_location(fun: LToken, ...args: Array) -> bool:
             return false
 
     return !args.is_empty()
+
+func _func_rewrite_location_referants(fun: LToken, old: Variant, new: Variant) -> bool:
+    var node: TANode = active if active is TANode else null
+    if active is TAEdge:
+        node = (active as TAEdge).node
+
+    if node == null:
+        push_error("No active node so skipping %s" % [fun.info(true, 1)])
+        return false
+
+    if old is String:
+        pass
+    elif old is LToken && (old as LToken).is_parameter:
+        old = (old as LToken).parameter_name
+    else:
+        push_error("The replaced referent must either be a string or parameter, got %s for %s" % [old, fun.info(true, 1)])
+        return false
+
+    if new is String:
+        pass
+    elif new is LToken && (new as LToken).is_parameter:
+        new = (new as LToken).parameter_name
+    else:
+        push_error("The replacing referent must either be a string or parameter, got %s for %s" % [new, fun.info(true, 1)])
+
+    var found: bool = false
+    for edge: TAEdge in node.edges:
+        found = __rewrite(edge, old, new) || found
+
+    return found
+
+func _func_rewrite_other_location_referants(fun: LToken, id: Variant, old: Variant, new: Variant) -> bool:
+    if id is String:
+        pass
+    elif id is LToken && (id as LToken).is_parameter:
+        id = (id as LToken).parameter_name
+    else:
+        push_error("The id must either be a string or parameter, got %s for %s" % [id, fun.info(true, 1)])
+        return false
+
+    var node: TANode = story.find_node(id)
+
+    if node == null:
+        push_error("No node found for '%s' so skipping %s" % [id, fun.info(true, 1)])
+        return false
+
+    if old is String:
+        pass
+    elif old is LToken && (old as LToken).is_parameter:
+        old = (old as LToken).parameter_name
+    else:
+        push_error("The replaced referent must either be a string or parameter, got %s for %s" % [old, fun.info(true, 1)])
+        return false
+
+    if new is String:
+        pass
+    elif new is LToken && (new as LToken).is_parameter:
+        new = (new as LToken).parameter_name
+    else:
+        push_error("The replacing referent must either be a string or parameter, got %s for %s" % [new, fun.info(true, 1)])
+
+    var found: bool = false
+    for edge: TAEdge in node.edges:
+        found = __rewrite(edge, old, new) || found
+
+    return found
 #endregion location
 
 func _func_move(_fun: LToken, target: LToken, pop_current: bool = true) -> bool:
@@ -248,6 +314,9 @@ func _func_rewrite_referant(fun: LToken, old: Variant, new: Variant) -> bool:
     else:
         push_error("The replacing referent must either be a string or parameter, got %s for %s" % [new, fun.info(true, 1)])
 
+    return __rewrite(edge, old, new)
+
+func __rewrite(edge: TAEdge, old: String, new: String) -> bool:
     var found: bool = false
     for command: TACommand in edge.commands:
         if command._referent == old:
