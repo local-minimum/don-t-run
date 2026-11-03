@@ -284,7 +284,7 @@ static func parse(text: String) -> LToken:
     var statement: LToken = LToken.new()
 
     var word_pattern: RegEx = RegEx.new()
-    word_pattern.compile("[a-zA-Z-_0-9]+")
+    word_pattern.compile("[a-zA-Z-_'0-9]+")
     var function_name: RegEx = RegEx.new()
     function_name.compile("^[a-zA-Z_0-9]+$")
 

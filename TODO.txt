@@ -1,10 +1,7 @@
-# the adventure
 
-- [UPPER RECEPTION: DOOR LOUNGE] missing text
-- rewrite_other_location_referants()
 # Text-Adventure parser of the DSL
 
-text-modifiers by inventory???!
+
 
 # Text-Adventure player
 

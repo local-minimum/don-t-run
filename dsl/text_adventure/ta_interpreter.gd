@@ -316,6 +316,14 @@ func _func_rewrite_referant(fun: LToken, old: Variant, new: Variant) -> bool:
 
     return __rewrite(edge, old, new)
 
+func _func_text_append(fun: LToken, value: String) -> bool:
+    if !active:
+        push_error("%s cannot be executed since no active entity" % [fun.info(true, 1)])
+        return false
+
+    active.state["text"] = value
+    return true
+
 func __rewrite(edge: TAEdge, old: String, new: String) -> bool:
     var found: bool = false
     for command: TACommand in edge.commands:
