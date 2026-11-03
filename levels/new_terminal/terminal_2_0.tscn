@@ -64,6 +64,7 @@ size_flags_vertical = 8
 bbcode_enabled = true
 fit_content = true
 script = ExtResource("2_b283c")
+autoclear = true
 
 [node name="Options Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=541844506]
 custom_minimum_size = Vector2(0, 40)
