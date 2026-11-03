@@ -207,8 +207,14 @@ func _func_gte(_fun: LToken, a: Variant, b: Variant) -> bool:
 func _func_lte(_fun: LToken, a: Variant, b: Variant) -> bool:
     return b <= a
 
-static func is_literal(t: LToken) -> bool:
+static func is_literal(t: Variant) -> bool:
+    if t is not LToken:
+        return false
+
     return _LITERALS.has(t.type)
 
-static func is_op(t: LToken) -> bool:
+static func is_op(t: Variant) -> bool:
+    if t is not LToken:
+        return false
+
     return _OPS.has(t.type)

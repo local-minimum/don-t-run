@@ -2,12 +2,13 @@
 
 [ext_resource type="Theme" uid="uid://c6vn3fa0xw4ki" path="res://levels/terminal/terminal_theme.tres" id="1_oa6g8"]
 [ext_resource type="Script" uid="uid://ciurabiofrno7" path="res://levels/terminal/terminal_text.gd" id="2_b283c"]
+[ext_resource type="Script" uid="uid://dr3evfs7u61vx" path="res://levels/new_terminal/ta_terminal.gd" id="2_dk86f"]
 [ext_resource type="Script" uid="uid://bnyriamesgxvh" path="res://levels/terminal/options_presenter.gd" id="3_dk86f"]
 [ext_resource type="AudioStream" uid="uid://cj0aejbdrvx8y" path="res://music/Ludum Dare 60 - Main Menu.ogg" id="4_v6o5t"]
 [ext_resource type="Script" uid="uid://cfwjuv005nday" path="res://dsl/text_adventure/ta_story.gd" id="5_8slpo"]
 [ext_resource type="Script" uid="uid://cas8upiqpf441" path="res://dsl/text_adventure/ta_interpreter.gd" id="6_854bb"]
 
-[node name="Terminal 2_0" type="Control" unique_id=226405839]
+[node name="Terminal 2_0" type="Control" unique_id=226405839 node_paths=PackedStringArray("story", "main_text", "input_text", "options")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -15,6 +16,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_oa6g8")
+script = ExtResource("2_dk86f")
+story = NodePath("TAStory")
+main_text = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
+input_text = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
+options = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
 
 [node name="Background" type="ColorRect" parent="." unique_id=468429917]
 layout_mode = 1

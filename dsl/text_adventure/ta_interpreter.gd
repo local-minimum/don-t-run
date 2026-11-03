@@ -17,9 +17,14 @@ func _get_global(id: Variant) -> TAEntity:
 
     return null
 
-func _func_global(_fun: LToken, id: Variant, thing: LToken) -> bool:
+func _func_global(_fun: LToken, id: Variant, thing: Variant) -> bool:
     var global: TAEntity = _get_global(id)
     if global == null:
+        return false
+
+    if thing is not LToken:
+        if thing is bool:
+            return thing
         return false
 
     var values: Dictionary[LToken, Variant] = {}
@@ -60,7 +65,7 @@ func _func_remove_global(fun: LToken, id: Variant, ...args: Array) -> bool:
             if global is TANode:
                 var node: TANode = global
                 var edge: TAEdge = node.get_edge(arg.parameter_name)
-                var target: TANode = story.get_first_noglobal_active_node()
+                var target: TANode = story.get_first_nonglobal_active_node()
                 if edge != null && target != null:
                     target.add_edge(edge)
                 else:
@@ -76,7 +81,12 @@ func _func_remove_global(fun: LToken, id: Variant, ...args: Array) -> bool:
 #endregion globals
 
 #region location
-func _func_location(_fun: LToken, thing: LToken) -> bool:
+func _func_location(_fun: LToken, thing: Variant) -> bool:
+    if thing is not LToken:
+        if thing is bool:
+            return thing
+        return false
+
     var node: TANode = active if active is TANode else (active as TAEdge).node
     if node == null:
         return false
@@ -321,7 +331,7 @@ func _func_text_append(fun: LToken, value: String) -> bool:
         push_error("%s cannot be executed since no active entity" % [fun.info(true, 1)])
         return false
 
-    active.state["text"] = value
+    active.set_appended_text(value)
     return true
 
 func __rewrite(edge: TAEdge, old: String, new: String) -> bool:

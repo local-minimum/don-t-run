@@ -1,10 +1,14 @@
 extends Node
 class_name TAStory
 
+signal executed(entity: TAEntity, text: String, title: String)
+signal story_loaded()
+
 @export var interpreter: TAInterpreter
 @export_file("*.cfg") var story_file: String
 @export var start_id: String
 @export var autoload: bool = true
+@export var node_title_decoration: String = "== %s ==[br]"
 
 var _edges: Dictionary[String, TAEdge] = {}
 var nodes: Array[TANode]
@@ -25,7 +29,7 @@ func set_backtrack_active_node() -> bool:
     active_node_stack.pop_back()
     return true
 
-func get_first_noglobal_active_node() -> TANode:
+func get_first_nonglobal_active_node() -> TANode:
     var i: int = active_node_stack.size() - 1
     while i >= 0:
         var n: TANode = active_node_stack[i]
@@ -41,6 +45,11 @@ func set_active_node(node: TANode, pop_current: bool = true) -> void:
         active_node_stack.pop_back()
 
     active_node_stack.append(node)
+
+func get_active_node() -> TANode:
+    if active_node_stack.is_empty():
+        return null
+    return active_node_stack[-1]
 
 func find_edge(id: String) -> TAEdge:
     return _edges.get(id)
@@ -172,6 +181,7 @@ func load_story() -> bool:
         if !found:
             push_error("Edge '%s' with id '%s' cannot find a node with id '%s'" % [section, edge.id, node_id])
 
+    story_loaded.emit()
     return !nodes.is_empty() && !active_node_stack.is_empty()
 
 func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: String) -> bool:
@@ -235,19 +245,26 @@ func get_entity_name(entity: TAEntity) -> String:
     return String(interpreter.eval(entity.name))
 
 func get_entity_text(entity: TAEntity, fallback_visits: bool = true) -> String:
-    if entity.texts.is_empty():
-        return ""
+    var resolved_text: bool = false
+    var etext: String = ""
+    if !entity.texts.is_empty():
+        if entity.text_rule != null:
+            interpreter.active = entity
+            var val: Variant = interpreter.eval(entity.text_rule)
+            if val is int:
+                etext = entity.texts[clampi(val, 0, entity.texts.size() - 1)]
+                resolved_text = true
 
-    if entity.text_rule != null:
-        interpreter.active = entity
-        var val: Variant = interpreter.eval(entity.text_rule)
-        if val is int:
-            return entity.texts[clampi(val, 0, entity.texts.size() - 1)]
+        if !resolved_text && fallback_visits:
+            etext = entity.texts[mini(entity.visits, entity.texts.size() - 1)]
 
-    if fallback_visits:
-        return entity.texts[mini(entity.visits, entity.texts.size() - 1)]
+        if !resolved_text:
+            etext = entity.texts[0]
 
-    return entity.texts[0]
+    var appended: String = entity.get_appended_text()
+    if !appended.is_empty():
+        return etext + appended
+    return etext
 
 func execute_entity_effect(entity: TAEntity) -> void:
     if entity.effect == null:
@@ -298,6 +315,23 @@ func get_edge_by_command(node: TANode, action: String, referent: String) -> TAEd
             return edge
 
     return null
+
+func exec_active_node() -> void:
+    var node: TANode = get_active_node()
+    if node == null:
+        push_error("No active node! Cannot execute")
+        return
+
+    interpreter.active = node
+    if node.effect:
+        interpreter.eval(node.effect)
+
+    var title = (node_title_decoration % interpreter.eval(node.name)) if !node_title_decoration.is_empty() else interpreter.eval(node.name)
+    var body = get_entity_text(node)
+
+    node.visits += 1
+
+    executed.emit(node, body, title)
 #endregion Node
 
 #region Edge
@@ -313,4 +347,23 @@ func execute_edge_target(edge: TAEdge) -> void:
 
     interpreter.active = edge
     interpreter.eval(edge.target)
+
+func execute_edge_by_command(action: String, referant: String) -> bool:
+    var node: TANode = get_active_node()
+    if node == null:
+        return false
+
+    var edge = get_edge_by_command(node, action, referant)
+    if edge == null:
+        return false
+
+    interpreter.active = edge
+    if edge.effect:
+        interpreter.eval(edge.effect)
+
+    var body = get_entity_text(edge)
+
+    executed.emit(edge, body, "")
+    return true
+
 #endregion Edge
