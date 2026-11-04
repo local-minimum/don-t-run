@@ -60,7 +60,7 @@ func _get_function_parameters(token: LToken) -> Array[LToken]:
         var current: LToken = stack.pop_back()
         for descendant: LToken in current._descendants:
             if descendant.is_parameter:
-                params.append(descendant.parameter_name)
+                params.append(descendant)
             elif !descendant.is_function && !is_literal(descendant):
                 stack.append(descendant)
 
@@ -77,6 +77,7 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
 
     if token.is_parameter:
         values[token] = token
+        return true
 
     if token.type == LToken.Type.STATEMENT:
         if token._descendants.is_empty():
@@ -86,6 +87,8 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
         elif values.has(token._descendants[0]):
             values[token] = values[token._descendants[0]]
             return true
+
+        return false
 
     elif is_op(token):
         match token.type:
@@ -129,11 +132,10 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
             values[token] = null
             return true
 
-        if token._descendants.all(func (d: LToken) -> bool: return values.has(d)):
-            var vector: Array = [token]
-            vector.append_array(token._descendants.map(func (d: LToken) -> Variant: return values.get(d, null)))
-            values[token] = callv("_func_%s" % token.function_name, vector)
-            return true
+        var vector: Array = [token]
+        vector.append_array(token._descendants.map(func (d: LToken) -> Variant: return values.get(d, d)))
+        values[token] = callv("_func_%s" % token.function_name, vector)
+        return true
 
     return false
 

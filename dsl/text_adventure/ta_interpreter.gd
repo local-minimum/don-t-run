@@ -93,7 +93,7 @@ func _func_location(_fun: LToken, thing: Variant) -> bool:
 
     var values: Dictionary[LToken, Variant] = {}
     for param: LToken in _get_function_parameters(thing):
-        values[param] = node.state.has(thing.parameter_name)
+        values[param] = node.state.has(param.parameter_name)
 
     return eval(thing, values)
 
