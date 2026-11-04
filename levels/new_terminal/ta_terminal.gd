@@ -5,7 +5,7 @@ class_name TATerminal
 @export var main_text: TerminalText
 @export var input_text: TerminalText
 @export var options: OptionsPresenter
-@export var input_prefix: String = "> "
+@export var input_prefix: String = "{CURSOR 0}> "
 @export var input_cursor: String = "{CURSOR 2}"
 @export var default_actions: Array[String] = []
 
@@ -31,9 +31,15 @@ func _handle_execute_entity(entity: TAEntity, body: String, title: String) -> vo
     if entity is TAEdge:
         main_text.clear_text()
     if main_text.text.is_empty():
-        main_text.data = title + body
+        if title:
+            main_text.data = "[p]%s[/p][br]%s" % [title, body]
+        else:
+            main_text.data = body
     else:
-        main_text.data = "[br][p]%s[/p]%s" % [title, body]
+        if title:
+            main_text.data = "[br][p]%s[/p][br]%s" % [title, body]
+        else:
+            main_text.data = "[p][/p][br]%s" % [body]
 
 func _handle_story_ready() -> void:
     story.exec_active_node()
@@ -56,7 +62,7 @@ func _handle_update_option(value: String) -> void:
         main_text.continue_text()
         options.options = []
         options.active = false
-        input_text.data = "%sMORE " %  [input_prefix]
+        input_text.data = "MORE "
 
         await get_tree().create_timer(0.3).timeout
 
@@ -83,10 +89,13 @@ func _handle_abort_option() -> void:
 func _set_actions_options() -> void:
     options.options = story.get_actions(_active, default_actions)
     options.selected = _action
+    options.active = true
+
 
 func _set_referents_options() -> void:
     options.options = story.get_referents(_active)
     options.selected = _target
+    options.active = true
 
 func _update_input() -> void:
     if _action && _target:

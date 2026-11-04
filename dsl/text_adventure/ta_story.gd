@@ -8,7 +8,7 @@ signal story_loaded()
 @export_file("*.cfg") var story_file: String
 @export var start_id: String
 @export var autoload: bool = true
-@export var node_title_decoration: String = "== %s ==[br]"
+@export var node_title_decoration: String = "== %s =="
 
 var _edges: Dictionary[String, TAEdge] = {}
 var nodes: Array[TANode]
@@ -242,6 +242,10 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
 #region Entity
 func get_entity_name(entity: TAEntity) -> String:
     interpreter.active = entity
+    var n: Variant = interpreter.eval(entity.name)
+    if n is LToken && (n as LToken).is_parameter:
+        return (n as LToken).parameter_name
+
     return String(interpreter.eval(entity.name))
 
 func get_entity_text(entity: TAEntity, fallback_visits: bool = true) -> String:
@@ -326,8 +330,10 @@ func exec_active_node() -> void:
     if node.effect:
         interpreter.eval(node.effect)
 
-    var title = (node_title_decoration % interpreter.eval(node.name)) if !node_title_decoration.is_empty() else interpreter.eval(node.name)
-    var body = get_entity_text(node)
+    var title: String = get_entity_name(node)
+
+    title = (node_title_decoration % title) if !node_title_decoration.is_empty() else title
+    var body: String = get_entity_text(node)
 
     node.visits += 1
 

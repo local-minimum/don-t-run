@@ -53,6 +53,12 @@ func eval(statement: LToken, values: Dictionary[LToken, Variant] = {}) -> Varian
 
 # Lists all parameters not belonging to nested functions. Safe to call with function
 func _get_function_parameters(token: LToken) -> Array[LToken]:
+    if token.is_parameter:
+        return [token]
+
+    if is_literal(token):
+        return []
+
     var params: Array[LToken] = []
 
     var stack: Array[LToken] = [token]

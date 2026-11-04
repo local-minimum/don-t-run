@@ -79,7 +79,6 @@ bus = &"Dialogue"
 
 [node name="MusicPlayer 1" type="AudioStreamPlayer" parent="." unique_id=1246061886]
 stream = ExtResource("4_v6o5t")
-autoplay = true
 bus = &"Music"
 
 [node name="MusicPlayer 2" type="AudioStreamPlayer" parent="." unique_id=1775923377]

@@ -6,7 +6,7 @@ var active: TAEntity
 
 #region globals
 func _get_global(id: Variant) -> TAEntity:
-    if id is not String && (id is not LToken || (id as LToken).is_parameter):
+    if id is not String && (id is not LToken || !(id as LToken).is_parameter):
         return null
 
     var sid: String = id if id is String else (id as LToken).parameter_name
@@ -29,13 +29,18 @@ func _func_global(_fun: LToken, id: Variant, thing: Variant) -> bool:
 
     var values: Dictionary[LToken, Variant] = {}
     for param: LToken in _get_function_parameters(thing):
-        values[param] = global.state.has(param.parameter_name)
+        var has_param: bool = global.state.has(param.parameter_name)
+        if !has_param && global is TANode:
+            has_param = (global as TANode).get_edge(param.parameter_name) != null
+        values[param] = has_param
+
 
     return eval(thing, values)
 
 func _func_add_global(fun: LToken, id: Variant, ...args: Array) -> bool:
     var global: TAEntity = _get_global(id)
     if global == null:
+        push_error("Global %s not know, ignoring %s" % [id, fun.info(true, 1)])
         return false
 
     for arg: LToken in args:
@@ -71,8 +76,9 @@ func _func_remove_global(fun: LToken, id: Variant, ...args: Array) -> bool:
                 else:
                     push_warning("There's no place to drop %s so it gets orphanned by %s from %s" % [edge, fun.info(true, 1), node])
                     node.orphan_edge(edge)
-            else:
-                global.state.erase(arg.parameter_name)
+
+            global.state.erase(arg.parameter_name)
+
         else:
             push_error("Cannot remove from global %s; %s's argument %s not parameter" % [global.id, fun.info(true, 1), arg.info(),])
             return false
@@ -93,7 +99,10 @@ func _func_location(_fun: LToken, thing: Variant) -> bool:
 
     var values: Dictionary[LToken, Variant] = {}
     for param: LToken in _get_function_parameters(thing):
-        values[param] = node.state.has(param.parameter_name)
+        var has_param: bool = node.state.has(param.parameter_name)
+        if !has_param:
+            has_param = node.get_edge(param.parameter_name) != null
+        values[param] = has_param
 
     return eval(thing, values)
 
@@ -126,10 +135,8 @@ func _func_remove_location(fun: LToken, ...args: Array) -> bool:
             if edge != null:
                 if node.orphan_edge(edge):
                     push_warning("Edge %s orphaned by %s from %s" % [edge, fun.info(true, 1), node])
-                else:
-                    node.state.erase(arg.parameter_name)
-            else:
-                node.state.erase(arg.parameter_name)
+
+            node.state.erase(arg.parameter_name)
         else:
             push_error("Cannot remove from location %s; %s's argument %s not parameter" % [node.id, fun.info(true, 1), arg.info(),])
             return false
