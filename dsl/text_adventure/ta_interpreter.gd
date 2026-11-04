@@ -29,7 +29,7 @@ func _func_global(_fun: LToken, id: Variant, thing: Variant) -> bool:
 
     var values: Dictionary[LToken, Variant] = {}
     for param: LToken in _get_function_parameters(thing):
-        values[param] = global.state.has(thing.parameter_name)
+        values[param] = global.state.has(param.parameter_name)
 
     return eval(thing, values)
 
@@ -224,7 +224,7 @@ func _func_param(fun: LToken, target: LToken) -> Variant:
 
     var values: Dictionary[LToken, Variant] = {}
     for param: LToken in _get_function_parameters(target):
-        var parts: PackedStringArray = target.parameter_name.split(":")
+        var parts: PackedStringArray = param.parameter_name.split(":")
         var secondary: String = parts[1].strip_edges() if parts.size() > 1 else ""
 
         match parts[0].strip_edges():
