@@ -94,4 +94,5 @@ script = ExtResource("5_8slpo")
 interpreter = NodePath("../TAInterpreter")
 story_file = "res://levels/new_terminal/story.cfg"
 start_id = "CAR"
+missing_edge_text = Array[String](["That's not possible.", "I don't understand what to do."])
 metadata/_custom_type_script = "uid://cfwjuv005nday"

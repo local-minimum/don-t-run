@@ -23,6 +23,14 @@ signal text_paused()
 @export var default_speed: float = 0.1
 @export var default_cursor_speed: float = 0.4
 
+var is_animating: bool:
+    get():
+        return !_moring && !_stalling && _playing && _char_speed > 0.0
+
+var is_instant: bool:
+    get():
+        return _char_speed <= 0.0
+
 const CURSOR_1: Array[String] = ["\\", "-", "/"]
 const CURSOR_2: Array[String] = ["_", " "]
 const CURSOR_3: Array[String] = ["_", "[bgcolor=%s]x[/bgcolor]"]
@@ -58,6 +66,10 @@ func continue_text() -> void:
 func set_defaults() -> void:
     _char_speed = default_speed
     _cursor_speed = default_cursor_speed
+
+func fast_forward() -> void:
+    _char_speed = 0
+    _next_char = 0.0
 
 func _process_command() -> bool:
     var closing: int = data.find("}", _current_data_idx)

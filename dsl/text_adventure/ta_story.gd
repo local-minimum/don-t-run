@@ -8,6 +8,7 @@ signal story_loaded()
 @export_file("*.cfg") var story_file: String
 @export var start_id: String
 @export var autoload: bool = true
+@export_multiline() var missing_edge_text: Array[String]
 @export var node_title_decoration: String = "== %s =="
 
 var _edges: Dictionary[String, TAEdge] = {}
@@ -401,10 +402,18 @@ func execute_edge_target(edge: TAEdge) -> void:
 func execute_edge_by_command(action: String, referant: String) -> bool:
     var node: TANode = get_active_node()
     if node == null:
+        if missing_edge_text.is_empty():
+            executed.emit(null, "", "")
+        else:
+            executed.emit(null, missing_edge_text.pick_random(), "")
         return false
 
     var edge = get_edge_by_command(node, action, referant)
     if edge == null:
+        if missing_edge_text.is_empty():
+            executed.emit(null, "", "")
+        else:
+            executed.emit(null, missing_edge_text.pick_random(), "")
         return false
 
     interpreter.active = edge

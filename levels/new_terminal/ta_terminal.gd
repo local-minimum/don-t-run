@@ -1,6 +1,8 @@
 extends Control
 class_name TATerminal
 
+enum Phase { INACTIVE, ACTION, REFERANT, COMMIT, MORE }
+
 @export var story: TAStory
 @export var main_text: TerminalText
 @export var input_text: TerminalText
@@ -11,8 +13,7 @@ class_name TATerminal
 @export var delay_show_command: float = 0.5
 
 var _active: TAEntity
-var _doing_action: bool
-var _moring: bool
+var _phase: Phase
 var _action: String
 var _target: String
 
@@ -27,67 +28,97 @@ func _enter_tree() -> void:
 func _ready() -> void:
     _update_input()
 
+func _input(event: InputEvent) -> void:
+    if options.active:
+        return
+
+    if event.is_action_pressed("select_option") && main_text.is_animating:
+        main_text.fast_forward()
+
 func _handle_execute_entity(entity: TAEntity, body: String, title: String) -> void:
     _active = entity
-    if entity is TAEdge:
+    var instant: bool = entity is TANode && main_text.is_instant
+
+    if entity is TAEdge || entity == null:
         main_text.clear_text()
+
     if main_text.text.is_empty():
         if title:
             main_text.data = "[p]%s[/p][br]%s" % [title, body]
+        elif body.is_empty():
+            _handle_main_text_done()
+            return
         else:
             main_text.data = body
     else:
         if title:
             main_text.data = "[br][p]%s[/p][br]%s" % [title, body]
+        elif body.is_empty():
+            _handle_main_text_done()
+            return
         else:
             main_text.data = "[p][/p][br]%s" % [body]
+
+    if instant:
+        main_text.fast_forward()
 
 func _handle_story_ready() -> void:
     story.exec_active_node()
 
 func _handle_main_text_done() -> void:
-    if _active is TAEdge:
-        story.execute_edge_target(_active)
+    if _active is TAEdge || _active == null:
+        if _active != null:
+            story.execute_edge_target(_active)
         story.exec_active_node()
 
     elif _active is TANode:
-        _doing_action = true
+        _phase = Phase.ACTION
         _set_actions_options()
         if input_text.data != input_prefix:
             input_text.clear_text()
         input_text.data = input_cursor
 
 func _handle_update_option(value: String) -> void:
-    if _moring:
-        _moring = false
-        main_text.continue_text()
-        options.options = []
-        options.active = false
-        input_text.data = "MORE "
+    match _phase:
+        Phase.MORE:
+            _phase = Phase.INACTIVE
+            main_text.continue_text()
+            options.options = []
+            options.active = false
+            input_text.data = "MORE "
 
-        await get_tree().create_timer(delay_show_command).timeout
+            await get_tree().create_timer(delay_show_command).timeout
 
-    if _doing_action:
-        _action = value
-        _doing_action = false
-        _set_referents_options.call_deferred()
-    else:
-        _target = value
-        options.active = false
-        options.options = []
-        story.execute_edge_by_command.call_deferred(_action, _target)
-        _update_input()
+            if _phase == Phase.INACTIVE:
+                _update_input()
 
-        await get_tree().create_timer(delay_show_command).timeout
-        _action = ""
-        _target = ""
+        Phase.ACTION:
+            _action = value
+            _phase = Phase.REFERANT
+            _set_referents_options.call_deferred()
 
+            _update_input()
 
-    _update_input()
+        Phase.REFERANT:
+            _phase = Phase.COMMIT
+            _target = value
+            options.active = false
+            options.options = []
+            story.execute_edge_by_command.call_deferred(_action, _target)
+            _update_input()
+
+            await get_tree().create_timer(delay_show_command).timeout
+
+            if _phase == Phase.COMMIT:
+                _action = ""
+                _target = ""
+                _phase = Phase.INACTIVE
+
+                _update_input()
 
 func _handle_abort_option() -> void:
-    if !_doing_action:
-        _doing_action = true
+    if _phase == Phase.REFERANT:
+        _phase = Phase.ACTION
         _set_actions_options()
         input_text.clear_text()
         input_text.data = input_prefix
@@ -113,7 +144,7 @@ func _update_input() -> void:
         input_text.data = input_prefix
 
 func _handle_more() -> void:
-    _moring = true
+    _phase = Phase.MORE
     options.options = ["MORE"]
     options.active = true
     input_text.data = input_cursor
