@@ -120,7 +120,7 @@ func _try_eval(token: LToken, values: Dictionary[LToken, Variant]) -> bool:
                     return false
 
                 if values[token._descendants[0]]:
-                    values[token] = true
+                    values[token] = values[token._descendants[0]]
                     return true
 
                 if values.has(token._descendants[1]):
@@ -214,6 +214,10 @@ func _func_gte(_fun: LToken, a: Variant, b: Variant) -> bool:
 
 func _func_lte(_fun: LToken, a: Variant, b: Variant) -> bool:
     return b <= a
+
+# This function is here to inject a breakpoint somewhere in the execution
+func _func_break(_fun: LToken) -> bool:
+    return true
 
 static func is_literal(t: Variant) -> bool:
     if t is not LToken:
