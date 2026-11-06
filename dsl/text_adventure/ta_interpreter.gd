@@ -208,16 +208,31 @@ func _func_rewrite_other_location_referants(fun: LToken, id: Variant, old: Varia
         found = __rewrite(edge, old, new) || found
 
     return found
+
+func _func_active_location(_fun: LToken, loc: LToken, inc_global: Variant = true) -> bool:
+    if inc_global is LToken:
+        inc_global = eval(inc_global)
+
+    var values: Dictionary[LToken, Variant] = {}
+    var a: TANode = story.get_active_node(inc_global)
+    for param: LToken in _get_function_parameters(loc):
+        values[param] = a && a.id == param.parameter_name
+
+    if values.is_empty():
+        return false
+
+    return eval(loc, values)
+
 #endregion location
 
-func _func_move(_fun: LToken, target: LToken, pop_current: bool = true) -> bool:
+func _func_move(_fun: LToken, target: LToken) -> bool:
     if !target.is_parameter:
         return false
 
-    for node: TANode in story.nodes:
-        if node.id == target.parameter_name:
-            story.set_active_node(node, pop_current)
-            return true
+    var node: TANode = story.find_node(target.parameter_name)
+    if node:
+        story.set_active_node(node, !story.globals.has(node))
+        return true
 
     return false
 

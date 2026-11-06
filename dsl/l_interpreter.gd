@@ -51,6 +51,34 @@ func eval(statement: LToken, values: Dictionary[LToken, Variant] = {}) -> Varian
 
     return values.get(statement, null)
 
+func validate(token: LToken) -> bool:
+    if !token:
+        return true
+
+    var current: LToken = token
+    var visited: Array[LToken] = []
+
+    while current:
+        if current.is_function && !_valid_functions.has(current.function_name):
+            return false
+
+        if !visited.has(current):
+            visited.append(current)
+
+        var found: bool = false
+        for decendant: LToken in current._descendants:
+            if visited.has(decendant):
+                continue
+            else:
+                found = true
+                current = decendant
+                break
+
+        if !found:
+            current = current._parent
+
+    return true
+
 # Lists all parameters not belonging to nested functions. Safe to call with function
 func _get_function_parameters(token: LToken) -> Array[LToken]:
     if token.is_parameter:
@@ -152,7 +180,10 @@ func _func_pick_index(_fun: LToken, value: Variant, ...args: Array) -> int:
 
     var opts: Array[int] = []
     for idx: int in args.size():
-        if args[idx] == value:
+        var a: Variant = args[idx]
+        if a is LToken:
+            a = eval(a)
+        if a == value:
             opts.append(idx)
 
     if opts.is_empty():
@@ -162,6 +193,11 @@ func _func_pick_index(_fun: LToken, value: Variant, ...args: Array) -> int:
 
 # Pick a random value between two values or from 0 to given value if only one supplied
 func _func_rnd(_fun: LToken, a: Variant, b: Variant = null) -> Variant:
+    if a is LToken:
+        a = eval(a)
+    if b is LToken:
+        b = eval(b)
+
     match typeof(a):
         TYPE_INT:
             if typeof(b) == typeof(a):
@@ -195,24 +231,52 @@ func _func_if(_fun: LToken, condition: Variant, true_value: Variant, false_value
     return true_value if condition else false_value
 
 func _func_add(_fun: LToken, a: Variant, b: Variant) -> Variant:
+    if a is LToken:
+        a = eval(a)
+    if b is LToken:
+        b = eval(b)
     return a + b
 
 func _func_sub(_fun: LToken, a: Variant, b: Variant) -> Variant:
+    if a is LToken:
+        a = eval(a)
+    if b is LToken:
+        b = eval(b)
     return a - b
 
 func _func_eq(_fun: LToken, a: Variant, b: Variant) -> bool:
+    if a is LToken:
+        a = eval(a)
+    if b is LToken:
+        b = eval(b)
     return a == b
 
 func _func_gt(_fun: LToken, a: Variant, b: Variant) -> bool:
+    if a is LToken:
+        a = eval(a)
+    if b is LToken:
+        b = eval(b)
     return a > b
 
 func _func_lt(_fun: LToken, a: Variant, b: Variant) -> bool:
+    if a is LToken:
+        a = eval(a)
+    if b is LToken:
+        b = eval(b)
     return a < b
 
 func _func_gte(_fun: LToken, a: Variant, b: Variant) -> bool:
+    if a is LToken:
+        a = eval(a)
+    if b is LToken:
+        b = eval(b)
     return a >= b
 
 func _func_lte(_fun: LToken, a: Variant, b: Variant) -> bool:
+    if a is LToken:
+        a = eval(a)
+    if b is LToken:
+        b = eval(b)
     return b <= a
 
 # This function is here to inject a breakpoint somewhere in the execution

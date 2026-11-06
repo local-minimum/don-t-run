@@ -46,10 +46,18 @@ func set_active_node(node: TANode, pop_current: bool = true) -> void:
 
     active_node_stack.append(node)
 
-func get_active_node() -> TANode:
+func get_active_node(include_global: bool = true) -> TANode:
     if active_node_stack.is_empty():
         return null
-    return active_node_stack[-1]
+
+    if include_global:
+        return active_node_stack[-1]
+
+    for idx in range(active_node_stack.size() - 1, -1, -1):
+        if !globals.has(active_node_stack[idx]):
+            return active_node_stack[idx]
+
+    return null
 
 func find_edge(id: String) -> TAEdge:
     return _edges.get(id)
@@ -141,6 +149,8 @@ func load_story() -> bool:
                     var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
                     if val.is_error:
                         push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
+                    elif !interpreter.validate(val):
+                        push_error("Invalid %s for %s: %s" % [key, section, val])
                     else:
                         edge.hidden = val
                         if _VERBOSE:
@@ -150,6 +160,8 @@ func load_story() -> bool:
                     var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
                     if val.is_error:
                         push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
+                    elif !interpreter.validate(val):
+                        push_error("Invalid %s for %s: %s" % [key, section, val])
                     else:
                         edge.target = val
                         if _VERBOSE:
@@ -201,6 +213,8 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
             var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
             if val.is_error:
                 push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
+            elif !interpreter.validate(val):
+                push_error("Invalid %s for %s: %s" % [key, section, val])
             else:
                 entity.name = val
                 if _VERBOSE:
@@ -210,6 +224,8 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
             var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
             if val.is_error:
                 push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
+            elif !interpreter.validate(val):
+                push_error("Invalid %s for %s: %s" % [key, section, val])
             else:
                 entity.text_rule = val
                 if _VERBOSE:
@@ -228,6 +244,8 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
             var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
             if val.is_error:
                 push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
+            elif !interpreter.validate(val):
+                push_error("Invalid %s for %s: %s" % [key, section, val])
             else:
                 entity.effect = val
                 if _VERBOSE:
@@ -292,6 +310,15 @@ func get_actions(node: TANode, defaults: Array[String] = []) -> Array[String]:
             if !ret.has(action):
                 ret.append(action)
 
+    for entity: TAEntity in globals:
+        if entity is TAEdge:
+            if get_edge_hidden(entity):
+                continue
+
+            for action: String in (entity as TAEdge).command_actions:
+                if !ret.has(action):
+                    ret.append(action)
+
     return ret
 
 func get_referents(node: TANode, defaults: Array[String] = []) -> Array[String]:
@@ -307,6 +334,15 @@ func get_referents(node: TANode, defaults: Array[String] = []) -> Array[String]:
             if !ret.has(referent):
                 ret.append(referent)
 
+    for entity: TAEntity in globals:
+        if entity is TAEdge:
+            if get_edge_hidden(entity):
+                continue
+
+            for referent: String in (entity as TAEdge).command_referents:
+                if !ret.has(referent):
+                    ret.append(referent)
+
     return ret
 
 func get_edge_by_command(node: TANode, action: String, referent: String) -> TAEdge:
@@ -317,6 +353,14 @@ func get_edge_by_command(node: TANode, action: String, referent: String) -> TAEd
     for edge: TAEdge in node.edges:
         if !get_edge_hidden(edge) && edge.matches_command(action, referent, false):
             return edge
+
+    for entity: TAEntity in globals:
+        if entity is TAEdge && !get_edge_hidden(entity) && (entity as TAEdge).matches_command(action, referent, true):
+            return entity
+
+    for entity: TAEntity in globals:
+        if entity is TAEdge && !get_edge_hidden(entity) && (entity as TAEdge).matches_command(action, referent, false):
+            return entity
 
     return null
 

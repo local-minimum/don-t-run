@@ -1,10 +1,10 @@
-
-# Text-Adventure parser of the DSL
-
-
-
-# Text-Adventure player
-
-# Text displayer
-- use visible characters instead
-- add fast forward for fuck's sake
+- [ ] Play through game
+- [x] Disable option selection after selected referent
+- [x] Remove options after little moment (make sure it doesn't remove if next is already showing)
+- [ ] use visible characters instead
+- [ ] add fast forward for fuck's sake
+- [ ] auto-fast forward on repeat?
+- [ ] Missing edge handling
+- [x] Why not inventory showing?
+- [x] Push down functions
+- [x] Error non-supported functions on parse or at least exec

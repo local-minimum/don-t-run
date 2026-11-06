@@ -8,6 +8,7 @@ class_name TATerminal
 @export var input_prefix: String = "{CURSOR 0}> "
 @export var input_cursor: String = "{CURSOR 2}"
 @export var default_actions: Array[String] = []
+@export var delay_show_command: float = 0.5
 
 var _active: TAEntity
 var _doing_action: bool
@@ -64,7 +65,7 @@ func _handle_update_option(value: String) -> void:
         options.active = false
         input_text.data = "MORE "
 
-        await get_tree().create_timer(0.3).timeout
+        await get_tree().create_timer(delay_show_command).timeout
 
     if _doing_action:
         _action = value
@@ -72,12 +73,15 @@ func _handle_update_option(value: String) -> void:
         _set_referents_options.call_deferred()
     else:
         _target = value
+        options.active = false
+        options.options = []
         story.execute_edge_by_command.call_deferred(_action, _target)
         _update_input()
 
-        await get_tree().create_timer(0.3).timeout
+        await get_tree().create_timer(delay_show_command).timeout
         _action = ""
         _target = ""
+
 
     _update_input()
 
@@ -85,6 +89,8 @@ func _handle_abort_option() -> void:
     if !_doing_action:
         _doing_action = true
         _set_actions_options()
+        input_text.clear_text()
+        input_text.data = input_prefix
 
 func _set_actions_options() -> void:
     options.options = story.get_actions(_active, default_actions)
