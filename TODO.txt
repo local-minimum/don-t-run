@@ -1,10 +1,11 @@
-- [ ] Play through game
+- [ ] use visible characters instead
 - [x] Disable option selection after selected referent
 - [x] Remove options after little moment (make sure it doesn't remove if next is already showing)
-- [ ] use visible characters instead
 - [x] add fast forward for fuck's sake
-- [ ] auto-fast forward on repeat?
+- [-] auto-fast forward on repeat?
 - [x] Missing edge handling
 - [x] Why not inventory showing?
 - [x] Push down functions
 - [x] Error non-supported functions on parse or at least exec
+- [ ] Play through game
+- [ ] Load in particle systems

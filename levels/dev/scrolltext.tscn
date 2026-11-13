@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dfwcavn6yw8af"]
+
+[ext_resource type="Theme" uid="uid://c6vn3fa0xw4ki" path="res://levels/terminal/terminal_theme.tres" id="1_a1054"]
+[ext_resource type="Script" uid="uid://w8c8ae6e1o8h" path="res://levels/terminal/terminal_text2.gd" id="2_0s66f"]
+
+[node name="Control" type="RichTextLabel" unique_id=103523732]
+custom_minimum_size = Vector2(300, 300)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_right = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_a1054")
+bbcode_enabled = true
+text = "This is how shit [b]looks[/b]"
+visible_characters_behavior = 1
+script = ExtResource("2_0s66f")
+_data = "This is the simplest case of progressivly show{wait 2}ing text!"
+metadata/_custom_type_script = "uid://w8c8ae6e1o8h"

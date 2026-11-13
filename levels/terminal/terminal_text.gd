@@ -33,7 +33,7 @@ var is_instant: bool:
 
 const CURSOR_1: Array[String] = ["\\", "-", "/"]
 const CURSOR_2: Array[String] = ["_", " "]
-const CURSOR_3: Array[String] = ["_", "[bgcolor=%s]x[/bgcolor]"]
+const CURSOR_3: Array[String] = [" ", "[bgcolor=%s] [/bgcolor]"]
 
 var _current_data_idx: int = 0
 var _playing = false
@@ -44,10 +44,10 @@ var _moring: bool = false
 var _stalling: bool = false
 
 func _ready() -> void:
+    visible_characters = text.length() if _cursor_mode == 0 else -1
     set_defaults()
     if !autoplay:
         set_process(false)
-
 
 func play() -> void:
     _playing = true
@@ -149,7 +149,7 @@ var _cursor_char: String:
         if _cursor_mode == 2:
             return CURSOR_2[posmod(_cursor_idx, CURSOR_2.size())]
         if _cursor_mode == 3:
-            var cur: String = CURSOR_3[posmod(_cursor_mode, CURSOR_3.size())]
+            var cur: String = CURSOR_3[posmod(_cursor_idx, CURSOR_3.size())]
             if cur.contains("%s"):
                 return cur % select_color
             return cur
@@ -165,6 +165,7 @@ func _change_cursor(mode: int = - 1, delta: float = 0.0, force: bool = true) -> 
         return false
 
     if mode >=0 && mode != _cursor_mode:
+        visible_characters = text.length() if _cursor_mode == 0 else -1
         _cursor_mode = mode
         _cursor_idx = 0
 
