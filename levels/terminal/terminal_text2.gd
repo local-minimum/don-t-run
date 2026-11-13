@@ -35,6 +35,8 @@ var _commands: Array[Dictionary]
 var _last_command_idx: int = -1
 var _clean_text_idx: int = 0
 var _clean_text_start_idx: int = 0
+var _clean_text_invisibles: Dictionary[int, int]
+var _next_visible_characters: int
 
 func add_data(new_data: String) -> void:
     if autoclear:
@@ -99,7 +101,7 @@ func _preprocess_data() -> void:
 
         elif next_cmd >= 0 && (next_bb < 0 || next_cmd < next_bb):
             var preceeding_text: int = next_cmd - current_data_idx
-            var cmd: Dictionary[_CmdParts, Variant] = _parse_command(current_data_idx, v_characters, preceeding_text)
+            var cmd: Dictionary[_CmdParts, Variant] = _parse_command(current_data_idx, clean_text.length(), preceeding_text)
             if _CmdParts.CMD not in cmd:
                 current_data_idx += 1
                 v_characters += 1
@@ -115,10 +117,13 @@ func _preprocess_data() -> void:
         else:
             var closing: int = _data.find("]", current_data_idx)
             if closing > 0:
-                var length = closing - current_data_idx
-                clean_text += _data.substr(current_data_idx, length + 1)
-                v_characters += maxi(0, next_bb - current_data_idx)
-                current_data_idx += length + 1
+                var preceeding_text: int = next_bb - current_data_idx
+                var length: int = closing - next_bb + 1
+                _clean_text_invisibles[clean_text.length() + preceeding_text] = length
+                clean_text += _data.substr(current_data_idx, length + preceeding_text)
+                v_characters += preceeding_text
+                current_data_idx += length + preceeding_text
+
             else:
                 clean_text += _data[current_data_idx]
                 current_data_idx += 1
@@ -132,8 +137,8 @@ func _preprocess_data() -> void:
     text = clean_text
 
 
-func _parse_command(current_data_idx: int, v_characters: int, preceeding_text: int) -> Dictionary[_CmdParts, Variant]:
-    var parsed: Dictionary[_CmdParts, Variant] = { _CmdParts.CLEAN_TEXT_START: v_characters + preceeding_text }
+func _parse_command(current_data_idx: int, clean_text: int, preceeding_text: int) -> Dictionary[_CmdParts, Variant]:
+    var parsed: Dictionary[_CmdParts, Variant] = { _CmdParts.CLEAN_TEXT_START: clean_text + preceeding_text }
     var closing: int = _data.find("}", current_data_idx)
     if closing < 0:
         return parsed
@@ -206,6 +211,9 @@ func _parse_command(current_data_idx: int, v_characters: int, preceeding_text: i
 
 
 func _ready() -> void:
+    if visible_characters_behavior == TextServer.VisibleCharactersBehavior.VC_CHARS_BEFORE_SHAPING:
+        push_warning("Consider updating visible characters behavior to after shaping to make reveal nicer")
+
     if !_data.is_empty():
         _preprocess_data()
 
@@ -220,21 +228,25 @@ func _process(delta: float) -> void:
 
     _next_cur_time -= delta
     _next_char_time -= delta
+    _next_visible_characters = visible_characters
 
     var char_step: int = 1
     while _next_char_time < 0:
-        _clean_text_idx += char_step
-        _next_char_time += _char_speed
+        if char_step > 0:
+            _clean_text_idx += char_step + _clean_text_invisibles.get(_clean_text_idx, 0)
+            _next_char_time += _char_speed
+            _next_visible_characters += 1
+
         char_step = _exec_commands()
-        if char_step < 0 || _clean_text_idx > _total_visible_charcters:
-            if _clean_text_idx > _total_visible_charcters:
+        if char_step < 0 || _next_visible_characters > _total_visible_charcters:
+            if _next_visible_characters > _total_visible_charcters:
                 text_done.emit()
                 _phase = Phase.WAITING
             break
 
     if _cursor_mode == 0:
         _next_cur_time = 0
-        visible_characters = _clean_text_idx - _clean_text_start_idx
+        visible_characters = _next_visible_characters
         return
 
     if _next_char_time <= 0:
@@ -292,7 +304,9 @@ func _exec_commands() -> int:
 
             _Cmd.CLEAR:
                 _clean_text_start_idx = _clean_text_idx
-                visible_characters = 0
+                _next_visible_characters = 0
+                if _cursor_mode == 0:
+                    text = _clean_text.substr(_clean_text_idx)
                 return 0
 
             _Cmd.SPEED:
