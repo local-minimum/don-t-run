@@ -1,7 +1,7 @@
 - [ ] use visible characters instead
 - [x] Second cmd in a row don't fire
 - [x] Test all commands
-- [ ] Test various settings
+- [x] Test various settings
 - [x] Disable option selection after selected referent
 - [x] Remove options after little moment (make sure it doesn't remove if next is already showing)
 - [x] add fast forward for fuck's sake

@@ -4,8 +4,8 @@ class_name TATerminal
 enum Phase { INACTIVE, ACTION, REFERANT, COMMIT, MORE }
 
 @export var story: TAStory
-@export var main_text: TerminalText
-@export var input_text: TerminalText
+@export var main_text: TerminalText2
+@export var input_text: TerminalText2
 @export var options: OptionsPresenter
 @export var input_prefix: String = "{CURSOR 0}> "
 @export var input_cursor: String = "{CURSOR 2}"
@@ -32,32 +32,32 @@ func _input(event: InputEvent) -> void:
     if options.active:
         return
 
-    if event.is_action_pressed("select_option") && main_text.is_animating:
+    if event.is_action_pressed("select_option") && main_text.is_anmating():
         main_text.fast_forward()
 
 func _handle_execute_entity(entity: TAEntity, body: String, title: String) -> void:
     _active = entity
-    var instant: bool = entity is TANode && main_text.is_instant
+    var instant: bool = entity is TANode && main_text.is_instant()
 
     if entity is TAEdge || entity == null:
         main_text.clear_text()
 
     if main_text.text.is_empty():
         if title:
-            main_text.data = "[p]%s[/p][br]%s" % [title, body]
+            main_text.set_data("[p]%s[/p][br]%s" % [title, body])
         elif body.is_empty():
             _handle_main_text_done()
             return
         else:
-            main_text.data = body
+            main_text.set_data(body)
     else:
         if title:
-            main_text.data = "[br][p]%s[/p][br]%s" % [title, body]
+            main_text.set_data("[br][p]%s[/p][br]%s" % [title, body])
         elif body.is_empty():
             _handle_main_text_done()
             return
         else:
-            main_text.data = "[p][/p][br]%s" % [body]
+            main_text.set_data("[p][/p][br]%s" % [body])
 
     if instant:
         main_text.fast_forward()
@@ -74,18 +74,18 @@ func _handle_main_text_done() -> void:
     elif _active is TANode:
         _phase = Phase.ACTION
         _set_actions_options()
-        if input_text.data != input_prefix:
+        if !input_text.has_data(input_prefix):
             input_text.clear_text()
-        input_text.data = input_cursor
+        input_text.add_data(input_cursor)
 
 func _handle_update_option(value: String) -> void:
     match _phase:
         Phase.MORE:
             _phase = Phase.INACTIVE
-            main_text.continue_text()
+            main_text.play()
             options.options = []
             options.active = false
-            input_text.data = "MORE "
+            input_text.add_data("MORE ")
 
             await get_tree().create_timer(delay_show_command).timeout
 
@@ -121,7 +121,7 @@ func _handle_abort_option() -> void:
         _phase = Phase.ACTION
         _set_actions_options()
         input_text.clear_text()
-        input_text.data = input_prefix
+        input_text.set_data(input_prefix)
 
 func _set_actions_options() -> void:
     options.options = story.get_actions(_active, default_actions)
@@ -136,15 +136,15 @@ func _set_referents_options() -> void:
 
 func _update_input() -> void:
     if _action && _target:
-        input_text.data = "%s " %  [_target]
+        input_text.add_data("%s " %  [_target])
     elif _action:
-        input_text.data = "%s " %  [_action]
+        input_text.add_data("%s " %  [_action])
     else:
         input_text.clear_text()
-        input_text.data = input_prefix
+        input_text.set_data(input_prefix)
 
 func _handle_more() -> void:
     _phase = Phase.MORE
     options.options = ["MORE"]
     options.active = true
-    input_text.data = input_cursor
+    input_text.add_data(input_cursor)

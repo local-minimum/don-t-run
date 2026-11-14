@@ -39,6 +39,12 @@ var _clean_text_start_idx: int = 0
 var _clean_text_invisibles: Dictionary[int, int]
 var _next_visible_characters: int
 
+func is_anmating() -> bool:
+    return _phase == Phase.ANIMATING
+
+func is_instant() -> bool:
+    return _char_speed == 0
+
 func add_data(new_data: String) -> void:
     if autoclear:
         clear_text(new_data)
@@ -57,6 +63,9 @@ func set_data(new_data: String) -> void:
     _preprocess_data()
     if autoplay:
         play()
+
+func has_data(other: String) -> bool:
+    return _data == other
 
 func clear_text(next_text: String = "") -> void:
     _last_command_idx = -1
@@ -279,9 +288,9 @@ func _exec_commands() -> int:
     for cid: int in range(_last_command_idx + 1, _commands.size()):
         var cmd: Dictionary = _commands[cid]
         if cmd[_CmdParts.CLEAN_TEXT_START] < _clean_text_idx:
-            push_error("Failed to execute {cmd}, never encountered start index")
-            pass
-            # continue
+            push_error("Failed to execute %s, never encountered start index (current %s)" % [cmd, _clean_text_idx])
+            _last_command_idx = cid
+            continue
 
         if cmd[_CmdParts.CLEAN_TEXT_START] != _clean_text_idx:
             return 1
