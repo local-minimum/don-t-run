@@ -34,6 +34,7 @@ var _next_char_time: float = 0.0
 var _commands: Array[Dictionary]
 var _last_command_idx: int = -1
 var _clean_text_idx: int = 0
+var _char_step: int = 1
 var _clean_text_start_idx: int = 0
 var _clean_text_invisibles: Dictionary[int, int]
 var _next_visible_characters: int
@@ -65,6 +66,7 @@ func clear_text(next_text: String = "") -> void:
     visible_characters = 0
     text = next_text
     _data = ""
+    _char_step = 0
 
 func restore_default_speeds() -> void:
     _char_speed = default_speed
@@ -103,8 +105,8 @@ func _preprocess_data() -> void:
             var preceeding_text: int = next_cmd - current_data_idx
             var cmd: Dictionary[_CmdParts, Variant] = _parse_command(current_data_idx, clean_text.length(), preceeding_text)
             if _CmdParts.CMD not in cmd:
-                current_data_idx += 1
-                v_characters += 1
+                current_data_idx += next_cmd
+                v_characters += next_cmd
                 continue
 
 
@@ -126,8 +128,8 @@ func _preprocess_data() -> void:
 
             else:
                 clean_text += _data[current_data_idx]
-                current_data_idx += 1
-                v_characters += 1
+                current_data_idx += next_bb
+                v_characters += next_bb
 
     _clean_text = clean_text
     if visible_characters < 0:
@@ -138,7 +140,12 @@ func _preprocess_data() -> void:
 
 
 func _parse_command(current_data_idx: int, clean_text: int, preceeding_text: int) -> Dictionary[_CmdParts, Variant]:
-    var parsed: Dictionary[_CmdParts, Variant] = { _CmdParts.CLEAN_TEXT_START: clean_text + preceeding_text }
+    var start: int = clean_text + preceeding_text
+    for inv: int in _clean_text_invisibles:
+        if start - _clean_text_invisibles[inv] == inv:
+            start -= _clean_text_invisibles[inv]
+
+    var parsed: Dictionary[_CmdParts, Variant] = { _CmdParts.CLEAN_TEXT_START: start }
     var closing: int = _data.find("}", current_data_idx)
     if closing < 0:
         return parsed
@@ -186,6 +193,7 @@ func _parse_command(current_data_idx: int, clean_text: int, preceeding_text: int
 
         "CLEAR":
             parsed[_CmdParts.CMD] = _Cmd.CLEAR
+            parsed[_CmdParts.VALUE] = clean_text + preceeding_text
             return parsed
 
         "SPEED":
@@ -228,17 +236,15 @@ func _process(delta: float) -> void:
 
     _next_cur_time -= delta
     _next_char_time -= delta
-    _next_visible_characters = visible_characters
 
-    var char_step: int = 1
     while _next_char_time < 0:
-        if char_step > 0:
-            _clean_text_idx += char_step + _clean_text_invisibles.get(_clean_text_idx, 0)
+        if _char_step > 0:
+            _clean_text_idx += _char_step + _clean_text_invisibles.get(_clean_text_idx, 0)
             _next_char_time += _char_speed
             _next_visible_characters += 1
 
-        char_step = _exec_commands()
-        if char_step < 0 || _next_visible_characters > _total_visible_charcters:
+        _char_step = _exec_commands()
+        if _char_step < 0 || _next_visible_characters > _total_visible_charcters:
             if _next_visible_characters > _total_visible_charcters:
                 text_done.emit()
                 _phase = Phase.WAITING
@@ -249,12 +255,12 @@ func _process(delta: float) -> void:
         visible_characters = _next_visible_characters
         return
 
-    if _next_char_time <= 0:
+    if _next_cur_time <= 0:
         _cursor_animation_idx += 1
-        _next_char_time = _cursor_speed
+        _next_cur_time = _cursor_speed
 
     text = _clean_text.substr(_clean_text_start_idx, _clean_text_idx - _clean_text_start_idx) + _get_cursor_char()
-
+    visible_characters = -1
 
 func _get_cursor_char() ->  String:
     if _cursor_mode == 1:
@@ -272,6 +278,11 @@ func _get_cursor_char() ->  String:
 func _exec_commands() -> int:
     for cid: int in range(_last_command_idx + 1, _commands.size()):
         var cmd: Dictionary = _commands[cid]
+        if cmd[_CmdParts.CLEAN_TEXT_START] < _clean_text_idx:
+            push_error("Failed to execute {cmd}, never encountered start index")
+            pass
+            # continue
+
         if cmd[_CmdParts.CLEAN_TEXT_START] != _clean_text_idx:
             return 1
 
@@ -290,9 +301,10 @@ func _exec_commands() -> int:
                 var mode: int = cmd[_CmdParts.VALUE]
                 if mode >= 0:
                     if _cursor_mode != mode:
-                        _cursor_animation_idx = 0
                         if mode == 0:
                             text = _clean_text.substr(_clean_text_start_idx)
+                        else:
+                            _cursor_animation_idx = 0
 
                     _cursor_mode = mode
 
@@ -303,14 +315,14 @@ func _exec_commands() -> int:
                 return 0
 
             _Cmd.CLEAR:
-                _clean_text_start_idx = _clean_text_idx
+                _clean_text_start_idx = cmd[_CmdParts.VALUE]
                 _next_visible_characters = 0
                 if _cursor_mode == 0:
-                    text = _clean_text.substr(_clean_text_idx)
+                    text = _clean_text.substr(_clean_text_start_idx)
                 return 0
 
             _Cmd.SPEED:
-                _cursor_speed = cmd[_CmdParts.VALUE]
+                _char_speed = cmd[_CmdParts.VALUE]
                 return 0
 
             _Cmd.MORE:

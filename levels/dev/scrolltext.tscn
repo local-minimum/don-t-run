@@ -19,5 +19,5 @@ bbcode_enabled = true
 text = "This is how shit [b]looks[/b]"
 visible_characters_behavior = 1
 script = ExtResource("2_0s66f")
-_data = "This is the simplest [b]case[/b] of progressivly show{wait 2}ing text!"
+_data = "This is the simplest [b]case[/b]{wait 1}{clear}The best {speed 0.01}way of progressivly{speed -1} showing {cursor 3 0.3}{wait 5}text!{cursor 0} Funny{more} innit?"
 metadata/_custom_type_script = "uid://w8c8ae6e1o8h"
