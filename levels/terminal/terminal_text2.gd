@@ -45,6 +45,24 @@ func is_anmating() -> bool:
 func is_instant() -> bool:
     return _char_speed == 0
 
+func is_empty() -> bool:
+    return _data.is_empty()
+
+func has_cursor() -> bool:
+    return _cursor_mode > 0
+
+func remove_cursor() -> void:
+    _cursor_mode = 0
+
+func show_cursor(cur: int, speed: float = 0) -> void:
+    _cursor_mode = clampi(cur, 1, 3)
+    if speed > 0:
+        _cursor_speed = speed
+    elif speed < 0:
+        _cursor_speed = default_cursor_speed
+
+    set_process(true)
+
 func add_data(new_data: String) -> void:
     if autoclear:
         clear_text(new_data)
@@ -57,24 +75,27 @@ func add_data(new_data: String) -> void:
         play()
 
 func set_data(new_data: String) -> void:
-    clear_text()
-    _data = new_data
+    clear_text(new_data)
     restore_default_speeds()
     _preprocess_data()
+
     if autoplay:
         play()
+    else:
+        set_process(false)
 
 func has_data(other: String) -> bool:
     return _data == other
 
-func clear_text(next_text: String = "") -> void:
+func clear_text(next_data   : String = "") -> void:
     _last_command_idx = -1
     _total_visible_charcters = 0
     _clean_text_idx = 0
     _clean_text_start_idx = 0
+    _next_visible_characters = 0
     visible_characters = 0
-    text = next_text
-    _data = ""
+    text = ""
+    _data = next_data
     _char_step = 0
 
 func restore_default_speeds() -> void:
@@ -93,6 +114,7 @@ func play() -> void:
     _phase = Phase.ANIMATING
     _next_char_time = _char_speed
     _next_cur_time = _cursor_speed
+    set_process(true)
 
 func _preprocess_data() -> void:
     _commands.clear()
@@ -240,30 +262,35 @@ func _ready() -> void:
         play()
 
 func _process(delta: float) -> void:
-    if _phase != Phase.ANIMATING:
+    if _phase != Phase.ANIMATING && _cursor_mode == 0:
         return
 
-    _next_cur_time -= delta
-    _next_char_time -= delta
+    if _phase == Phase.ANIMATING:
+        _next_char_time -= delta
 
-    while _next_char_time < 0:
-        if _char_step > 0:
-            _clean_text_idx += _char_step + _clean_text_invisibles.get(_clean_text_idx, 0)
-            _next_char_time += _char_speed
-            _next_visible_characters += 1
+        while _next_char_time < 0:
+            if _char_step > 0:
+                _clean_text_idx += _char_step + _clean_text_invisibles.get(_clean_text_idx, 0)
+                _next_char_time += _char_speed
+                _next_visible_characters += 1
 
-        _char_step = _exec_commands()
-        if _char_step < 0 || _next_visible_characters > _total_visible_charcters:
-            if _next_visible_characters > _total_visible_charcters:
-                text_done.emit()
-                _phase = Phase.WAITING
-            break
+            _char_step = _exec_commands()
+            if _char_step < 0 || _next_visible_characters > _total_visible_charcters:
+                if _next_visible_characters > _total_visible_charcters:
+                    _phase = Phase.WAITING
+                    if _cursor_mode == 0:
+                        set_process(false)
+                    text_done.emit()
+                break
 
     if _cursor_mode == 0:
         _next_cur_time = 0
         visible_characters = _next_visible_characters
+        if _phase == Phase.WAITING:
+            set_process(false)
         return
 
+    _next_cur_time -= delta
     if _next_cur_time <= 0:
         _cursor_animation_idx += 1
         _next_cur_time = _cursor_speed
@@ -288,7 +315,7 @@ func _exec_commands() -> int:
     for cid: int in range(_last_command_idx + 1, _commands.size()):
         var cmd: Dictionary = _commands[cid]
         if cmd[_CmdParts.CLEAN_TEXT_START] < _clean_text_idx:
-            push_error("Failed to execute %s, never encountered start index (current %s)" % [cmd, _clean_text_idx])
+            push_error("Failed to execute %s on %s never encountered start index (current idx %s of '%s')" % [cmd, self, _clean_text_idx, _clean_text])
             _last_command_idx = cid
             continue
 

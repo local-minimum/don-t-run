@@ -1,4 +1,4 @@
-- [ ] use visible characters instead
+- [x] use visible characters instead
 - [x] Second cmd in a row don't fire
 - [x] Test all commands
 - [x] Test various settings
@@ -10,5 +10,9 @@
 - [x] Why not inventory showing?
 - [x] Push down functions
 - [x] Error non-supported functions on parse or at least exec
+- [x] Bug: after fast forwards: Doesn't put input line correctly sometimes
+- [ ] Bug: doesn't execute command if data ends with it.
+- [ ] Bug: more doesn't continue properly
+- [ ] Missing: Input should remove cursor on submit last
 - [ ] Play through game
 - [ ] Load in particle systems

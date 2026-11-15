@@ -57,7 +57,7 @@ bbcode_enabled = true
 scroll_following = true
 visible_characters_behavior = 1
 script = ExtResource("3_v6o5t")
-default_speed = 0.08
+default_speed = 0.03
 metadata/_custom_type_script = "uid://w8c8ae6e1o8h"
 
 [node name="Input Line" type="RichTextLabel" parent="AspectRatioContainer/MarginContainer/VBoxContainer" unique_id=260858036]
