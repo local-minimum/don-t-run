@@ -8,7 +8,7 @@ enum Phase { INACTIVE, ACTION, REFERANT, COMMIT, MORE }
 @export var input_text: TerminalText2
 @export var options: OptionsPresenter
 @export var input_prefix: String = "> "
-@export var input_cursor: int = 2
+@export var input_cursor: TerminalText2.Cursor = TerminalText2.Cursor.UNDERLINE
 @export var more_option: String = "MORE"
 @export var default_actions: Array[String] = []
 @export var delay_show_command: float = 0.5

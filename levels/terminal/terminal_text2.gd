@@ -9,7 +9,8 @@ signal text_event(evt_name: String)
 signal text_done()
 signal text_paused()
 
-enum Phase { WAITING, ANIMATING }
+enum Cursor { NONE, SPINNER, UNDERLINE, BLOCK}
+enum _Phase { WAITING, ANIMATING }
 enum _CmdParts { CLEAN_TEXT_START, DATA_END, CMD, VALUE, VALUE2 }
 enum _Cmd { WAIT, SIGNAL, CURSOR, CLEAR, SPEED, MORE }
 
@@ -21,12 +22,13 @@ enum _Cmd { WAIT, SIGNAL, CURSOR, CLEAR, SPEED, MORE }
 @export var cursor_color: String = "blue"
 @export var default_speed: float = 0.1
 @export var default_cursor_speed: float = 0.4
+@export var default_cursor: Cursor = Cursor.SPINNER
 
 var _clean_text: String
-var _phase: Phase = Phase.WAITING
+var _phase: _Phase = _Phase.WAITING
 var _char_speed: float = 0.0
 var _cursor_speed: float = 0.1
-var _cursor_mode: int = 0
+var _cursor_mode: Cursor = Cursor.NONE
 var _cursor_animation_idx: int = 0
 var _next_cur_time: float = 0.0
 var _total_visible_charcters: int
@@ -40,7 +42,7 @@ var _clean_text_invisibles: Dictionary[int, int]
 var _next_visible_characters: int
 
 func is_anmating() -> bool:
-    return _phase == Phase.ANIMATING
+    return _phase == _Phase.ANIMATING
 
 func is_instant() -> bool:
     return _char_speed == 0
@@ -49,13 +51,13 @@ func is_empty() -> bool:
     return _data.is_empty()
 
 func has_cursor() -> bool:
-    return _cursor_mode > 0
+    return _cursor_mode != Cursor.NONE
 
 func remove_cursor() -> void:
-    _cursor_mode = 0
+    _cursor_mode = Cursor.NONE
 
-func show_cursor(cur: int, speed: float = 0) -> void:
-    _cursor_mode = clampi(cur, 1, 3)
+func show_cursor(cur: Cursor, speed: float = 0) -> void:
+    _cursor_mode = cur
     if speed > 0:
         _cursor_speed = speed
     elif speed < 0:
@@ -108,10 +110,10 @@ func fast_forward() -> void:
     _next_char_time = 0.0
 
 func play() -> void:
-    if _phase == Phase.ANIMATING:
+    if _phase == _Phase.ANIMATING:
         return
 
-    _phase = Phase.ANIMATING
+    _phase = _Phase.ANIMATING
     _next_char_time = _char_speed
     _next_cur_time = _cursor_speed
     set_process(true)
@@ -214,9 +216,10 @@ func _parse_command(current_data_idx: int, clean_text: int, preceeding_text: int
         "CURSOR":
             var parts: PackedStringArray = command.split(" ")
             if parts.size() == 1:
-                parsed[_CmdParts.VALUE] = 1
+                parsed[_CmdParts.VALUE] = default_cursor
             else:
-                parsed[_CmdParts.VALUE] = int(parts[1])
+                var raw_cursor: int = int(parts[1])
+                parsed[_CmdParts.VALUE] = _safe_int_to_cursor(raw_cursor)
                 if parts.size() > 2:
                     parsed[_CmdParts.VALUE2] = float(parts[2])
                 parsed[_CmdParts.CMD] = _Cmd.CURSOR
@@ -248,6 +251,15 @@ func _parse_command(current_data_idx: int, clean_text: int, preceeding_text: int
     push_error("Unknown command ", command)
     return parsed
 
+func _safe_int_to_cursor(raw_cursor: int) -> Cursor:
+    match raw_cursor:
+        -1:
+            return default_cursor
+        0,1,2,3:
+            return raw_cursor as Cursor
+        _:
+            push_error("%s is not a valid cursor, using default %s" % [raw_cursor, Cursor.find_key(default_cursor)])
+            return default_cursor
 
 func _ready() -> void:
     if visible_characters_behavior == TextServer.VisibleCharactersBehavior.VC_CHARS_BEFORE_SHAPING:
@@ -262,10 +274,11 @@ func _ready() -> void:
         play()
 
 func _process(delta: float) -> void:
-    if _phase != Phase.ANIMATING && _cursor_mode == 0:
+    if _phase != _Phase.ANIMATING && _cursor_mode == Cursor.NONE:
+        set_process(false)
         return
 
-    if _phase == Phase.ANIMATING:
+    if _phase == _Phase.ANIMATING:
         _next_char_time -= delta
 
         while _next_char_time < 0:
@@ -277,8 +290,8 @@ func _process(delta: float) -> void:
             _char_step = _exec_commands()
             if _char_step < 0 || _next_visible_characters > _total_visible_charcters:
                 if _next_visible_characters > _total_visible_charcters:
-                    _phase = Phase.WAITING
-                    if _cursor_mode == 0:
+                    _phase = _Phase.WAITING
+                    if _cursor_mode == Cursor.NONE:
                         set_process(false)
                     text_done.emit()
                 break
@@ -286,7 +299,7 @@ func _process(delta: float) -> void:
     if _cursor_mode == 0:
         _next_cur_time = 0
         visible_characters = _next_visible_characters
-        if _phase == Phase.WAITING:
+        if _phase == _Phase.WAITING:
             set_process(false)
         return
 
@@ -334,13 +347,13 @@ func _exec_commands() -> int:
                 return 0
 
             _Cmd.CURSOR:
-                var mode: int = cmd[_CmdParts.VALUE]
-                if mode >= 0:
-                    if _cursor_mode != mode:
-                        if mode == 0:
-                            text = _clean_text.substr(_clean_text_start_idx)
-                        else:
-                            _cursor_animation_idx = 0
+                var mode: Cursor = cmd[_CmdParts.VALUE]
+
+                if _cursor_mode != mode:
+                    if mode == 0:
+                        text = _clean_text.substr(_clean_text_start_idx)
+                    else:
+                        _cursor_animation_idx = 0
 
                     _cursor_mode = mode
 
@@ -353,7 +366,7 @@ func _exec_commands() -> int:
             _Cmd.CLEAR:
                 _clean_text_start_idx = cmd[_CmdParts.VALUE]
                 _next_visible_characters = 0
-                if _cursor_mode == 0:
+                if _cursor_mode == Cursor.NONE:
                     text = _clean_text.substr(_clean_text_start_idx)
                 return 0
 
@@ -362,7 +375,7 @@ func _exec_commands() -> int:
                 return 0
 
             _Cmd.MORE:
-                _phase = Phase.WAITING
+                _phase = _Phase.WAITING
                 text_paused.emit()
                 return -1
 
