@@ -118,6 +118,7 @@ func play() -> void:
     _next_cur_time = _cursor_speed
     set_process(true)
 
+#region Parse
 func _preprocess_data() -> void:
     _commands.clear()
     var current_data_idx: int = 0
@@ -164,12 +165,12 @@ func _preprocess_data() -> void:
                 current_data_idx += next_bb
                 v_characters += next_bb
 
+    _total_visible_charcters = v_characters
     _clean_text = clean_text
     if visible_characters < 0:
         visible_characters = 0
 
-    _total_visible_charcters = v_characters
-    text = clean_text
+    _sync_text()
 
 
 func _parse_command(current_data_idx: int, clean_text: int, preceeding_text: int) -> Dictionary[_CmdParts, Variant]:
@@ -260,6 +261,7 @@ func _safe_int_to_cursor(raw_cursor: int) -> Cursor:
         _:
             push_error("%s is not a valid cursor, using default %s" % [raw_cursor, Cursor.find_key(default_cursor)])
             return default_cursor
+#endregion Parse
 
 func _ready() -> void:
     if visible_characters_behavior == TextServer.VisibleCharactersBehavior.VC_CHARS_BEFORE_SHAPING:
@@ -273,6 +275,7 @@ func _ready() -> void:
     if autoplay:
         play()
 
+#region Process
 func _process(delta: float) -> void:
     if _phase != _Phase.ANIMATING && _cursor_mode == Cursor.NONE:
         set_process(false)
@@ -288,7 +291,8 @@ func _process(delta: float) -> void:
                 _next_visible_characters += 1
 
             _char_step = _exec_commands()
-            if _char_step < 0 || _next_visible_characters > _total_visible_charcters:
+            # HACK: I have no clue why i need the plus one here but seems neccesary?!
+            if _char_step < 0 || _next_visible_characters > _total_visible_charcters + 1:
                 if _next_visible_characters > _total_visible_charcters:
                     _phase = _Phase.WAITING
                     if _cursor_mode == Cursor.NONE:
@@ -296,11 +300,18 @@ func _process(delta: float) -> void:
                     text_done.emit()
                 break
 
-    if _cursor_mode == 0:
-        _next_cur_time = 0
+    _sync_text(delta)
+
+func _sync_text(delta: float = 0) -> void:
+    if _cursor_mode == Cursor.NONE:
+        if _next_visible_characters >= _total_visible_charcters:
+            _next_cur_time = 0
+            visible_characters = _next_visible_characters
+            if _phase == _Phase.WAITING:
+                set_process(false)
+        elif text != _clean_text.substr(_clean_text_start_idx):
+            text = _clean_text.substr(_clean_text_start_idx)
         visible_characters = _next_visible_characters
-        if _phase == _Phase.WAITING:
-            set_process(false)
         return
 
     _next_cur_time -= delta
@@ -350,7 +361,7 @@ func _exec_commands() -> int:
                 var mode: Cursor = cmd[_CmdParts.VALUE]
 
                 if _cursor_mode != mode:
-                    if mode == 0:
+                    if mode == Cursor.NONE:
                         text = _clean_text.substr(_clean_text_start_idx)
                     else:
                         _cursor_animation_idx = 0
@@ -380,3 +391,4 @@ func _exec_commands() -> int:
                 return -1
 
     return 1
+#endregion Process

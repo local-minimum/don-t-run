@@ -36,6 +36,7 @@ func _input(event: InputEvent) -> void:
 
     if event.is_action_pressed("select_option") && main_text.is_anmating():
         main_text.fast_forward()
+        get_viewport().set_input_as_handled()
 
 func _handle_execute_entity(entity: TAEntity, body: String, title: String) -> void:
     _phase = Phase.INACTIVE

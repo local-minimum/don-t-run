@@ -45,13 +45,18 @@ func _update_render():
 
     text = t
 
+func _ready() -> void:
+    active = false
+
 func _input(event: InputEvent) -> void:
     if event.is_action_pressed("select_option"):
         select_option.emit(selected)
+        get_viewport().set_input_as_handled()
         return
 
     if event.is_action_pressed("abort_option"):
         abort_option.emit()
+        get_viewport().set_input_as_handled()
         return
 
 
@@ -64,9 +69,12 @@ func _input(event: InputEvent) -> void:
             selected = options[0]
         else:
             selected = options[posmod(idx + 1, options.size())]
+        get_viewport().set_input_as_handled()
+
     elif event.is_action_pressed("prev_option"):
         var idx: int = options.find(selected)
         if idx < 0:
             selected = options[options.size() - 1]
         else:
             selected = options[posmod(idx - 1, options.size())]
+        get_viewport().set_input_as_handled()

@@ -11,8 +11,11 @@
 - [x] Push down functions
 - [x] Error non-supported functions on parse or at least exec
 - [x] Bug: after fast forwards: Doesn't put input line correctly sometimes
-- [ ] Bug: doesn't execute command if data ends with it.
-- [ ] Bug: more doesn't continue properly
+- [-] Bug: doesn't execute command if data ends with it.  -- Cannot repro
+- [x] Bug: Adding more data breaks clears
+- [x] Bug: last letter in place not showing!?
+- [x] Bug: more doesn't continue properly
+- [ ] Bug: Asking for more makes fast-forward
 - [ ] Missing: Input should remove cursor on submit last
 - [ ] Play through game
 - [ ] Load in particle systems
