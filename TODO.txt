@@ -17,6 +17,6 @@
 - [x] Bug: more doesn't continue properly
 - [x] Bug: Asking for more makes fast-forward
 - [x] Bug: After clear, append data animates wrong!
-- [ ] Missing: Input should remove cursor on submit last
+- [x] Missing: Input should remove cursor on submit last
 - [ ] Play through game
 - [ ] Load in particle systems

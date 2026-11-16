@@ -11,7 +11,7 @@ enum Phase { INACTIVE, ACTION, REFERANT, COMMIT, MORE }
 @export var input_cursor: TerminalText2.Cursor = TerminalText2.Cursor.UNDERLINE
 @export var more_option: String = "MORE"
 @export var default_actions: Array[String] = []
-@export var delay_show_command: float = 0.5
+@export var delay_show_command: float = 0.75
 
 var _active: TAEntity
 var _phase: Phase
@@ -87,8 +87,12 @@ func _handle_input_text_done() -> void:
     if _phase == Phase.INACTIVE:
         if input_text.has_cursor():
             input_text.remove_cursor()
-            if !input_text.has_data(input_prefix):
-                input_text.set_data(input_prefix)
+
+            await get_tree().create_timer(delay_show_command).timeout
+
+            if _phase == Phase.INACTIVE:
+                if !input_text.has_data(input_prefix):
+                    input_text.set_data(input_prefix)
     else:
         input_text.restore_default_speeds()
         input_text.show_cursor(input_cursor)
@@ -101,11 +105,6 @@ func _handle_update_option(value: String) -> void:
             options.options = []
             options.active = false
             input_text.add_data("%s " % value)
-
-            await get_tree().create_timer(delay_show_command).timeout
-
-            if _phase == Phase.INACTIVE:
-                _update_input()
 
         Phase.ACTION:
             _action = value
@@ -124,10 +123,6 @@ func _handle_update_option(value: String) -> void:
             _action = ""
             _target = ""
 
-            await get_tree().create_timer(delay_show_command).timeout
-
-            if _phase == Phase.INACTIVE:
-                _update_input()
 
 func _handle_abort_option() -> void:
     if _phase == Phase.REFERANT:

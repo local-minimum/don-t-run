@@ -283,6 +283,7 @@ func _ready() -> void:
 #region Process
 func _process(delta: float) -> void:
     if _phase != _Phase.ANIMATING && _cursor_mode == Cursor.NONE:
+        _sync_text()
         set_process(false)
         return
 
@@ -314,7 +315,8 @@ func _sync_text(delta: float = 0) -> void:
             visible_characters = _next_visible_characters
             if _phase == _Phase.WAITING:
                 set_process(false)
-        elif text != _clean_text.substr(_clean_text_start_idx):
+
+        if text != _clean_text.substr(_clean_text_start_idx):
             text = _clean_text.substr(_clean_text_start_idx)
         visible_characters = _next_visible_characters
         return
