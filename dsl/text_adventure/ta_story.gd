@@ -4,6 +4,7 @@ class_name TAStory
 signal executed(entity: TAEntity, text: String, title: String)
 signal story_loaded()
 
+@export var story_id: String
 @export var interpreter: TAInterpreter
 @export_file("*.cfg") var story_file: String
 @export var start_id: String
@@ -15,6 +16,7 @@ var _edges: Dictionary[String, TAEdge] = {}
 var nodes: Array[TANode]
 var active_node_stack: Array[TANode]
 var globals: Array[TAEntity]
+var _is_loaded: bool = false
 
 const _VERBOSE: bool = false
 
@@ -22,7 +24,11 @@ func _ready() -> void:
     if autoload:
         if !load_story():
             push_error("Failed to load story %s" % story_file)
+
         print(self)
+
+func is_loaded() -> bool:
+    return _is_loaded
 
 func set_backtrack_active_node() -> bool:
     if active_node_stack.size() < 2:
@@ -81,6 +87,7 @@ func _to_string() -> String:
 func load_story() -> bool:
     nodes.clear()
     active_node_stack.clear()
+    _is_loaded = false
     var cfg: ConfigFile = ConfigFile.new()
     cfg.load(story_file)
 
@@ -195,7 +202,8 @@ func load_story() -> bool:
             push_error("Edge '%s' with id '%s' cannot find a node with id '%s'" % [section, edge.id, node_id])
 
     story_loaded.emit()
-    return !nodes.is_empty() && !active_node_stack.is_empty()
+    _is_loaded = !nodes.is_empty() && !active_node_stack.is_empty()
+    return _is_loaded
 
 func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: String) -> bool:
     match key:

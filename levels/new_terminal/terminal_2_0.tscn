@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://cfwjuv005nday" path="res://dsl/text_adventure/ta_story.gd" id="5_8slpo"]
 [ext_resource type="Script" uid="uid://cas8upiqpf441" path="res://dsl/text_adventure/ta_interpreter.gd" id="6_854bb"]
 
-[node name="Terminal 2_0" type="Control" unique_id=226405839 node_paths=PackedStringArray("story", "main_text", "input_text", "options")]
+[node name="Terminal 2_0" type="Control" unique_id=226405839 node_paths=PackedStringArray("stories", "main_text", "input_text", "options", "_music_players", "_dialog_player")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,10 +17,13 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_oa6g8")
 script = ExtResource("2_dk86f")
-story = NodePath("TAStory")
+stories = [NodePath("TAStory - Boot"), NodePath("TAStory - Play Game"), NodePath("TAStory - Adventure")]
 main_text = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input_text = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
+autoplay_story = "boot"
+_music_players = [NodePath("MusicPlayer 1"), NodePath("MusicPlayer 2")]
+_dialog_player = NodePath("DialogPlayer")
 
 [node name="Background" type="ColorRect" parent="." unique_id=468429917]
 layout_mode = 1
@@ -89,11 +92,30 @@ bus = &"Music"
 
 [node name="TAInterpreter" type="Node" parent="." unique_id=497376452 node_paths=PackedStringArray("story")]
 script = ExtResource("6_854bb")
-story = NodePath("../TAStory")
+story = NodePath("../TAStory - Adventure")
 metadata/_custom_type_script = "uid://cas8upiqpf441"
 
-[node name="TAStory" type="Node" parent="." unique_id=594991679 node_paths=PackedStringArray("interpreter")]
+[node name="TAStory - Boot" type="Node" parent="." unique_id=1024201872 node_paths=PackedStringArray("interpreter")]
 script = ExtResource("5_8slpo")
+story_id = "boot"
+interpreter = NodePath("../TAInterpreter")
+story_file = "res://levels/new_terminal/boot.cfg"
+start_id = "BOOT"
+node_title_decoration = ""
+metadata/_custom_type_script = "uid://cfwjuv005nday"
+
+[node name="TAStory - Play Game" type="Node" parent="." unique_id=2099508000 node_paths=PackedStringArray("interpreter")]
+script = ExtResource("5_8slpo")
+story_id = "play game"
+interpreter = NodePath("../TAInterpreter")
+story_file = "res://levels/new_terminal/start_game.cfg"
+start_id = "PLAY"
+node_title_decoration = ""
+metadata/_custom_type_script = "uid://cfwjuv005nday"
+
+[node name="TAStory - Adventure" type="Node" parent="." unique_id=594991679 node_paths=PackedStringArray("interpreter")]
+script = ExtResource("5_8slpo")
+story_id = "adventure"
 interpreter = NodePath("../TAInterpreter")
 story_file = "res://levels/new_terminal/story.cfg"
 start_id = "CAR"
