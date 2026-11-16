@@ -165,7 +165,12 @@ func _preprocess_data() -> void:
                 current_data_idx += next_bb
                 v_characters += next_bb
 
-    _total_visible_charcters = v_characters
+    _total_visible_charcters = v_characters - _clean_text_start_idx
+    for idx in _clean_text_invisibles:
+        if idx >= _clean_text_start_idx:
+            break
+        _total_visible_charcters -= _clean_text_invisibles[idx] - 1
+
     _clean_text = clean_text
     if visible_characters < 0:
         visible_characters = 0
@@ -293,7 +298,7 @@ func _process(delta: float) -> void:
             _char_step = _exec_commands()
             # HACK: I have no clue why i need the plus one here but seems neccesary?!
             if _char_step < 0 || _next_visible_characters > _total_visible_charcters + 1:
-                if _next_visible_characters > _total_visible_charcters:
+                if _next_visible_characters > _total_visible_charcters + 1:
                     _phase = _Phase.WAITING
                     if _cursor_mode == Cursor.NONE:
                         set_process(false)
@@ -304,7 +309,7 @@ func _process(delta: float) -> void:
 
 func _sync_text(delta: float = 0) -> void:
     if _cursor_mode == Cursor.NONE:
-        if _next_visible_characters >= _total_visible_charcters:
+        if _next_visible_characters >= _total_visible_charcters + 1:
             _next_cur_time = 0
             visible_characters = _next_visible_characters
             if _phase == _Phase.WAITING:
@@ -376,6 +381,7 @@ func _exec_commands() -> int:
 
             _Cmd.CLEAR:
                 _clean_text_start_idx = cmd[_CmdParts.VALUE]
+                _total_visible_charcters -= _next_visible_characters
                 _next_visible_characters = 0
                 if _cursor_mode == Cursor.NONE:
                     text = _clean_text.substr(_clean_text_start_idx)
