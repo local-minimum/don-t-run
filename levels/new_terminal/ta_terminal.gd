@@ -15,6 +15,7 @@ signal text_event(evt: String)
 @export var default_actions: Array[String] = []
 @export var delay_show_command: float = 0.75
 @export var autoplay_story: String
+@export var delay_play_initial_story: float = 0.5
 
 @export var _music_players: Array[AudioStreamPlayer]
 @export var _dialog_player: AudioStreamPlayer
@@ -33,7 +34,7 @@ func _enter_tree() -> void:
     options.select_option.connect(_handle_update_option)
     options.abort_option.connect(_handle_abort_option)
 
-func load_story(id: String = "", play_on_loaded: bool = true) -> void:
+func load_story(id: String = "", play_on_loaded: bool = true, delay_play: float = 0.0) -> void:
     if _active_story:
         if _active_story.story_loaded.is_connected(_handle_story_ready):
             _active_story.story_loaded.disconnect(set_anchor_and_offset)
@@ -56,15 +57,15 @@ func load_story(id: String = "", play_on_loaded: bool = true) -> void:
     _active_story.executed.connect(_handle_execute_entity)
     if play_on_loaded:
         if _active_story.is_loaded():
-            _handle_story_ready()
+            _handle_story_ready(delay_play)
         else:
-            _active_story.story_loaded.connect(_handle_story_ready)
+            _active_story.story_loaded.connect(_handle_story_ready.bind(delay_play), CONNECT_ONE_SHOT)
             _active_story.load_story()
 
 func _ready() -> void:
     _update_input()
     if !autoplay_story.is_empty():
-        load_story(autoplay_story)
+        load_story.call_deferred(autoplay_story, true, delay_play_initial_story)
 
 func _input(event: InputEvent) -> void:
     if options.active:
@@ -105,7 +106,9 @@ func _handle_execute_entity(entity: TAEntity, body: String, title: String) -> vo
     if instant:
         main_text.fast_forward()
 
-func _handle_story_ready() -> void:
+func _handle_story_ready(delay_play: float = 0.0) -> void:
+    if delay_play > 0:
+        await get_tree().create_timer(delay_play).timeout
     _active_story.exec_active_node()
 
 func _handle_main_text_done() -> void:

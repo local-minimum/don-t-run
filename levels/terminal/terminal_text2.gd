@@ -65,6 +65,16 @@ func show_cursor(cur: Cursor, speed: float = 0) -> void:
 
     set_process(true)
 
+func set_data(new_data: String) -> void:
+    clear_text(new_data)
+    restore_default_speeds()
+    _preprocess_data()
+
+    if autoplay:
+        play()
+    else:
+        set_process(false)
+
 func add_data(new_data: String) -> void:
     if autoclear:
         clear_text(new_data)
@@ -75,16 +85,6 @@ func add_data(new_data: String) -> void:
 
     if autoplay:
         play()
-
-func set_data(new_data: String) -> void:
-    clear_text(new_data)
-    restore_default_speeds()
-    _preprocess_data()
-
-    if autoplay:
-        play()
-    else:
-        set_process(false)
 
 func has_data(other: String) -> bool:
     return _data == other
@@ -277,7 +277,7 @@ func _ready() -> void:
 
     restore_default_speeds()
 
-    if autoplay:
+    if autoplay && !_data.is_empty():
         play()
 
 #region Process
