@@ -24,6 +24,7 @@ options = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Options L
 autoplay_story = "boot"
 _music_players = [NodePath("MusicPlayer 1"), NodePath("MusicPlayer 2")]
 _dialog_player = NodePath("DialogPlayer")
+interactive = false
 
 [node name="Background" type="ColorRect" parent="." unique_id=468429917]
 layout_mode = 1

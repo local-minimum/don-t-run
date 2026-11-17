@@ -19,6 +19,19 @@ signal text_event(evt: String)
 
 @export var _music_players: Array[AudioStreamPlayer]
 @export var _dialog_player: AudioStreamPlayer
+@export var interactive = true:
+    set(value):
+        if input_text:
+            input_text.visible = value
+        if options:
+            options.visible = value
+        interactive = value
+
+        if !value && options && options.active:
+            options.active = false
+
+        if value && input_text:
+            _update_input()
 
 var _active_story: TAStory
 var _active: TAEntity
@@ -63,12 +76,16 @@ func load_story(id: String = "", play_on_loaded: bool = true, delay_play: float 
             _active_story.load_story()
 
 func _ready() -> void:
-    _update_input()
+    interactive = interactive
+
+    if interactive:
+        _update_input()
+
     if !autoplay_story.is_empty():
         load_story.call_deferred(autoplay_story, true, delay_play_initial_story)
 
 func _input(event: InputEvent) -> void:
-    if options.active:
+    if !interactive || options.active:
         return
 
     if event.is_action_pressed("select_option") && main_text.is_anmating():
@@ -120,13 +137,18 @@ func _handle_main_text_done() -> void:
 
     elif _active is TANode:
         _phase = Phase.ACTION
-        _set_actions_options()
-        input_text.show_cursor(input_cursor)
-        if !input_text.has_data(input_prefix):
-            input_text.fast_forward()
-            input_text.set_data(input_prefix)
+        if interactive:
+            _set_actions_options()
+
+            input_text.show_cursor(input_cursor)
+            if !input_text.has_data(input_prefix):
+                input_text.fast_forward()
+                input_text.set_data(input_prefix)
 
 func _handle_input_text_done() -> void:
+    if !interactive:
+        return
+
     if _phase == Phase.INACTIVE:
         if input_text.has_cursor():
             input_text.remove_cursor()
@@ -141,6 +163,10 @@ func _handle_input_text_done() -> void:
         input_text.show_cursor(input_cursor)
 
 func _handle_update_option(value: String) -> void:
+    if !interactive:
+        push_warning("Ignoring options value '%s' because terminal not interactive" % [value])
+        return
+
     match _phase:
         Phase.MORE:
             _phase = Phase.INACTIVE
@@ -168,6 +194,10 @@ func _handle_update_option(value: String) -> void:
 
 
 func _handle_abort_option() -> void:
+    if !interactive:
+        push_error("Ignoring abort option because terminal not interactive")
+        return
+
     if _phase == Phase.REFERANT:
         _phase = Phase.ACTION
         _set_actions_options()
@@ -185,6 +215,10 @@ func _set_referents_options() -> void:
     options.active = true
 
 func _update_input() -> void:
+    if !interactive:
+        push_warning("Ignoring update input because terminal not interactive")
+        return
+
     if _phase == Phase.INACTIVE:
         input_text.fast_forward()
         input_text.remove_cursor()
@@ -200,6 +234,10 @@ func _update_input() -> void:
         input_text.set_data(input_prefix)
 
 func _handle_more() -> void:
+    if !interactive:
+        push_warning("Ignoring more because terminal not interactive")
+        return
+
     _phase = Phase.MORE
     options.options = [more_option]
     options.active = true
