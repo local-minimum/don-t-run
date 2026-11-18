@@ -95,12 +95,12 @@ func _input(event: InputEvent) -> void:
 func _handle_main_text_event(evt: String) -> void:
     text_event.emit(evt)
 
-func _handle_execute_entity(entity: TAEntity, body: String, title: String) -> void:
+func _handle_execute_entity(entity: TAEntity, body: String, title: String, force_append: bool) -> void:
     _phase = Phase.INACTIVE
     _active = entity
     var instant: bool = entity is TANode && main_text.is_instant()
 
-    if entity is TAEdge || entity == null:
+    if !force_append && (entity is TAEdge || entity == null):
         main_text.clear_text()
 
     if main_text.is_empty():

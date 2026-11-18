@@ -18,9 +18,9 @@
 - [x] Bug: Asking for more makes fast-forward
 - [x] Bug: After clear, append data animates wrong!
 - [x] Missing: Input should remove cursor on submit last
-- [ ] Bug: Failing to execute some commands in boot story
+- [x] Bug: Failing to execute some commands in boot story
 - [x] Missing: Tell terminal no input nor options (!interactive)
-- [ ] Missing: Node config to append rather than clear text!
+- [x] Missing: Node config to append rather than clear text!
 - [x] Missing: Not display node titles...
 - [ ] Integrate main game with new terminal
 - [ ] Play through game

@@ -1,7 +1,7 @@
 extends Node
 class_name TAStory
 
-signal executed(entity: TAEntity, text: String, title: String)
+signal executed(entity: TAEntity, text: String, title: String, force_append: bool)
 signal story_loaded()
 
 @export var story_id: String
@@ -361,11 +361,13 @@ func exec_active_node() -> void:
     if node.hide_title && interpreter.eval(node.hide_title):
         title = ""
 
+    var force_append: bool = !!(node.append && interpreter.eval(node.append))
+
     var body: String = get_entity_text(node)
 
     node.visits += 1
 
-    executed.emit(node, body, title)
+    executed.emit(node, body, title, force_append)
 #endregion Node
 
 #region Edge
@@ -386,17 +388,17 @@ func execute_edge_by_command(action: String, referant: String) -> bool:
     var node: TANode = get_active_node()
     if node == null:
         if missing_edge_text.is_empty():
-            executed.emit(null, "", "")
+            executed.emit(null, "", "", false)
         else:
-            executed.emit(null, missing_edge_text.pick_random(), "")
+            executed.emit(null, missing_edge_text.pick_random(), "", false)
         return false
 
     var edge = get_edge_by_command(node, action, referant)
     if edge == null:
         if missing_edge_text.is_empty():
-            executed.emit(null, "", "")
+            executed.emit(null, "", "", false)
         else:
-            executed.emit(null, missing_edge_text.pick_random(), "")
+            executed.emit(null, missing_edge_text.pick_random(), "", false)
         return false
 
     interpreter.active = edge
@@ -405,7 +407,7 @@ func execute_edge_by_command(action: String, referant: String) -> bool:
 
     var body = get_entity_text(edge)
 
-    executed.emit(edge, body, "")
+    executed.emit(edge, body, "", false)
     return true
 #endregion Edge
 

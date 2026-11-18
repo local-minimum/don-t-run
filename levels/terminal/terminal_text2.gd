@@ -183,6 +183,7 @@ func _parse_command(current_data_idx: int, clean_text: int, preceeding_text: int
     for inv: int in _clean_text_invisibles:
         if start - _clean_text_invisibles[inv] == inv:
             start -= _clean_text_invisibles[inv]
+    start = max(start, 0)
 
     var parsed: Dictionary[_CmdParts, Variant] = { _CmdParts.CLEAN_TEXT_START: start }
     var closing: int = _data.find("}", current_data_idx)
