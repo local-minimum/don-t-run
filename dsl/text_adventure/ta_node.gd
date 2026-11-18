@@ -2,6 +2,7 @@ extends TAEntity
 class_name TANode
 
 var edges: Array[TAEdge]
+var hide_title: LToken
 
 func add_edge(edge: TAEdge) -> void:
     if edge.node && edge.node != self:

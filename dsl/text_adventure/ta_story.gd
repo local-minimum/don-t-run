@@ -115,7 +115,29 @@ func load_story() -> bool:
             if _add_common_key(node, cfg, section, key):
                 continue
 
-            push_error("%s of %s is not a valid setting" % [key, section])
+            match key:
+                "hide_title":
+                    var raw: Variant = cfg.get_value(section, key)
+                    var val: LToken = null
+                    if typeof(raw) == TYPE_BOOL:
+                        raw = "%s" % raw
+
+                    if typeof(raw) == TYPE_STRING:
+                        val = LDSL_Parser.parse(raw)
+                    else:
+                        push_error("Invalid value for '%s' of '%s': %s" % [section, key, raw])
+                        continue
+
+                    if val.is_error:
+                        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
+                    elif !interpreter.validate(val):
+                        push_error("Invalid %s for %s: %s" % [key, section, val])
+                    else:
+                        node.hide_title = val
+                        if _VERBOSE:
+                            print("%s => %s" % [cfg.get_value(section, key), val])
+                _:
+                    push_error("%s of %s is not a valid setting" % [key, section])
 
     for section in cfg.get_sections():
         var global: bool = cfg.get_value(section, "global", false)
@@ -386,6 +408,10 @@ func exec_active_node() -> void:
     var title: String = get_entity_name(node)
 
     title = (node_title_decoration % title) if !node_title_decoration.is_empty() else title
+
+    if node.hide_title && interpreter.eval(node.hide_title):
+        title = ""
+
     var body: String = get_entity_text(node)
 
     node.visits += 1
