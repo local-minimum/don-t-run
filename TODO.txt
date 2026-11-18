@@ -21,7 +21,7 @@
 - [ ] Bug: Failing to execute some commands in boot story
 - [x] Missing: Tell terminal no input nor options (!interactive)
 - [ ] Missing: Node config to append rather than clear text!
-- [ ] Missing?: Not display node titles...
+- [x] Missing: Not display node titles...
 - [ ] Integrate main game with new terminal
 - [ ] Play through game
 - [ ] Load in particle systems

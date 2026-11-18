@@ -117,25 +117,11 @@ func load_story() -> bool:
 
             match key:
                 "hide_title":
-                    var raw: Variant = cfg.get_value(section, key)
-                    var val: LToken = null
-                    if typeof(raw) == TYPE_BOOL:
-                        raw = "%s" % raw
+                    _safe_parse(cfg, section, key, node, "hide_title")
 
-                    if typeof(raw) == TYPE_STRING:
-                        val = LDSL_Parser.parse(raw)
-                    else:
-                        push_error("Invalid value for '%s' of '%s': %s" % [section, key, raw])
-                        continue
+                "append":
+                    _safe_parse(cfg, section, key, node, "append")
 
-                    if val.is_error:
-                        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
-                    elif !interpreter.validate(val):
-                        push_error("Invalid %s for %s: %s" % [key, section, val])
-                    else:
-                        node.hide_title = val
-                        if _VERBOSE:
-                            print("%s => %s" % [cfg.get_value(section, key), val])
                 _:
                     push_error("%s of %s is not a valid setting" % [key, section])
 
@@ -176,26 +162,12 @@ func load_story() -> bool:
                         push_error("Failed to parse '%s' of '%s', must be an array of arrays of strings: %s" % [key, section, val])
 
                 "hidden":
-                    var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
-                    if val.is_error:
-                        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
-                    elif !interpreter.validate(val):
-                        push_error("Invalid %s for %s: %s" % [key, section, val])
-                    else:
-                        edge.hidden = val
-                        if _VERBOSE:
-                            print("%s => %s" % [cfg.get_value(section, key), val])
+                    _safe_parse(cfg, section, key, edge, "hidden")
+
 
                 "target":
-                    var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
-                    if val.is_error:
-                        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
-                    elif !interpreter.validate(val):
-                        push_error("Invalid %s for %s: %s" % [key, section, val])
-                    else:
-                        edge.target = val
-                        if _VERBOSE:
-                            print("%s => %s" % [cfg.get_value(section, key), val])
+                    _safe_parse(cfg, section, key, edge, "target")
+
                 _:
                     push_error("'%s' of '%s' not a valid setting" % [key, section])
 
@@ -241,26 +213,11 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
                 push_error("'%s' of '%s' must be a string" % [key, section])
 
         "name":
-            var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
-            if val.is_error:
-                push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
-            elif !interpreter.validate(val):
-                push_error("Invalid %s for %s: %s" % [key, section, val])
-            else:
-                entity.name = val
-                if _VERBOSE:
-                    print("%s => %s" % [cfg.get_value(section, key), val])
+            _safe_parse(cfg, section, key, entity, "name")
 
         "text_rule":
-            var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
-            if val.is_error:
-                push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
-            elif !interpreter.validate(val):
-                push_error("Invalid %s for %s: %s" % [key, section, val])
-            else:
-                entity.text_rule = val
-                if _VERBOSE:
-                    print("%s => %s" % [cfg.get_value(section, key), val])
+            _safe_parse(cfg, section, key, entity, "text_rule")
+
 
         "text", "texts":
             var val: Variant = cfg.get_value(section, key)
@@ -272,15 +229,7 @@ func _add_common_key(entity: TAEntity, cfg: ConfigFile, section: String, key: St
                 push_error("'%s' of '%s' is not string or array of strings" % [key, section])
 
         "effect":
-            var val: LToken = LDSL_Parser.parse(cfg.get_value(section, key))
-            if val.is_error:
-                push_error("Failed parsing '%s' of '%s': %s" % [key, section, val.info()])
-            elif !interpreter.validate(val):
-                push_error("Invalid %s for %s: %s" % [key, section, val])
-            else:
-                entity.effect = val
-                if _VERBOSE:
-                    print("%s => %s" % [cfg.get_value(section, key), val])
+            _safe_parse(cfg, section, key, entity, "effect")
 
         _:
             return false
@@ -458,5 +407,26 @@ func execute_edge_by_command(action: String, referant: String) -> bool:
 
     executed.emit(edge, body, "")
     return true
-
 #endregion Edge
+
+
+func _safe_parse(cfg: ConfigFile, section: String, key: String, entity: TAEntity, param: StringName) -> void:
+    var raw: Variant = cfg.get_value(section, key)
+    var val: LToken = null
+    if typeof(raw) == TYPE_BOOL:
+        raw = "%s" % raw
+
+    if typeof(raw) == TYPE_STRING:
+        val = LDSL_Parser.parse(raw)
+    else:
+        push_error("Invalid value for '%s' of '%s': %s" % [section, key, raw])
+        return
+
+    if val.is_error:
+        push_error("Failed to parse '%s' of '%s': %s" % [section, key, val.info()])
+    elif !interpreter.validate(val):
+        push_error("Invalid %s for %s: %s" % [key, section, val])
+    else:
+        entity.set(param, val)
+        if _VERBOSE:
+            print("%s => %s" % [cfg.get_value(section, key), val])
