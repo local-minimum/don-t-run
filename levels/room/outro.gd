@@ -1,7 +1,7 @@
 extends Node
 @export var player_cam: PlayerCam
 
-@export var terminal: Terminal
+@export var terminal: TATerminal
 @export var typewriter: Node3D
 @export var computer: Node3D
 @export var floppy: Node3D
@@ -14,8 +14,7 @@ extends Node
 @export var fog: Node3D
 
 func _ready() -> void:
-    terminal.mist.connect(_handle_mist)
-    terminal.outro.connect(_handle_outro)
+    terminal.text_event.connect(_handle_text_event)
     typewriter.hide()
     computer.show()
     fog.hide()
@@ -23,6 +22,18 @@ func _ready() -> void:
     snowman.hide()
     snowman_spot.hide()
     end_ui.hide()
+
+func _handle_text_event(evt: String) -> void:
+    if terminal.active_story_id != "adventure":
+        return
+
+    match evt:
+        "end":
+            _handle_outro()
+        "cold":
+            fog.visible = true
+        "uncold":
+            fog.visible = false
 
 func _handle_outro() -> void:
     var t1: float = 0.05
@@ -47,6 +58,3 @@ func _handle_outro() -> void:
     snowman_spot.show()
     await get_tree().create_timer(5.0).timeout
     end_ui.show()
-
-func _handle_mist(on: bool) -> void:
-    fog.visible = on

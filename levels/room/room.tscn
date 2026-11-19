@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://7ibc8au4h1xi"]
 
+[ext_resource type="PackedScene" uid="uid://d01veociyi8q1" path="res://levels/new_terminal/terminal_2_0.tscn" id="1_s5tn8"]
 [ext_resource type="PackedScene" uid="uid://2hy08xvmcmsa" path="res://models/office.blend" id="1_vl2mj"]
 [ext_resource type="Material" uid="uid://7a5d0mwyl8er" path="res://levels/room/computer_mat.tres" id="2_cvwik"]
-[ext_resource type="PackedScene" uid="uid://q1jsjkhxr0ky" path="res://levels/terminal/terminal.tscn" id="3_cvwik"]
 [ext_resource type="Script" uid="uid://cobj5qubg1tff" path="res://levels/room/input_manager.gd" id="3_vxucq"]
 [ext_resource type="Texture2D" uid="uid://glo7dfmscrbv" path="res://models/Cup.png" id="4_8t5sh"]
 [ext_resource type="Material" uid="uid://dhltatng6u27y" path="res://levels/room/selection_mat.tres" id="4_326eg"]
@@ -16,7 +16,15 @@
 [ext_resource type="AudioStream" uid="uid://du04kemme0g1u" path="res://audio/scare.mp3" id="9_pf8v0"]
 [ext_resource type="Texture2D" uid="uid://dswonskv0okp4" path="res://models/Snowman.png" id="10_y8hd4"]
 [ext_resource type="FontFile" uid="uid://cyxki4kpoa0ho" path="res://fonts/albertsthal-typewriter/Albertsthal Typewriter.ttf" id="11_y8hd4"]
+[ext_resource type="AudioStream" uid="uid://b2bk547nkmp6y" path="res://audio/player/should_i.mp3" id="13_nijk1"]
+[ext_resource type="AudioStream" uid="uid://c032im24xbgfj" path="res://audio/player/eww.mp3" id="14_fuurn"]
+[ext_resource type="AudioStream" uid="uid://dai2utilqk1op" path="res://audio/player/shrug.mp3" id="15_61elh"]
+[ext_resource type="AudioStream" uid="uid://dgajga0o31cup" path="res://audio/player/hum.mp3" id="15_k8c58"]
+[ext_resource type="AudioStream" uid="uid://c3h5m6u1vcvi5" path="res://audio/player/cold.mp3" id="16_k8c58"]
+[ext_resource type="AudioStream" uid="uid://dsavi83ltgdhm" path="res://music/Ludum Dare 60 - Sixth Floor.ogg" id="17_5c0ys"]
 [ext_resource type="PackedScene" uid="uid://cmu6b7uymaon4" path="res://models/elephant.blend" id="17_s5tn8"]
+[ext_resource type="AudioStream" uid="uid://d0nosl78qtxsg" path="res://music/Ludum Dare 60 - Ground Floor.ogg" id="18_k8c58"]
+[ext_resource type="AudioStream" uid="uid://dvibtvnlom2sg" path="res://music/Ludum Dare 60 - Typewriter.ogg" id="18_nby46"]
 [ext_resource type="Texture2D" uid="uid://c34lbes1clsim" path="res://particles/Elephant.png" id="18_nijk1"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cvwik"]
@@ -152,7 +160,8 @@ emission = Color(0.42188266, 0.10113374, 0.57609755, 1)
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=938471173]
 
-[node name="Terminal" parent="SubViewport" unique_id=1766387531 instance=ExtResource("3_cvwik")]
+[node name="Terminal 2_0" parent="SubViewport" unique_id=226405839 instance=ExtResource("1_s5tn8")]
+delay_show_command = 0.1
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1267568766]
 environment = SubResource("Environment_y43wp")
@@ -268,9 +277,9 @@ start_pos = NodePath("../CamStart")
 [node name="Cam While playing" type="Node3D" parent="." unique_id=1574542026]
 transform = Transform3D(0.99372053, -0.039297465, 0.10476264, 0.0076696724, 0.9580164, 0.28661084, -0.11162741, -0.28400758, 0.952302, 0.10928741, 1.0508499, 0.14661011)
 
-[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "title", "viewport", "power_button", "power_button_selection", "display", "floppy", "floppy_button", "floppy_selection", "cuppa", "player", "player_cam")]
+[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "title", "viewport", "power_button", "power_button_selection", "display", "floppy", "floppy_button", "floppy_selection", "cuppa", "dialog_player", "sfx_player", "player_cam")]
 script = ExtResource("3_vxucq")
-terminal = NodePath("../SubViewport/Terminal")
+terminal = NodePath("../SubViewport/Terminal 2_0")
 title = NodePath("../Title")
 viewport = NodePath("../SubViewport")
 power_button = NodePath("../office/Computer/Power Button")
@@ -280,14 +289,23 @@ floppy = NodePath("../office/Floppy")
 floppy_button = NodePath("../office/Computer/FloppyDrive Button")
 floppy_selection = NodePath("../office/Floppy/Selection")
 cuppa = NodePath("../office/Cup")
-player = NodePath("../SFX Player")
+dialog_player = NodePath("../DialogPlayer")
+sfx_player = NodePath("../SFX Player")
 scare = ExtResource("9_pf8v0")
+should_i = ExtResource("13_nijk1")
+eww = ExtResource("14_fuurn")
+breath = ExtResource("15_k8c58")
+shrug = ExtResource("15_61elh")
+cold = ExtResource("16_k8c58")
+ground_floor_music = ExtResource("18_k8c58")
+office_music = ExtResource("17_5c0ys")
+final_music = ExtResource("18_nby46")
 player_cam = NodePath("../PlayerCam")
 
 [node name="Outro" type="Node" parent="." unique_id=969001013 node_paths=PackedStringArray("player_cam", "terminal", "typewriter", "computer", "floppy", "snowman", "snowman_spot", "end_ui", "player", "fog")]
 script = ExtResource("8_2akcw")
 player_cam = NodePath("../PlayerCam")
-terminal = NodePath("../SubViewport/Terminal")
+terminal = NodePath("../SubViewport/Terminal 2_0")
 typewriter = NodePath("../office/Type Writer")
 computer = NodePath("../office/Computer")
 floppy = NodePath("../office/Floppy")
@@ -470,6 +488,9 @@ transform = Transform3D(0.081095695, 0, -0.99670637, 0, 1, 0, 0.99670637, 0, 0.0
 [node name="Elephant" parent="elephant" index="0" unique_id=1708722507]
 transform = Transform3D(0.8856151, -0.09744777, 0.45408142, 0.109373875, 0.9940007, -3.7252903e-09, -0.45135725, 0.04966464, 0.89096034, 0.57717276, 0.868042, -0.94944215)
 surface_material_override/0 = SubResource("StandardMaterial3D_l06wv")
+
+[node name="DialogPlayer" type="AudioStreamPlayer" parent="." unique_id=444479633]
+bus = &"Dialogue"
 
 [connection signal="mouse_entered" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_entered"]
 [connection signal="mouse_exited" from="office/Computer/Power Button/Power" to="InputManager" method="_on_power_mouse_exited"]

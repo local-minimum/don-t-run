@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://cfwjuv005nday" path="res://dsl/text_adventure/ta_story.gd" id="5_8slpo"]
 [ext_resource type="Script" uid="uid://cas8upiqpf441" path="res://dsl/text_adventure/ta_interpreter.gd" id="6_854bb"]
 
-[node name="Terminal 2_0" type="Control" unique_id=226405839 node_paths=PackedStringArray("stories", "main_text", "input_text", "options", "_music_players", "_dialog_player")]
+[node name="Terminal 2_0" type="Control" unique_id=226405839 node_paths=PackedStringArray("stories", "main_text", "input_text", "options", "_music_players")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,9 +21,7 @@ stories = [NodePath("TAStory - Boot"), NodePath("TAStory - Play Game"), NodePath
 main_text = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Main Text")
 input_text = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Input Line")
 options = NodePath("AspectRatioContainer/MarginContainer/VBoxContainer/Options Line")
-autoplay_story = "play game"
 _music_players = [NodePath("MusicPlayer 1"), NodePath("MusicPlayer 2")]
-_dialog_player = NodePath("DialogPlayer")
 interactive = false
 
 [node name="Background" type="ColorRect" parent="." unique_id=468429917]
@@ -81,11 +79,9 @@ bbcode_enabled = true
 fit_content = true
 script = ExtResource("3_dk86f")
 
-[node name="DialogPlayer" type="AudioStreamPlayer" parent="." unique_id=2077137074]
-bus = &"Dialogue"
-
 [node name="MusicPlayer 1" type="AudioStreamPlayer" parent="." unique_id=1246061886]
 stream = ExtResource("4_v6o5t")
+autoplay = true
 bus = &"Music"
 
 [node name="MusicPlayer 2" type="AudioStreamPlayer" parent="." unique_id=1775923377]

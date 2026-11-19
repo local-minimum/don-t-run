@@ -18,7 +18,7 @@ signal text_event(evt: String)
 @export var delay_play_initial_story: float = 0.5
 
 @export var _music_players: Array[AudioStreamPlayer]
-@export var _dialog_player: AudioStreamPlayer
+
 @export var interactive = true:
     set(value):
         if input_text:
@@ -34,6 +34,14 @@ signal text_event(evt: String)
             _update_input()
 
 var _active_story: TAStory
+
+var active_story_id: String:
+    get():
+        if _active_story:
+            return _active_story.story_id
+        push_warning("No story loaded")
+        return ""
+
 var _active: TAEntity
 var _phase: Phase
 var _action: String
@@ -270,8 +278,4 @@ func play_music(stream: AudioStream, cross_fade: float = 1.0) -> void:
                 ,
         )
 
-func play_dialog(stream: AudioStream) -> void:
-    _dialog_player.stop()
-    _dialog_player.stream = stream
-    _dialog_player.play()
 #endregion Audio
