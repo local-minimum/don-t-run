@@ -277,7 +277,7 @@ start_pos = NodePath("../CamStart")
 [node name="Cam While playing" type="Node3D" parent="." unique_id=1574542026]
 transform = Transform3D(0.99372053, -0.039297465, 0.10476264, 0.0076696724, 0.9580164, 0.28661084, -0.11162741, -0.28400758, 0.952302, 0.10928741, 1.0508499, 0.14661011)
 
-[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "title", "viewport", "power_button", "power_button_selection", "display", "floppy", "floppy_button", "floppy_selection", "cuppa", "dialog_player", "sfx_player", "player_cam")]
+[node name="InputManager" type="Node" parent="." unique_id=1289196839 node_paths=PackedStringArray("terminal", "title", "viewport", "power_button", "power_button_selection", "display", "outro", "floppy", "floppy_button", "floppy_selection", "cuppa", "dialog_player", "sfx_player", "player_cam")]
 script = ExtResource("3_vxucq")
 terminal = NodePath("../SubViewport/Terminal 2_0")
 title = NodePath("../Title")
@@ -285,6 +285,7 @@ viewport = NodePath("../SubViewport")
 power_button = NodePath("../office/Computer/Power Button")
 power_button_selection = NodePath("../office/Computer/Power Button/Power Button Selection")
 display = NodePath("../office/Computer/Computer Screen/Screen/Display")
+outro = NodePath("../Outro")
 floppy = NodePath("../office/Floppy")
 floppy_button = NodePath("../office/Computer/FloppyDrive Button")
 floppy_selection = NodePath("../office/Floppy/Selection")

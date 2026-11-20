@@ -55,6 +55,13 @@ func _enter_tree() -> void:
     options.select_option.connect(_handle_update_option)
     options.abort_option.connect(_handle_abort_option)
 
+func restore_outputs() -> void:
+    if interactive:
+        _update_input()
+    main_text.clear_text()
+    main_text.remove_cursor()
+    main_text.restore_default_speeds()
+
 func load_story(id: String = "", play_on_loaded: bool = true, delay_play: float = 0.0) -> void:
     if _active_story:
         if _active_story.story_loaded.is_connected(_handle_story_ready):
@@ -126,7 +133,7 @@ func _handle_execute_entity(entity: TAEntity, body: String, title: String, force
             _handle_main_text_done()
             return
         else:
-            main_text.add_data("[p][/p][br]%s" % [body])
+            main_text.add_data(body)
 
     if instant:
         main_text.fast_forward()

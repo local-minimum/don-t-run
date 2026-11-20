@@ -5,6 +5,7 @@ extends Node
 @export var power_button: Node3D
 @export var power_button_selection: Node3D
 @export var display: Node3D
+@export var outro: Outro
 
 @export var floppy: Node3D
 @export var floppy_button: Node3D
@@ -56,6 +57,7 @@ func _ready() -> void:
     title.show()
     display.scale.y = 0
     terminal.text_event.connect(_handle_text_event)
+
     floppy_selection.hide()
     power_button_selection.hide()
 
@@ -98,7 +100,12 @@ func _handle_text_event(evt: String) -> void:
                 "shrug":
                     dialog_player.stream = shrug
                     dialog_player.play()
-
+                "end":
+                    outro.start_end()
+                "cold":
+                    outro.set_fog(true)
+                "uncold":
+                    outro.set_fog(false)
 
 func _input(event: InputEvent) -> void:
     if _diskett_inserted && _powered_on:
@@ -206,7 +213,10 @@ func _insert_floppy() -> void:
 
 func _handle_game_loaded() -> void:
     player_cam.go_play()
-    terminal.load_story(STORY_ADVENTURE_ID)
+    terminal.interactive = true
+    terminal.restore_outputs()
+    terminal.load_story(STORY_ADVENTURE_ID, false)
+
 
 func _handle_cup() -> void:
     if cuppa.visible:

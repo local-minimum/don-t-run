@@ -1,4 +1,6 @@
 extends Node
+class_name Outro
+
 @export var player_cam: PlayerCam
 
 @export var terminal: TATerminal
@@ -14,7 +16,6 @@ extends Node
 @export var fog: Node3D
 
 func _ready() -> void:
-    terminal.text_event.connect(_handle_text_event)
     typewriter.hide()
     computer.show()
     fog.hide()
@@ -23,19 +24,10 @@ func _ready() -> void:
     snowman_spot.hide()
     end_ui.hide()
 
-func _handle_text_event(evt: String) -> void:
-    if terminal.active_story_id != "adventure":
-        return
+func set_fog(visible: bool) -> void:
+    fog.visible = visible
 
-    match evt:
-        "end":
-            _handle_outro()
-        "cold":
-            fog.visible = true
-        "uncold":
-            fog.visible = false
-
-func _handle_outro() -> void:
+func start_end() -> void:
     var t1: float = 0.05
     var t2: float = 0.025
     player.stream = end_scare
